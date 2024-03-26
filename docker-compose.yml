@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  frontend:
+    image: frontend_image
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+  backend:
+    image: backend_image
+    ports:
+      - "3000:3000"
+    depends_on:
+      - database
+
+  database:
+    image: mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
+    ports:
+      - "27017:27017"
