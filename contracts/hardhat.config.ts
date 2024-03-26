@@ -1,5 +1,6 @@
 import { HardhatUserConfig } from "hardhat/config";
 import "@nomicfoundation/hardhat-toolbox";
+import "@openzeppelin/hardhat-upgrades";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -27,7 +28,7 @@ const config: HardhatUserConfig = {
       accounts: [PRIVATE_KEY],
     }
   },
-  defaultNetwork: "localhost";
+  defaultNetwork: "localhost",
 };
 
 export default config;
