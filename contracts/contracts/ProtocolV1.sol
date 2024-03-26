@@ -5,7 +5,6 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "./lib/ProtocoLib.sol";
 
 contract ProtocolV1 is Ownable {
-
     event DreamCreated(
         address owner,
         uint256 targetAmount,
@@ -14,7 +13,6 @@ contract ProtocolV1 is Ownable {
     event DreamFunded(address funder, uint256 amount);
     event DreamWithdrawn(address owner, uint256 amount);
     event DreamRefunded(address funder, uint256 amount);
-    event DreamCanceled(address owner);
     event minFundingAmountChanged(uint256 minFundingAmount);
 
     error InvalidTargetAmount();
@@ -25,12 +23,10 @@ contract ProtocolV1 is Ownable {
     error FundingNotOpenToOwner();
     error DreamDidNotReachTargetAmount();
     error NothingToRefund();
-    error DreamWasCanceled();
 
     uint256 public targetAmount;
     uint256 public deadlineTimestamp;
     uint256 public minFundingAmount;
-    bool public canceled;
 
     address[] public funders;
 
@@ -70,38 +66,58 @@ contract ProtocolV1 is Ownable {
         if (block.timestamp > deadlineTimestamp) {
             revert DreamFundingEnded();
         }
-        if(canceled) {
-            revert DreamWasCanceled();
-        }
         _;
     }
 
+    /*
+    @dev Modifier to check if the dream has ended, i.e., the deadline has been passed
+    */
     modifier onlyEndedDream() {
         if (block.timestamp <= deadlineTimestamp) {
             revert DreamStillFunding();
         }
-        if(canceled) {
-            revert DreamWasCanceled();
-        }
         _;
     }
+
+    /*
+    @dev Function to check if the dream has reached the target amount
+    @return bool Returns true if the dream has reached the target amount
+    */
 
     function isDreamFunded() public view returns (bool) {
         return address(this).balance >= targetAmount;
     }
 
+    /*
+    @dev Function to check if the dream has ended
+    @return bool Returns true if the dream has ended
+    */
+
     function isDreamEnded() public view returns (bool) {
         return block.timestamp > deadlineTimestamp;
     }
+
+    /*
+    @dev Function to get the total amount raised
+    @return uint256 Returns the total amount raised
+    */
 
     function getAmount() public view returns (uint256) {
         return address(this).balance;
     }
 
+    /*
+    @dev Function to change the minimum funding threshold
+    */
+
     function setMinFundingAmount(uint256 _minFundingAmount) public onlyOwner {
         minFundingAmount = _minFundingAmount;
     }
 
+    /*
+    @dev Function to withdraw the funds raised, only available to the owner of the 
+    contract and after the dream has ended and the target amount has been reached
+    */
     function withdraw() external onlyOwner onlyEndedDream {
         if (!isDreamFunded()) {
             revert DreamDidNotReachTargetAmount();
@@ -111,6 +127,10 @@ contract ProtocolV1 is Ownable {
         emit DreamWithdrawn(owner(), balance);
     }
 
+    /*
+    @dev Function to refund the funds to the funders, only available 
+    after the dream has ended and the target amount has not been reached
+    */
     function refund() external onlyEndedDream {
         if (fundedAmount[msg.sender] == 0 || isDreamFunded()) {
             revert NothingToRefund();
@@ -120,6 +140,9 @@ contract ProtocolV1 is Ownable {
         emit DreamRefunded(msg.sender, fundedAmount[msg.sender]);
     }
 
+    /*
+    @dev Function to fund the dream, only available if the dream is still active
+    */
     function fund() public payable onlyActiveDream {
         if (msg.value < minFundingAmount) {
             revert BelowMinFundingAmount();
@@ -135,16 +158,4 @@ contract ProtocolV1 is Ownable {
         emit DreamFunded(msg.sender, msg.value);
     }
 
-    function cancel() external onlyOwner {
-        if (!isDreamEnded()) {
-            revert DreamStillFunding();
-        }
-        for (uint256 i = 0; i < funders.length; i++) {
-            address f = funders[i];
-            payable(f).transfer(fundedAmount[f]);
-            fundedAmount[f] = 0;
-        }
-        canceled = true;
-        emit DreamCanceled(owner());
-    }
 }
