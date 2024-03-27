@@ -5,19 +5,14 @@ async function main() {
 
     const [deployer] = await ethers.getSigners();
 
-    const Protocol = await ethers.getContractFactory("Protocol");
-    console.log("Deploying Protocol...");
+    const Protocol = await ethers.getContractFactory("DreamV1");
+    console.log("Deploying DreamV1...");
 
     const protocol = await Protocol.deploy();
     await protocol.waitForDeployment();
 
-    const MyContractProxy = await ethers.getContractFactory("Protocol");
-    const myContractProxy = await upgrades.deployProxy(MyContractProxy, [deployer.address]);
-    await myContractProxy.waitForDeployment();
-
     const infos = {
         contractAddress: protocol.target,
-        proxyAddress: myContractProxy.target,
     }
 
     console.table(infos);

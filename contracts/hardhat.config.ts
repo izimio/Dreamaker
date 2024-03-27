@@ -21,14 +21,21 @@ if (!SEPOLIA_RPC) {
 
 const config: HardhatUserConfig = {
   solidity: "0.8.24",
-
+  
+  
   networks: {
     sepolia: {
       url: SEPOLIA_RPC,
       accounts: [PRIVATE_KEY],
-    }
+    },
+    hardhat: {
+      gasPrice: 0,
+      initialBaseFeePerGas: 0,
+    },
+    localhost: {
+    },
   },
-  defaultNetwork: "localhost",
+  defaultNetwork: "hardhat",
 };
 
 export default config;
