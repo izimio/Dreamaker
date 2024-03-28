@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: LGPL-3.0-only
 pragma solidity >=0.7.0 <0.9.0;
 
-import "../DreamV1.sol";
+import '../DreamV1.sol';
 
 contract DreamProxyFactory {
     address[] public proxies;
@@ -23,9 +23,7 @@ contract DreamProxyFactory {
         if (msg.sender != owner) {
             revert Forbidden();
         }
-        bytes20 implementationContractInBytes = bytes20(
-            implementationContract
-        );
+        bytes20 implementationContractInBytes = bytes20(implementationContract);
         address proxy;
 
         assembly {
@@ -50,7 +48,11 @@ contract DreamProxyFactory {
         }
 
         // Call initialization
-        DreamV1(payable(proxy)).initialize(_owner, _targetAmount, _deadlineTimestamp);
+        DreamV1(payable(proxy)).initialize(
+            _owner,
+            _targetAmount,
+            _deadlineTimestamp
+        );
         proxies.push(proxy);
         return proxy;
     }

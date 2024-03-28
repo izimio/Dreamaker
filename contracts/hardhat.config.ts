@@ -29,10 +29,12 @@ const config: HardhatUserConfig = {
       accounts: [PRIVATE_KEY],
     },
     hardhat: {
+      hardfork: "berlin",
       gasPrice: 0,
-      initialBaseFeePerGas: 0,
     },
     localhost: {
+      hardfork: "berlin",
+      gasPrice: 0,
     },
   },
   defaultNetwork: "hardhat",

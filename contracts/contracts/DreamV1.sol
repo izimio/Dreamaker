@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
-import "./lib/ProtocoLib.sol";
-import "hardhat/console.sol";
+import './lib/ProtocoLib.sol';
+
 contract DreamV1 {
     event DreamCreated(
         address owner,
@@ -12,7 +12,7 @@ contract DreamV1 {
     event DreamFunded(address funder, uint256 amount);
     event DreamWithdrawn(address owner, uint256 amount, uint256 fee);
     event DreamRefunded(address funder, uint256 amount);
-    event minFundingAmountChanged(uint256 minFundingAmount);
+    event MinFundingAmountChanged(uint256 minFundingAmount);
 
     error InvalidTargetAmount();
     error InvalidDeadlineTimestamp();
@@ -52,7 +52,7 @@ contract DreamV1 {
         if (isInitialized) {
             revert Forbidden();
         }
-        if(_owner == msg.sender){
+        if (_owner == msg.sender) {
             revert Forbidden();
         }
         if (_targetAmount == 0) {
@@ -71,7 +71,7 @@ contract DreamV1 {
     /**
      * @dev Modifier to check if the caller is the owner of the contract
      **/
-    modifier onlyOwner {
+    modifier onlyOwner() {
         if (msg.sender != owner) {
             revert Forbidden();
         }
@@ -97,11 +97,10 @@ contract DreamV1 {
         _;
     }
 
-
     /**
-        * @dev Function to retrieve the amount funded by a specific funder
-        * @param funder The address of the funder
-        * @return uint256 The amount funded by the funder
+     * @dev Function to retrieve the amount funded by a specific funder
+     * @param funder The address of the funder
+     * @return uint256 The amount funded by the funder
      **/
     function getFundedAmount(address funder) public view returns (uint256) {
         return fundedAmount[funder];
@@ -147,10 +146,14 @@ contract DreamV1 {
 
     function setMinFundingAmount(uint256 _minFundingAmount) public onlyOwner {
         minFundingAmount = _minFundingAmount;
+        emit MinFundingAmountChanged(minFundingAmount);
     }
 
     function _payAdmin() internal returns (uint256) {
-        uint256 fee = ProtocoLib.calculateFeePercentage(address(this).balance, targetAmount);
+        uint256 fee = ProtocoLib.calculateFeePercentage(
+            address(this).balance,
+            targetAmount
+        );
         payable(admin).transfer(fee);
 
         return fee;
@@ -165,7 +168,7 @@ contract DreamV1 {
         }
         uint256 fee = _payAdmin();
         uint256 balance = address(this).balance;
-    
+
         payable(owner).transfer(balance);
 
         emit DreamWithdrawn(owner, balance, fee);
@@ -179,8 +182,8 @@ contract DreamV1 {
         if (fundedAmount[msg.sender] == 0 || isDreamFunded()) {
             revert NothingToRefund();
         }
-        payable(msg.sender).transfer(fundedAmount[msg.sender]);
         fundedAmount[msg.sender] = 0;
+        payable(msg.sender).transfer(fundedAmount[msg.sender]);
         emit DreamRefunded(msg.sender, fundedAmount[msg.sender]);
     }
 
