@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
-import './lib/ProtocoLib.sol';
+import "./lib/ProtocoLib.sol";
 
 contract DreamV1 {
     event DreamCreated(
@@ -182,9 +182,11 @@ contract DreamV1 {
         if (fundedAmount[msg.sender] == 0 || isDreamFunded()) {
             revert NothingToRefund();
         }
+        uint256 amount = fundedAmount[msg.sender];
+
         fundedAmount[msg.sender] = 0;
-        payable(msg.sender).transfer(fundedAmount[msg.sender]);
-        emit DreamRefunded(msg.sender, fundedAmount[msg.sender]);
+        payable(msg.sender).transfer(amount);
+        emit DreamRefunded(msg.sender, amount);
     }
 
     /**

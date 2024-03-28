@@ -1,13 +1,13 @@
-import { ethers } from 'hardhat';
+import { ethers } from "hardhat";
 
-const DREAMV1 = '0x5FbDB2315678afecb367f032d93F642f64180aa3';
+const DREAMV1 = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 
 async function main() {
     const [deployer] = await ethers.getSigners();
 
     const DreamProxyFactory =
-        await ethers.getContractFactory('DreamProxyFactory');
-    console.log('Deploying DreamProxyFactory...');
+        await ethers.getContractFactory("DreamProxyFactory");
+    console.log("Deploying DreamProxyFactory...");
 
     const dreamProxyFactory = await DreamProxyFactory.deploy(
         deployer.address,
