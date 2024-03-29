@@ -1,7 +1,11 @@
 import { expect } from "chai";
 import { ethers } from "hardhat";
 
-export const getTimeInSecond = () => Math.round(new Date().getTime() / 1000);
+export const getTimeInSecond = async () => {
+    const currentTimestamp = (await ethers.provider.getBlock("latest"))!
+        .timestamp;
+    return BigInt(currentTimestamp);
+};
 
 export const jumpLater = async (seconds: number) => {
     const currentTimestamp = (await ethers.provider.getBlock("latest"))!

@@ -14,15 +14,29 @@ contract Dreamaker is ERC20, ERC20Burnable, Ownable, ERC20Permit {
         _mint(initialOwner, 1000000 * 10 ** decimals());
     }
 
+    error InvalidInput();
+
+    /**
+     * @dev Mint the amount of tokens to the address
+     * @param to The address to mint the tokens to
+     * @param amount The amount of tokens to mint
+     **/
     function mint(address to, uint256 amount) public onlyOwner {
         _mint(to, amount);
     }
 
+    /**
+     * @dev Offer the amount of tokens to the addresses
+     * @param to The addresses to mint the tokens to
+     * @param amount The amount of tokens to mint
+     **/
     function offer(
         address[] memory to,
         uint256[] memory amount
     ) public onlyOwner {
-        require(to.length == amount.length, "Dreamaker: Invalid input length");
+        if (to.length == 0 || amount.length == 0) {
+            revert InvalidInput();
+        }
 
         for (uint256 i = 0; i < to.length; i++) {
             mint(to[i], amount[i]);

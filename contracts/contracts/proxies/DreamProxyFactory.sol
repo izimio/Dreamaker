@@ -9,9 +9,16 @@ contract DreamProxyFactory {
     address public implementationContract;
 
     event ProxyCreated(address proxy, address indexed dreamOwner);
-
+    event ReceivedFees(address proxy, uint256 amount);
     error Forbidden();
     error AmountHigherThanBalance();
+
+    /**
+     * @dev Fallback function to receive ether and receive fees
+     **/
+    receive() external payable {
+        emit ReceivedFees(msg.sender, msg.value);
+    }
 
     modifier onlyOwner() {
         if (msg.sender != owner) {
@@ -20,15 +27,30 @@ contract DreamProxyFactory {
         _;
     }
 
+    /**
+     * @dev Constructor to set the owner and the implementation contract
+     * @param _implementationContract The address of the implementation contract
+     * @notice The owner of the contract is the deployer
+     * @notice The implementation contract is the contract that will be cloned
+     **/
     constructor(address _implementationContract) {
         owner = msg.sender;
         implementationContract = _implementationContract;
     }
 
+    /**
+     * @dev Get the balance of the contract
+     * @return The balance of the contract
+     **/
     function getBalance() public view returns (uint256) {
         return address(this).balance;
     }
 
+    /**
+     * @dev Withdraw the amount from the contract
+     * @param amount The amount to withdraw
+     * @param to The address to send the amount to
+     **/
     function withdraw(uint256 amount, address to) external onlyOwner {
         if (amount > getBalance()) {
             revert AmountHigherThanBalance();
@@ -36,16 +58,30 @@ contract DreamProxyFactory {
         payable(to).transfer(amount);
     }
 
-    function getProxies() external view onlyOwner returns (address[] memory) {
+    /**
+     * @dev Get the proxies
+     * @return The array of proxies
+     **/
+    function getProxies() external view returns (address[] memory) {
         return proxies;
     }
 
+    /**
+     * @dev Set the implementation contract
+     * @param _implementationContract The address of the new implementation contract
+     **/
     function setImplementationContract(
         address _implementationContract
     ) external onlyOwner {
         implementationContract = _implementationContract;
     }
 
+    /**
+     * @dev Deploy a clone of the implementation contract
+     * @param _owner The owner of the dream
+     * @param _targetAmount The target amount of the dream
+     * @param _deadlineTimestamp The deadline timestamp of the dream
+     **/
     function deployClone(
         address _owner,
         uint256 _targetAmount,

@@ -78,7 +78,11 @@ describe("DreamV1", function () {
 
             await dreamV1
                 .connect(otherAccount)
-                .initialize(owner.address, 1000, getTimeInSecond() + 50000);
+                .initialize(
+                    owner.address,
+                    1000,
+                    (await getTimeInSecond()) + 50000n
+                );
 
             await expect(dreamV1.setMinFundingAmount(ethers.parseEther("0.1")))
                 .to.emit(dreamV1, "MinFundingAmountChanged")
@@ -120,7 +124,7 @@ describe("DreamV1", function () {
                 dreamV1.initialize(
                     otherAccount.address,
                     1000,
-                    getTimeInSecond() - 1
+                    (await getTimeInSecond()) - 1n
                 )
             ).to.be.revertedWithCustomError(
                 dreamV1,
@@ -130,7 +134,7 @@ describe("DreamV1", function () {
                 dreamV1.initialize(
                     otherAccount.address,
                     1000,
-                    getTimeInSecond() - 100
+                    (await getTimeInSecond()) - 100n
                 )
             ).to.be.revertedWithCustomError(
                 dreamV1,
@@ -140,7 +144,11 @@ describe("DreamV1", function () {
             await expect(
                 dreamV1
                     .connect(owner)
-                    .initialize(owner.address, 0, getTimeInSecond() + 100)
+                    .initialize(
+                        owner.address,
+                        0,
+                        (await getTimeInSecond()) + 100n
+                    )
             ).to.be.revertedWithCustomError(dreamV1, errors.Forbidden);
             expect(await dreamV1.isInitialized()).to.equal(false);
         });
@@ -152,7 +160,7 @@ describe("DreamV1", function () {
             await dreamV1.initialize(
                 otherAccount.address,
                 1,
-                getTimeInSecond() + 50000
+                (await getTimeInSecond()) + 50000n
             );
             expect(await dreamV1.isInitialized()).to.equal(true);
 
@@ -160,7 +168,7 @@ describe("DreamV1", function () {
                 dreamV1.initialize(
                     otherAccount.address,
                     1,
-                    getTimeInSecond() + 50
+                    (await getTimeInSecond()) + 50n
                 )
             ).to.be.revertedWithCustomError(dreamV1, errors.Forbidden);
         });
@@ -244,7 +252,7 @@ describe("DreamV1", function () {
             const { dreamV1, otherAccount, errors } =
                 await deployInitializedFixture({
                     targetAmount: BigInt(ethers.parseEther("1")),
-                    deadlineTimestamp: BigInt(getTimeInSecond() + 500000),
+                    deadlineTimestamp: (await getTimeInSecond()) + 500000n,
                 });
             await jumpLater(5000001);
             await expect(

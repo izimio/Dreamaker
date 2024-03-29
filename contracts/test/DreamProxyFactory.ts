@@ -2,7 +2,14 @@ import { loadFixture } from "@nomicfoundation/hardhat-toolbox/network-helpers";
 import { expect } from "chai";
 import hre, { ethers } from "hardhat";
 
-import { getTimeInSecond, fund, getEventsArgs } from "./utils";
+import {
+    getTimeInSecond,
+    fund,
+    getEventsArgs,
+    calculateFee,
+    jumpLater,
+    getBalanceOf,
+} from "./utils";
 
 const getAdmin = async () => {
     const admin = (await hre.ethers.getSigners()).slice(-1)[0];
@@ -20,7 +27,7 @@ const deployClone = async (
     const [owner] = await hre.ethers.getSigners();
 
     dreamOwner = dreamOwner || owner.address;
-    deadlineTimestamp = deadlineTimestamp || BigInt(getTimeInSecond() + 5000);
+    deadlineTimestamp = deadlineTimestamp || (await getTimeInSecond()) + 5000n;
     targetAmount = targetAmount || ethers.parseEther("1");
 
     const admin = await getAdmin();
@@ -37,6 +44,50 @@ const deployClone = async (
     expect(await dreamProxy.admin()).to.equal(proxyFactory.target);
 
     return { dreamProxy, dreamOwnerAddress };
+};
+
+const deployCloneAndFundIt = async (
+    proxyFactory: any,
+    data: {
+        dreamOwner?: string;
+        targetAmount?: bigint;
+        deadlineTimestamp?: bigint;
+        funder?: any;
+    } = {
+        dreamOwner: "",
+        targetAmount: 0n,
+        deadlineTimestamp: 0n,
+        funder: undefined,
+    }
+) => {
+    data.funder = data.funder || (await hre.ethers.getSigners())[5];
+    const targetAmount = data.targetAmount || ethers.parseEther("1");
+
+    const proxy = await deployClone(
+        proxyFactory,
+        data.dreamOwner,
+        targetAmount,
+        data.deadlineTimestamp
+    );
+    const extra = Math.random().toString();
+    const fundAmount = targetAmount + ethers.parseEther(extra);
+
+    const fee = calculateFee(fundAmount, targetAmount);
+    await fund(proxy.dreamProxy, data.funder, fundAmount);
+
+    await jumpLater(6000);
+    const signer = await hre.ethers.provider.getSigner(proxy.dreamOwnerAddress);
+
+    expect(await proxy.dreamProxy.getAmount()).to.equal(fundAmount);
+    await proxy.dreamProxy.connect(signer).withdraw();
+    expect(await proxy.dreamProxy.getAmount()).to.equal(0);
+
+    return {
+        dreamProxy: proxy.dreamProxy,
+        dreamOwnerAddress: proxy.dreamOwnerAddress,
+        fundAmount,
+        fee,
+    };
 };
 
 describe("DreamFactory", function () {
@@ -80,7 +131,11 @@ describe("DreamFactory", function () {
             const { proxyFactory } = await loadFixture(deployFixture);
             expect(proxyFactory.target).to.not.equal(0);
         });
-
+        it("Balance should be 0", async function () {
+            const { proxyFactory } = await loadFixture(deployFixture);
+            const balance = await proxyFactory.getBalance();
+            expect(balance).to.equal(0);
+        });
         it("should set the target contract", async function () {
             const { proxyFactory } = await loadFixture(deployFixture);
             expect(await proxyFactory.implementationContract()).to.equal(
@@ -95,13 +150,6 @@ describe("DreamFactory", function () {
             const { proxyFactory } = await loadFixture(deployFixture);
             const proxies = await proxyFactory.getProxies();
             expect(proxies.length).to.equal(0);
-        });
-        it("refuse get proxies if not owner", async function () {
-            const { proxyFactory, otherAccount } =
-                await loadFixture(deployFixture);
-            await expect(
-                proxyFactory.connect(otherAccount).getProxies()
-            ).to.be.revertedWithCustomError(proxyFactory, "Forbidden");
         });
         it("Change implementation contract", async function () {
             const { proxyFactory, admin } = await loadFixture(deployFixture);
@@ -182,18 +230,12 @@ describe("DreamFactory", function () {
             );
 
             await expect(
-                proxyFactory.connect(otherAccount).getProxies()
-            ).to.be.revertedWithCustomError(proxyFactory, "Forbidden");
-            await expect(
                 proxy1.dreamProxy.connect(otherAccount).fund()
             ).to.be.revertedWithCustomError(
                 proxy1.dreamProxy,
                 "FundingNotOpenToowner"
             );
 
-            await expect(
-                proxyFactory.connect(otherAccount).getProxies()
-            ).to.be.revertedWithCustomError(proxyFactory, "Forbidden");
             await expect(
                 proxyFactory
                     .connect(otherAccount)
@@ -278,6 +320,92 @@ describe("DreamFactory", function () {
             expect(await TestContract.value()).to.equal(0);
             await TestContract.setValue(5);
             expect(await TestContract.value()).to.equal(5);
+        });
+    });
+    describe("DreamProxyFactory, amount increase with fees", function () {
+        it("Balance updates correctly", async function () {
+            const { proxyFactory } = await loadFixture(deployFixture);
+
+            const balanceBefore = await proxyFactory.getBalance();
+            expect(balanceBefore).to.equal(0);
+
+            const { fee } = await deployCloneAndFundIt(proxyFactory);
+
+            const balance = await proxyFactory.getBalance();
+            expect(balance).to.equal(fee);
+        });
+        it("Balance updates correctly, multiple", async function () {
+            const { proxyFactory, owner } = await loadFixture(deployFixture);
+
+            const balanceBefore = await proxyFactory.getBalance();
+            expect(balanceBefore).to.equal(0);
+
+            const { fee: fee1 } = await deployCloneAndFundIt(proxyFactory);
+            await jumpLater(500000);
+            const { fee: fee2 } = await deployCloneAndFundIt(proxyFactory);
+
+            const balance = await proxyFactory.getBalance();
+            expect(balance).to.equal(fee1 + fee2);
+
+            await owner.sendTransaction({
+                to: proxyFactory.target,
+                value: balance,
+            });
+            const balanceAfter = await proxyFactory.getBalance();
+            expect(balanceAfter).to.equal(balance * 2n);
+        });
+    });
+    describe("DreamProxyFactory, withdraw", function () {
+        it("withdraw, basic", async function () {
+            const { proxyFactory, admin } = await loadFixture(deployFixture);
+            const { fee } = await deployCloneAndFundIt(proxyFactory);
+
+            const balanceAdminbBefore = await getBalanceOf(admin);
+
+            await proxyFactory.connect(admin).withdraw(fee, admin.address);
+            const balanceAfter = await proxyFactory.getBalance();
+            const balanceAdminAfter = await getBalanceOf(admin);
+
+            expect(balanceAfter).to.equal(0);
+            expect(balanceAdminAfter).to.equal(balanceAdminbBefore + fee);
+        });
+        it("withdraw, advanced", async function () {
+            const { proxyFactory, admin, owner } =
+                await loadFixture(deployFixture);
+            const { fee } = await deployCloneAndFundIt(proxyFactory);
+
+            const balanceAdminbBefore = await getBalanceOf(admin);
+
+            await proxyFactory.connect(admin).withdraw(fee / 2n, admin.address);
+            const balanceAfter = await proxyFactory.getBalance();
+            const balanceAdminAfter = await getBalanceOf(admin);
+
+            expect(balanceAfter).to.equal(fee / 2n);
+            expect(balanceAdminAfter).to.equal(balanceAdminbBefore + fee / 2n);
+
+            const balanceOwnerBefore = await getBalanceOf(owner);
+            await proxyFactory.connect(admin).withdraw(fee / 2n, owner.address);
+            const balanceAfter2 = await proxyFactory.getBalance();
+            const balanceOwnerAfter = await getBalanceOf(owner);
+
+            expect(balanceAfter2).to.equal(0);
+            expect(balanceOwnerAfter).to.equal(balanceOwnerBefore + fee / 2n);
+        });
+        it("withdraw, errors", async function () {
+            const { proxyFactory, admin, owner } =
+                await loadFixture(deployFixture);
+            const { fee } = await deployCloneAndFundIt(proxyFactory);
+
+            await expect(
+                proxyFactory.connect(admin).withdraw(fee + 1n, admin.address)
+            ).to.be.revertedWithCustomError(
+                proxyFactory,
+                "AmountHigherThanBalance"
+            );
+
+            await expect(
+                proxyFactory.connect(owner).withdraw(fee, owner.address)
+            ).to.be.revertedWithCustomError(proxyFactory, "Forbidden");
         });
     });
 });
