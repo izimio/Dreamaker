@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
-import "hardhat/console.sol";
 library ProtocoLib {
     /**
      * @dev Checks if an element exists in an array

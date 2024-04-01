@@ -9,9 +9,10 @@ import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Permit.sol";
 
 contract Dreamaker is ERC20, ERC20Burnable, Ownable, ERC20Permit {
     constructor(
-        address initialOwner
+        address initialOwner,
+        uint256 initialSupply
     ) ERC20("Dreamaker", "DMK") Ownable(initialOwner) ERC20Permit("MyToken") {
-        _mint(initialOwner, 1000000 * 10 ** decimals());
+        _mint(initialOwner, initialSupply * 10 ** decimals());
     }
 
     error InvalidInput();
@@ -39,7 +40,7 @@ contract Dreamaker is ERC20, ERC20Burnable, Ownable, ERC20Permit {
         }
 
         for (uint256 i = 0; i < to.length; i++) {
-            mint(to[i], amount[i]);
+            _mint(to[i], amount[i]);
         }
     }
 }
