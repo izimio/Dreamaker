@@ -1,6 +1,6 @@
-import { ValidationError } from "yup";
-export { ValidationError } from "yup";
-import { logError } from "./logger";
+import { ValidationError } from 'yup';
+export { ValidationError } from 'yup';
+import { logError } from './logger';
 
 interface IWrappedError extends Error {
   originalError?: Error;
@@ -35,11 +35,12 @@ export class OperationalError extends Error {
 
 export class AuthError extends OperationalError {
   originalError?: Error;
+
   constructor(message: string, originalError?: Error) {
     super(message);
     this.name = this.constructor.name;
     this.originalError = originalError;
-    if (originalError && typeof originalError === "object") {
+    if (originalError && typeof originalError === 'object') {
       Object.assign(this, getPropsToCopy(originalError));
     }
   }
@@ -47,11 +48,12 @@ export class AuthError extends OperationalError {
 
 export class BusinessError extends OperationalError {
   originalError?: Error;
+
   constructor(message: string, originalError?: Error) {
     super(message);
     this.name = this.constructor.name;
     this.originalError = originalError;
-    if (originalError && typeof originalError === "object") {
+    if (originalError && typeof originalError === 'object') {
       Object.assign(this, getPropsToCopy(originalError));
     }
   }
@@ -59,11 +61,12 @@ export class BusinessError extends OperationalError {
 
 export class ObjectNotFoundError extends OperationalError {
   originalError?: Error;
+
   constructor(message: string, originalError?: Error) {
     super(message);
     this.name = this.constructor.name;
     this.originalError = originalError;
-    if (originalError && typeof originalError === "object") {
+    if (originalError && typeof originalError === 'object') {
       Object.assign(this, getPropsToCopy(originalError));
     }
   }
@@ -71,11 +74,12 @@ export class ObjectNotFoundError extends OperationalError {
 
 export class InternalError extends Error {
   originalError?: Error;
+
   constructor(message: string, originalError?: Error) {
     super(message);
     this.name = this.constructor.name;
     this.originalError = originalError;
-    if (originalError && typeof originalError === "object") {
+    if (originalError && typeof originalError === 'object') {
       Object.assign(this, getPropsToCopy(originalError));
     }
   }
@@ -84,8 +88,8 @@ export class InternalError extends Error {
 export const errorHandler = (error: unknown, context: object): void => {
   if (
     !(error instanceof ValidationError) &&
-    !(error instanceof OperationalError)
+        !(error instanceof OperationalError)
   ) {
-    logError(error, "\nContext: ", JSON.stringify(context, null, 2));
+    logError(error, '\nContext: ', JSON.stringify(context, null, 2));
   }
 };

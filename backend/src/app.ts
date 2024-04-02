@@ -1,19 +1,19 @@
 // defaults imports
-import http from "http";
-import Koa, { Context } from "koa";
-import cors from "@koa/cors";
-import Router from "koa-router";
-import bodyParser from "koa-body";
-import mongoose from "mongoose";
-import { logger, logError } from "./utils/logger";
+import http from 'http';
+import Koa, { Context } from 'koa';
+import cors from '@koa/cors';
+import Router from 'koa-router';
+import bodyParser from 'koa-body';
+import mongoose from 'mongoose';
+import { logger, logError } from './utils/logger';
 
-import { Watcher } from "./Watchers/watch";
+import { Watcher } from './Watchers/Watch';
 // Routers
-import versionRouter from "./routes/version";
+import versionRouter from './routes/version';
 
 // Middleware & config
-import { errorMiddleware } from "./middlewares/error";
-import { RateLimiter } from "./middlewares/rateLimiter";
+import { errorMiddleware } from './middlewares/error';
+import { RateLimiter } from './middlewares/rateLimiter';
 import {
   MONGO_INITDB_DATABASE,
   MONGO_HOST,
@@ -21,10 +21,10 @@ import {
   ALLOWED_ORIGINS,
   MONGO_INITDB_ROOT_USERNAME,
   MONGO_INITDB_ROOT_PASSWORD,
-} from "./utils/config";
+} from './utils/config';
 
-const log = logger.extend("app");
-const logErr = logError.extend("app");
+const log = logger.extend('app');
+const logErr = logError.extend('app');
 
 const app: Koa = new Koa();
 const serverKoa = http.createServer(app.callback());
@@ -43,15 +43,15 @@ app.use(
 );
 
 function verifyOrigin(ctx: Context) {
-  const allowedOrigins = ALLOWED_ORIGINS.split(",");
+  const allowedOrigins = ALLOWED_ORIGINS.split(',');
   const origin = ctx.headers.origin as string;
   if (!origin) {
-    return "";
+    return '';
   }
   if (allowedOrigins.includes(origin)) {
     return origin;
   }
-  return "";
+  return '';
 }
 
 function useRoute(app: Koa, router: Router) {
@@ -59,16 +59,16 @@ function useRoute(app: Koa, router: Router) {
   app.use(router.allowedMethods());
 }
 
-mongoose.set("strictQuery", false);
+mongoose.set('strictQuery', false);
 mongoose
   .connect(`mongodb://${MONGO_HOST}:${MONGO_PORT}/${MONGO_INITDB_DATABASE}`, {
     autoCreate: true,
   })
   .then(() => {
-    log("MongoDB connected :D");
+    log('MongoDB connected :D');
   })
   .catch((err) => {
-    log("MongoDB Connection error, retrying...\n" + err);
+    log('MongoDB Connection error, retrying...\n' + err);
   });
 
 app.use(

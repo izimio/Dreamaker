@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "node": "npx hardhat node",
     "test": "hardhat test",
     "deploy:all": "hardhat run scripts/deployAll.ts",
     "clean": "rm -rf artifacts/ cache/ coverage/ reports/ && hardhat clean",

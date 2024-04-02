@@ -39,7 +39,7 @@ const config: HardhatUserConfig = {
   etherscan: {
     apiKey: ETHERSCAN_API_KEY,
   },
-  defaultNetwork: "hardhat",
+  defaultNetwork: "localhost",
 };
 
 export default config;

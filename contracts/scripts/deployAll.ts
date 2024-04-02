@@ -1,4 +1,14 @@
 import { ethers } from "hardhat";
+import fs from "fs";
+
+
+async function writeToFile(name: string, data: string) {
+    try {
+        fs.writeFileSync(name, data);
+    } catch (error) {
+        console.error(`Error writing to file ${name}:`, error);
+    }
+}
 
 async function deployContract(name: string, args: any[]) {
     const Contract = await ethers.getContractFactory(name);
@@ -29,19 +39,15 @@ async function main() {
         100_000
     ]);
 
-    console.table({
-        DreamV1: dreamV1.info,
-        DreamProxyFactory: dreamProxyFactory.info,
-        Dreamaker: dreamakerToken.info,
-        admin: {
-            target: deployer.address,
-        },
-    });
-    console.log(`
-    DREAM_SINGLETON_ADDRESS=${dreamV1.info.target}
-DREAM_PROXY_FACTORY_ADDRESS=${dreamProxyFactory.info.target}
-DREAMAKER_ADDRESS=${dreamakerToken.info.target}
-    `)
+    console.log("🚀 Contracts deployed !");
+    console.log("Admin: ", deployer.address);
+
+
+    console.log(`\nDREAM_SINGLETON_ADDRESS=${dreamV1.info.target}\nDREAM_PROXY_FACTORY_ADDRESS=${dreamProxyFactory.info.target}\nDREAMAKER_ADDRESS=${dreamakerToken.info.target}`);
+
+    const env = `${dreamV1.info.target};${dreamProxyFactory.info.target};${dreamakerToken.info.target}`;
+
+    await writeToFile("./addrs", env);
 }
 
 main()

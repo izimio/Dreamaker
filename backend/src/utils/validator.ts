@@ -1,4 +1,4 @@
-import yup, { string, number, object, array } from "yup";
+import yup, { string, number, object, array } from 'yup';
 
 export const validateEmail = () => string().email().required();
 export const validateEmailCode = () =>

@@ -1,0 +1,25 @@
+{
+    "parser": "@typescript-eslint/parser",
+    "plugins": ["@typescript-eslint", "import"],
+    "parserOptions": {
+        "project": "./tsconfig.json",
+        "ecmaVersion": "latest"
+    },
+    "extends": [
+        "airbnb-typescript/base",
+        "plugin:@typescript-eslint/recommended"
+    ],
+    "overrides": [
+        {
+            "files": ["scripts/**/*.ts", "test/**/*.ts", "hardhat.config.ts"],
+            "rules": {
+                "import/no-extraneous-dependencies": [
+                    "error",
+                    {
+                        "devDependencies": true
+                    }
+                ]
+            }
+        }
+    ]
+}
