@@ -7,7 +7,7 @@ import bodyParser from "koa-body";
 import mongoose from "mongoose";
 import { logger, logError } from "./utils/logger";
 
-import { Watchers } from "./Watchers/watch";
+import { Watcher } from "./Watchers/watch";
 // Routers
 import versionRouter from "./routes/version";
 
@@ -83,6 +83,6 @@ app.use(RateLimiter());
 useRoute(app, versionRouter);
 
 // Start watchers
-Watchers();
+Watcher.watch();
 
 export default serverKoa;
