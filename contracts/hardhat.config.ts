@@ -36,6 +36,9 @@ const config: HardhatUserConfig = {
       initialBaseFeePerGas: 0
     },
   },
+  etherscan: {
+    apiKey: ETHERSCAN_API_KEY,
+  },
   defaultNetwork: "hardhat",
 };
 

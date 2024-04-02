@@ -23,18 +23,23 @@ export const MONGO_PORT = process.env.MONGO_PORT as string;
 if (!MONGO_PORT) {
     throw new Error("Missing MONGO_PORT");
 }
-export const MONGO_DB_NAME = process.env.MONGO_DB_NAME as string;
-if (!MONGO_DB_NAME) {
-    throw new Error("Missing MONGO_DB_NAME");
+export const MONGO_INITDB_DATABASE = process.env.MONGO_INITDB_DATABASE as string;
+if (!MONGO_INITDB_DATABASE) {
+    throw new Error("Missing MONGO_INITDB_DATABASE");
 }
 
-export const MONGO_USERNAME = process.env.MONGO_USERNAME as string;
-if (!MONGO_USERNAME) {
-    throw new Error("Missing MONGO_USERNAME");
+export const MONGO_INITDB_ROOT_USERNAME = process.env.MONGO_INITDB_ROOT_USERNAME as string;
+if (!MONGO_INITDB_ROOT_USERNAME) {
+    throw new Error("Missing MONGO_INITDB_ROOT_USERNAME");
 }
-export const MONGO_PASSWORD = process.env.MONGO_PASSWORD as string;
-if (!MONGO_PASSWORD) {
-    throw new Error("Missing MONGO_PASSWORD");
+export const MONGO_INITDB_ROOT_PASSWORD = process.env.MONGO_INITDB_ROOT_PASSWORD as string;
+if (!MONGO_INITDB_ROOT_PASSWORD) {
+    throw new Error("Missing MONGO_INITDB_ROOT_PASSWORD");
+}
+
+export const JWT_SECRET = process.env.JWT_SECRET as string;
+if (!JWT_SECRET) {
+    throw new Error("Missing JWT_SECRET");
 }
 
 export const APP_WHITELIST = process.env.APP_WHITELIST as string
@@ -48,4 +53,37 @@ if (!APP_MAX_REQUESTS) {
 export const APP_WINDOW_SECONDS = process.env.APP_WINDOW_SECONDS as string;
 if (!APP_WINDOW_SECONDS) {
     throw new Error("Missing APP_WINDOW_SECONDS");
+}
+
+// Alchemy
+
+export const ALCHEMY_API_KEY = process.env.ALCHEMY_API_KEY as string;
+if (!ALCHEMY_API_KEY) {
+    throw new Error("Missing ALCHMEY_API_KEY");
+}
+
+export const BLOCKCHAIN_RPC = process.env.BLOCKCHAIN_RPC as string;
+if (!BLOCKCHAIN_RPC) {
+    throw new Error("Missing BLOCKCHAIN_RPC");
+}
+
+export const DEPLOYER_PRIVATE_KEY = process.env.DEPLOYER_PRIVATE_KEY as string;
+if (!DEPLOYER_PRIVATE_KEY) {
+    throw new Error("Missing DEPLOYER_PRIVATE_KEY");
+}
+
+
+export const DREAM_SINGLETON_ADDRESS = process.env.DREAM_SINGLETON_ADDRESS as string;
+if (!DREAM_SINGLETON_ADDRESS) {
+    throw new Error("Missing DREAM_SINGLETON_ADDRESS");
+}
+
+export const DREAM_PROXY_FACTORY_ADDRESS = process.env.DREAM_PROXY_FACTORY_ADDRESS as string;
+if (!DREAM_PROXY_FACTORY_ADDRESS) {
+    throw new Error("Missing DREAM_PROXY_FACTORY_ADDRESS");
+}
+
+export const DREAMAKER_ADDRESS = process.env.DREAMAKER_ADDRESS as string;
+if (!DREAMAKER_ADDRESS) {
+    throw new Error("Missing DREAMAKER_ADDRESS");
 }

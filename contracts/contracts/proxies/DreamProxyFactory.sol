@@ -8,7 +8,7 @@ contract DreamProxyFactory {
     address public owner;
     address public implementationContract;
 
-    event ProxyCreated(address proxy, address indexed dreamOwner);
+    event ProxyCreated(address proxy, address dreamOwner);
     event ReceivedFees(address proxy, uint256 amount);
     error Forbidden();
     error AmountHigherThanBalance();

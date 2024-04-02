@@ -7,6 +7,7 @@ import bodyParser from "koa-body";
 import mongoose from "mongoose";
 import { logger, logError } from "./utils/logger";
 
+import { Watchers } from "./Watchers/watch";
 // Routers
 import versionRouter from "./routes/version";
 
@@ -14,12 +15,12 @@ import versionRouter from "./routes/version";
 import { errorMiddleware } from "./middlewares/error";
 import { RateLimiter } from "./middlewares/rateLimiter";
 import {
-  MONGO_DB_NAME,
+  MONGO_INITDB_DATABASE,
   MONGO_HOST,
   MONGO_PORT,
   ALLOWED_ORIGINS,
-  MONGO_USERNAME,
-  MONGO_PASSWORD,
+  MONGO_INITDB_ROOT_USERNAME,
+  MONGO_INITDB_ROOT_PASSWORD,
 } from "./utils/config";
 
 const log = logger.extend("app");
@@ -60,13 +61,11 @@ function useRoute(app: Koa, router: Router) {
 
 mongoose.set("strictQuery", false);
 mongoose
-  .connect(`mongodb://${MONGO_HOST}:${MONGO_PORT}/${MONGO_DB_NAME}`, {
+  .connect(`mongodb://${MONGO_HOST}:${MONGO_PORT}/${MONGO_INITDB_DATABASE}`, {
     autoCreate: true,
-    user: MONGO_USERNAME,
-    pass: MONGO_PASSWORD,
   })
   .then(() => {
-    log("MongoDB connected");
+    log("MongoDB connected :D");
   })
   .catch((err) => {
     log("MongoDB Connection error, retrying...\n" + err);
@@ -82,5 +81,8 @@ app.use(errorMiddleware);
 app.use(RateLimiter());
 
 useRoute(app, versionRouter);
+
+// Start watchers
+Watchers();
 
 export default serverKoa;

@@ -26,6 +26,7 @@ async function main() {
 
     const dreamakerToken = await deployContract("Dreamaker", [
         deployer.address,
+        100_000
     ]);
 
     console.table({
@@ -36,6 +37,11 @@ async function main() {
             target: deployer.address,
         },
     });
+    console.log(`
+    DREAM_SINGLETON_ADDRESS=${dreamV1.info.target}
+DREAM_PROXY_FACTORY_ADDRESS=${dreamProxyFactory.info.target}
+DREAMAKER_ADDRESS=${dreamakerToken.info.target}
+    `)
 }
 
 main()
