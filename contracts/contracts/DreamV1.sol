@@ -4,13 +4,8 @@ pragma solidity ^0.8.24;
 import "./lib/ProtocoLib.sol";
 
 contract DreamV1 {
-    event DreamCreated(
-        address owner,
-        uint256 targetAmount,
-        uint256 deadlineTimestamp
-    );
+
     event DreamFunded(address funder, uint256 amount);
-    event DreamWithdrawn(address owner, uint256 amount, uint256 fee);
     event DreamRefunded(address funder, uint256 amount);
     event MinFundingAmountChanged(uint256 minFundingAmount);
 
@@ -166,12 +161,10 @@ contract DreamV1 {
         if (!isDreamFunded()) {
             revert DreamDidNotReachTargetAmount();
         }
-        uint256 fee = _payAdmin();
+        _payAdmin();
         uint256 balance = address(this).balance;
 
         payable(owner).transfer(balance);
-
-        emit DreamWithdrawn(owner, balance, fee);
     }
 
     /**

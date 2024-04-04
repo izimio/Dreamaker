@@ -312,10 +312,7 @@ describe("DreamV1", function () {
                 ethers.parseEther("1")
             );
             const tx = await dreamV1.connect(owner).withdraw();
-            const receipt = await tx.wait();
-            await expect(receipt)
-                .to.emit(dreamV1, "DreamWithdrawn")
-                .withArgs(owner.address, ethers.parseEther("2") - fee, fee);
+            await tx.wait();
             expect(await dreamV1.getAmount()).to.equal(0);
 
             const ownerBalance = await getBalanceOf(owner);
@@ -358,10 +355,7 @@ describe("DreamV1", function () {
             const fee = calculateFee(amount, ethers.parseEther("7"));
 
             const tx = await dreamV1.connect(owner).withdraw();
-            const receipt = await tx.wait();
-            await expect(receipt)
-                .to.emit(dreamV1, "DreamWithdrawn")
-                .withArgs(owner.address, amount - fee, fee);
+            await tx.wait();
 
             expect(await dreamV1.getAmount()).to.equal(0);
 

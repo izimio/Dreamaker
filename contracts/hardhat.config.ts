@@ -33,7 +33,11 @@ const config: HardhatUserConfig = {
     },
     localhost: {
       gasPrice: 0,
-      initialBaseFeePerGas: 0
+      initialBaseFeePerGas: 0,
+      mining: {
+        auto: true,
+        interval: 3 * 60 * 1000
+      }
     },
   },
   etherscan: {
