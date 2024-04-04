@@ -1,15 +1,28 @@
 import mongoose from 'mongoose';
 
+interface IFunder {
+  address: string;
+  amount: number;
+}
+
+export enum DreamStatus {
+  ACTIVE = 'active',
+  REACHED = 'reached',
+  PENDING_VALIDATION = 'pending_validation',
+  EXPIRED = 'expired',
+}
+
 export interface IDream {
   createdAt: Date;
   title: string;
   description: string;
   assets: string[];
   owner: string;
-  retributed: boolean;
   deadlineTime: Date;
-  funders: string[];
-  targetAmount: number;
+  status: DreamStatus;
+  funders: IFunder[];
+  targetAmount: bigint;
+  minFundingAmount: bigint;
   proxyAddress: string;
 }
 
@@ -19,10 +32,11 @@ const dreamSchema = new mongoose.Schema<IDream>({
   description: { type: String, required: true },
   assets: { type: [String], default: [] },
   owner: { type: String, required: true },
-  retributed: { type: Boolean, default: false },
+  status: { type: String, required: true, default: DreamStatus.PENDING_VALIDATION },
   deadlineTime: { type: Date, required: true },
-  funders: { type: [String], default: [] },
-  targetAmount: { type: Number, required: true, min: 1 },
+  funders: { type: [{ address: String, amount: Number }], default: [] },
+  targetAmount: { type: BigInt, required: true},
+  minFundingAmount: { type: BigInt, default: BigInt(1) },
   proxyAddress: { type: String, default: null },
 });
 

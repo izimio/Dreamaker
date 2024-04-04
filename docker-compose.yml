@@ -17,15 +17,15 @@ services:
 
   database:
     image: mongo:latest
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
-    volumes:
-      - mongo_data:/data/db
+    container_name: mongomg
+    env_file:
+      - backend/.env
     ports:
       - "27017:27017"
-    restart: unless-stopped
-    command: --auth
+    volumes:
+      - mongo-data:/data/db
+      - ./mongo-init-scripts:/docker-entrypoint-initdb.d
+    command: ["--auth"]
 
 volumes:
-  mongo_data:
+  mongo-data:

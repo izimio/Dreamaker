@@ -6,7 +6,11 @@
   "scripts": {
     "node": "npx hardhat node",
     "test": "hardhat test",
-    "deploy:all": "hardhat run scripts/deployAll.ts",
+    "tcreate": "npx hardhat run test-tx/createProxy.ts",
+    "tcmfa": "npx hardhat run test-tx/changeMinFundingAmount.ts",
+    "tfund": "npx hardhat run test-tx/fund.ts",
+    "tfees": "npx hardhat run test-tx/receiveFees.ts",
+    "tdeploy": "hardhat run scripts/deployAll.ts",
     "clean": "rm -rf artifacts/ cache/ coverage/ reports/ && hardhat clean",
     "coverage": "hardhat coverage",
     "compile": "hardhat compile",

@@ -1,4 +1,4 @@
-import { ethers } from 'ethers';
+import { N, ethers } from 'ethers';
 import { DREAM_PROXY_FACTORY_ADDRESS } from '../utils/config';
 import { provider } from '../utils/EProviders';
 import { IEvent } from './interfaces';
@@ -38,6 +38,13 @@ const events: { [index: string]: IEvent } = {
 };
 
 class EventWatcher {
+
+  proxyEvents: IEvent[];
+
+  constructor() {
+    this.proxyEvents = Object.values(events).filter((event) => !event.contract);
+  }
+
   buildFilter(contractAddress: string, eventName: string) {
     return {
       address: contractAddress,
@@ -61,24 +68,41 @@ class EventWatcher {
 
     provider.on(filter, async (event) => {
       const decoded = this.parseLogs(signature, event.data);
-      await this.handleEvents(name, decoded);
+      const origin = event.address;
+
+      await this.handleEvents(name, origin, decoded);
     });
-    log('Watcher added for:', name);
+
+    log('🟢', name);
   }
 
-  async removeWatcher(contract: string, signature: string) {
+  async removeWatcher(contract: string, signature: string, name: string) {
     const filter = this.buildFilter(contract, signature);
 
     const listeners = await provider.listenerCount(filter);
     if (listeners > 0) {
       provider.off(filter);
     }
-    log('Watcher removed for:', contract);
+  
+    log("🔴", name);
   }
 
   async removeAllWatchers() {
+    log('Removing all watchers:');
     provider.removeAllListeners();
-    log('All watchers removed');
+  }
+
+  async manageProxyWatcher(proxy: string, addWatcher: boolean) {
+    log("🎯", proxy);
+    
+  
+    for (const event of this.proxyEvents) {
+      if (addWatcher) {
+        await this.addWatcher(proxy, event.signature, event.name);
+      } else {
+        await this.removeWatcher(proxy, event.signature, event.name);
+      }
+    }
   }
 
   async watch() {
@@ -91,57 +115,87 @@ class EventWatcher {
         );
       }
     }
-    log('Watchers started');
+    log('🚀 Watchers started');
   }
 
   async handleProxyCreated(args: any[], event: IEvent) {
     const [proxy, owner] = args;
-    const proxyEachEvents = [];
 
-    for (const event of Object.values(events)) {
-      if (!event.contract) {
-        proxyEachEvents.push(event);
-      }
-    }
-    for (const event of proxyEachEvents) {
-      await this.addWatcher(proxy, event.signature, event.name);
-    }
+    await this.manageProxyWatcher(proxy, true);
 
-    // Now save the informations to the database
     const dream = await DreamModel.updateOne(
       { owner: owner, proxyAddress: null },
       { proxyAddress: proxy },
     );
-    if (!dream) {
+    if (!dream || dream.matchedCount === 0) {
       logErr('Dream not found: ', owner);
     }
   }
 
   async handleReceivedFees(args: any[], event: IEvent) {
     const [proxy, amount] = args;
-    await this.removeWatcher(proxy, event.signature);
+
+    await this.manageProxyWatcher(proxy, false);
+
+    // call the give earns contract
+
+    const dream = await DreamModel.updateOne(
+      { proxyAddress: proxy },
+      {
+        status: "reached",
+      }
+    );
+    if (!dream || dream.matchedCount === 0) {
+      logErr('Dream not found: ', proxy);
+    }
+
+    
   }
 
-  async handleDreamFunded(args: any[], event: IEvent) {
-    console.log('Dream funded: ', args);
+  async handleDreamFunded(origin: string, args: any[], event: IEvent) {
+    const [funder, amount] = args;
+
+    const dream = await DreamModel.findOne({ proxyAddress: origin });
+    if (!dream) {
+      logErr('Dream not found: ', origin);
+      return;
+    }
+
+    const funderIndex = dream.funders.findIndex((f) => f.address === funder);
+    if (funderIndex !== -1) {
+      dream.funders[funderIndex].amount += amount;
+    } else {
+      dream.funders.push({ address: funder, amount });
+    }
+
+    await dream.save();
   }
 
-  async handleDreamRefunded(args: any[], event: IEvent) {
+  async handleDreamRefunded(origin: string, args: any[], event: IEvent) {
     // DO the mongo thing
   }
 
-  async handleMinFundingAmountChanged(args: any[], event: IEvent) {
-    // DO the mongo thing
+  async handleMinFundingAmountChanged(origin: string, args: any[], event: IEvent) {
+
+    const [amount] = args;
+
+    const dream = await DreamModel.updateOne(
+      { proxyAddress: origin },
+      { minFundingAmount: amount },
+    );
+    console.log(dream);
+    if (!dream || dream.matchedCount === 0) {
+      logErr('Dream not found: ', origin);
+    }
   }
 
   handleUnknownEvent(name: string) {
     logErr('Unknown event: ', name);
   }
 
-  async handleEvents(name: string, args: any[]) {
+  async handleEvents(name: string, origin: string, args: any[]) {
     const event = events[name];
-    console.log('Event: ', name);
-    console.log(event);
+
     if (!event) {
       logErr('Event not found: ', name);
       return;
@@ -155,13 +209,13 @@ class EventWatcher {
         await this.handleReceivedFees(args, event);
         break;
       case 'DreamFunded':
-        await this.handleDreamFunded(args, event);
+        await this.handleDreamFunded(origin, args, event);
         break;
       case 'DreamRefunded':
-        await this.handleDreamRefunded(args, event);
+        await this.handleDreamRefunded(origin, args, event);
         break;
       case 'MinFundingAmountChanged':
-        await this.handleMinFundingAmountChanged(args, event);
+        await this.handleMinFundingAmountChanged(origin, args, event);
         break;
       default:
         this.handleUnknownEvent(name);
