@@ -1,41 +1,13 @@
 import { N, ethers } from 'ethers';
-import { DREAM_PROXY_FACTORY_ADDRESS } from '../utils/config';
-import { provider } from '../utils/EProviders';
-import { IEvent } from './interfaces';
+import { provider, ABIs, Contract } from '../utils/EProviders';
 import { logger, logError } from '../utils/logger';
-
 import { DreamModel } from '../models/dreamModel';
+import { IEvent, events } from './config';
 
 const log = logger.extend('ws');
 const logErr = logError.extend('ws');
 
-const events: { [index: string]: IEvent } = {
-  ProxyCreated: {
-    name: 'ProxyCreated',
-    signature: 'ProxyCreated(address,address)',
-    contract: DREAM_PROXY_FACTORY_ADDRESS,
-  },
-  ReceivedFees: {
-    name: 'ReceivedFees',
-    signature: 'ReceivedFees(address,uint256)',
-    contract: DREAM_PROXY_FACTORY_ADDRESS,
-  },
-  DreamFunded: {
-    name: 'DreamFunded',
-    signature: 'DreamFunded(address,uint256)',
-    contract: '',
-  },
-  DreamRefunded: {
-    name: 'DreamRefunded',
-    signature: 'DreamRefunded(address,uint256)',
-    contract: '',
-  },
-  MinFundingAmountChanged: {
-    name: 'MinFundingAmountChanged',
-    signature: 'MinFundingAmountChanged(uint256)',
-    contract: '',
-  },
-};
+
 
 class EventWatcher {
 
@@ -93,7 +65,7 @@ class EventWatcher {
   }
 
   async manageProxyWatcher(proxy: string, addWatcher: boolean) {
-    log("🎯", proxy);
+    log("➡️ ", proxy);
     
   
     for (const event of this.proxyEvents) {
@@ -115,6 +87,11 @@ class EventWatcher {
         );
       }
     }
+
+    const proxies = await DreamModel.find({ status: { $eq: "active" } });
+    for (const proxy of proxies) {
+      await this.manageProxyWatcher(proxy.proxyAddress, true);
+    }
     log('🚀 Watchers started');
   }
 
@@ -127,6 +104,7 @@ class EventWatcher {
       { owner: owner, proxyAddress: null },
       { proxyAddress: proxy },
     );
+  
     if (!dream || dream.matchedCount === 0) {
       logErr('Dream not found: ', owner);
     }
@@ -136,6 +114,11 @@ class EventWatcher {
     const [proxy, amount] = args;
 
     await this.manageProxyWatcher(proxy, false);
+
+    const proxyContract = new ethers.Contract(proxy, ABIs.Dream, provider);
+
+    const funders = await proxyContract.getFunders();
+    console.log(funders);
 
     // call the give earns contract
 
@@ -197,9 +180,10 @@ class EventWatcher {
     const event = events[name];
 
     if (!event) {
-      logErr('Event not found: ', name);
+      logErr('❗Event not supported:', name);
       return;
-    }
+    } else 
+    log('✔️  [', name , "] received");
 
     switch (name) {
       case 'ProxyCreated':
@@ -220,7 +204,7 @@ class EventWatcher {
       default:
         this.handleUnknownEvent(name);
     }
-    log('Event handled: ', name);
+    console.log();
   }
 }
 

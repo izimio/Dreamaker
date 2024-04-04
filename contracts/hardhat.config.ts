@@ -6,10 +6,6 @@ dotenv.config();
 
 const {ETHERSCAN_API_KEY, PRIVATE_KEY, SEPOLIA_RPC} = process.env;
 
-if (!PRIVATE_KEY) {
-  throw new Error("PRIVATE_KEY is missing");
-}
-
 if (!ETHERSCAN_API_KEY) {
   throw new Error("ETHERSCAN_API_KEY is missing");
 }
@@ -25,7 +21,7 @@ const config: HardhatUserConfig = {
   networks: {
     sepolia: {
       url: SEPOLIA_RPC,
-      accounts: [PRIVATE_KEY],
+      accounts: PRIVATE_KEY ? [PRIVATE_KEY] : [],
     },
     hardhat: {
       gasPrice: 0,
