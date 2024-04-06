@@ -62,6 +62,7 @@
     "scripts": {
         "start": "nodemon -r dotenv/config src/server.ts",
         "lint": "eslint . --fix",
+        "clean": "rm src/uploads/*",
         "parse": "prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\"",
         "build": "tsc -p tsconfig.build.json",
         "test": "jest --setupFiles dotenv/config --silent=false",

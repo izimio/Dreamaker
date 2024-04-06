@@ -10,6 +10,7 @@ import { logger, logError } from './utils/logger';
 import { Watcher } from './Watchers/Watch';
 // Routers
 import versionRouter from './routes/version';
+import dreamRouter from './routes/dream';
 
 // Middleware & config
 import { errorMiddleware } from './middlewares/error';
@@ -24,6 +25,7 @@ import {
 } from './utils/config';
 import admin from './firebase/Bucket';
 import Bucket from './firebase/Bucket';
+import { ValidationError } from 'yup';
 
 const log = logger.extend('app');
 const logErr = logError.extend('app');
@@ -85,9 +87,11 @@ app.use(
 app.use(errorMiddleware);
 app.use(RateLimiter());
 
+
 useRoute(app, versionRouter);
+useRoute(app, dreamRouter);
 
 // Start watchers
-Watcher.watch();
+// Watcher.watch();
 
 export default serverKoa;
