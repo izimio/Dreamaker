@@ -81,6 +81,10 @@ if (!DEPLOYER_PRIVATE_KEY) {
   throw new Error('Missing DEPLOYER_PRIVATE_KEY');
 }
 
+export const BASE_MINING_DREAMAKER = process.env.BASE_MINING_DREAMAKER as string;
+if (!BASE_MINING_DREAMAKER) {
+  throw new Error('Missing BASE_MINING_DREAMAKER');
+}
 // ==================== BLOCKCHAIN ==================== //
 
 export const DREAM_SINGLETON_ADDRESS = process.env

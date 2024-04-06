@@ -6,8 +6,14 @@ import {DREAM_PROXY_FACTORY_ADDRESS, preprendToaddr } from "./utils";
 async function main() {
     const [, owner] = await ethers.getSigners();
 
-    const targetAmount = ethers.parseEther(Math.floor(Math.random() * 100).toString())
-    const deadlineTime = Math.floor((Date.now() / 1000 )+ (Math.random() * 1000 * 60 * 60 * 24))
+    const nowTime = await ethers.provider.getBlock('latest')
+    if (!nowTime) {
+        console.log("Failed to get the current time");
+        return;
+    }
+    
+    const targetAmount = ethers.parseEther("1");
+    const deadlineTime = Math.floor(nowTime?.timestamp + (Math.random() * 1000 * 60 * 60 * 24))
 
     const dreamProxyFactory = await ethers.getContractAt("DreamProxyFactory", DREAM_PROXY_FACTORY_ADDRESS);
 

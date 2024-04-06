@@ -110,6 +110,19 @@ contract DreamV1 {
     }
 
     /**
+     * @dev Function to retrieve all the funders and the amount funded
+     * @return address[] Returns an array of all funders
+     * @return uint256[] Returns an array of the amount funded by each funder
+     **/
+    function getFundersAndAmounts() public view returns (address[] memory, uint256[] memory) {
+        uint256[] memory amounts = new uint256[](funders.length);
+        for (uint256 i = 0; i < funders.length; i++) {
+            amounts[i] = fundedAmount[funders[i]];
+        }
+        return (funders, amounts);
+    }
+
+    /**
      * @dev Function to check if the dream has reached the target amount
      * @return bool Returns true if the dream has reached the target amount
      **/

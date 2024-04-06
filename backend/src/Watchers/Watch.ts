@@ -1,8 +1,9 @@
 import { N, ethers } from 'ethers';
-import { provider, ABIs, Contract } from '../utils/EProviders';
+import { provider, ABIs, Contract, signer } from '../utils/EProviders';
 import { logger, logError } from '../utils/logger';
-import { DreamModel } from '../models/dreamModel';
+import { DreamModel, DreamStatus } from '../models/dreamModel';
 import { IEvent, events } from './config';
+import { BASE_MINING_DREAMAKER, DREAMAKER_ADDRESS } from '../utils/config';
 
 const log = logger.extend('ws');
 const logErr = logError.extend('ws');
@@ -22,6 +23,19 @@ class EventWatcher {
       address: contractAddress,
       topics: [ethers.id(eventName)],
     };
+  }
+
+  calcOfferedDreamer(amounts: BigInt[]): BigInt[] {
+
+    const numberAmounts = amounts.map((amount) => Number(amount));
+    const total = numberAmounts.reduce((acc, curr) => acc + curr, 0);
+
+    const retribution = numberAmounts.map((amount) => {
+      const percentage = amount / total;
+      return BigInt(Math.ceil(percentage * Number(BASE_MINING_DREAMAKER)));
+    })
+
+    return retribution;
   }
 
   parseLogs(event: string, data: string) {
@@ -113,26 +127,45 @@ class EventWatcher {
   async handleReceivedFees(args: any[], event: IEvent) {
     const [proxy, amount] = args;
 
+    const dream = await DreamModel.findOne({ proxyAddress: proxy });
+    
+    if (!dream) {
+      logErr('Dream not found: ', proxy);
+      return;
+    }
+
+    if (dream.status !== DreamStatus.ACTIVE) {
+      logErr('Dream is not active: ', proxy);
+      return;
+    }
+
     await this.manageProxyWatcher(proxy, false);
 
     const proxyContract = new ethers.Contract(proxy, ABIs.Dream, provider);
+    const DreamakerToken = new ethers.Contract(DREAMAKER_ADDRESS, ABIs.Dreamaker, signer);
 
-    const funders = await proxyContract.getFunders();
-    console.log(funders);
-
-    // call the give earns contract
-
-    const dream = await DreamModel.updateOne(
-      { proxyAddress: proxy },
-      {
-        status: "reached",
-      }
-    );
-    if (!dream || dream.matchedCount === 0) {
-      logErr('Dream not found: ', proxy);
+    const funders = [];
+    const amounts = [];
+  
+    try {
+       const fa = await proxyContract.getFundersAndAmounts();
+        funders.push(...fa[0]);
+        amounts.push(...fa[1]);
+    } catch (error) {
+      logErr('Failed to get funders and amounts: ', error);
+      return;
+    }
+  
+    const offeredAmounts = this.calcOfferedDreamer(amounts);
+    try {
+      await DreamakerToken.offer(funders, offeredAmounts);
+    } catch (error) {
+      logErr('Failed to offer dreamaker: ', error);
+      return;
     }
 
-    
+    dream.status = DreamStatus.REACHED;
+    await dream.save();
   }
 
   async handleDreamFunded(origin: string, args: any[], event: IEvent) {

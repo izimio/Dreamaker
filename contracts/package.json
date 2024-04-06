@@ -6,14 +6,16 @@
   "scripts": {
     "node": "hardhat node",
     "test": "hardhat test",
+    "tbof": "npx hardhat balanceOf",
     "tcreate": "hardhat run test-tx/createProxy.ts",
     "tcmfa": "hardhat run test-tx/changeMinFundingAmount.ts",
-    "tfund": "hardhat run test-tx/fund.ts",
+    "tfund": "npx hardhat fund",
     "tfees": "hardhat run test-tx/receiveFees.ts",
     "tdeploy": "hardhat run scripts/deployAll.ts",
+    "tall": "npm run tcreate && npm run tfund && npm run tfees",
     "clean": "rm -rf artifacts/ cache/ coverage/ reports/ && hardhat clean",
     "coverage": "hardhat coverage",
-    "compile": "hardhat compile && cp -r artifacts/contracts ../backend/src/abis",
+    "compile": "hardhat compile && rm -rf ../backend/src/abis && cp -r artifacts/contracts ../backend/src/abis",
     "lint": "solhint contracts/*.sol && eslint . --fix",
     "lint:fix": "solhint contracts/*.sol --fix && eslint .",
     "format": "prettier --plugin=./node_modules/prettier-plugin-solidity/src/index.js --write \"{scripts,test,contracts}/**/*.{ts,sol}\""

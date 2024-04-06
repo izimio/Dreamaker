@@ -1,5 +1,8 @@
 import { HardhatUserConfig } from "hardhat/config";
 import "@nomicfoundation/hardhat-toolbox";
+import "./test-tx/fund";
+import "./test-tx/balanceOf";
+
 import dotenv from "dotenv";
 
 dotenv.config();

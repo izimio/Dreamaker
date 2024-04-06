@@ -4,7 +4,8 @@ import DreamArtifact from "../abis/DreamV1.sol/DreamV1.json";
 import DreamakerArtifact from "../abis/Dreamaker.sol/Dreamaker.json";
 import ProxyFactoryArtifact from "../abis/proxies/DreamProxyFactory.sol/DreamProxyFactory.json";
 
-const provider = new ethers.JsonRpcProvider(BLOCKCHAIN_RPC);
+
+const provider = new ethers.JsonRpcProvider(BLOCKCHAIN_RPC)
 
 const signer = new ethers.Wallet(DEPLOYER_PRIVATE_KEY, provider);
 
