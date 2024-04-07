@@ -14,17 +14,17 @@ export const TAGS = [
     "Environment",
     "Politics",
     "Other",
-]
+];
 
 export const ALLOWED_EXTENSIONS = [
-    'image/jpeg',
-    'image/png',
-    'image/gif',
-    'image/bmp',
-    'image/webp',
-    'video/mp4',
-    'video/mpeg',
-    'video/quicktime',
-    'video/x-msvideo',
-    'video/x-ms-wmv',
-]
+    "image/jpeg",
+    "image/png",
+    "image/gif",
+    "image/bmp",
+    "image/webp",
+    "video/mp4",
+    "video/mpeg",
+    "video/quicktime",
+    "video/x-msvideo",
+    "video/x-ms-wmv",
+];

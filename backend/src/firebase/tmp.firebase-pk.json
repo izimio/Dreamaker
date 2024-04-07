@@ -1,4 +1,4 @@
 {
-  "description": "Here put your google firebase config object",
-  "To-do": "Then rename that file to `firebase-pk.json`"
+    "description": "Here put your google firebase config object",
+    "To-do": "Then rename that file to `firebase-pk.json`"
 }
