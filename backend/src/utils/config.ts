@@ -33,16 +33,14 @@ if (!MONGO_INITDB_DATABASE) {
     throw new Error("Missing MONGO_INITDB_DATABASE");
 }
 
-export const MONGO_INITDB_ROOT_USERNAME = process.env
-    .MONGO_INITDB_ROOT_USERNAME as string;
-if (!MONGO_INITDB_ROOT_USERNAME) {
-    throw new Error("Missing MONGO_INITDB_ROOT_USERNAME");
+export const MONGO_USER = process.env.MONGO_USER as string;
+if (!MONGO_USER) {
+    throw new Error("Missing MONGO_USER");
 }
 
-export const MONGO_INITDB_ROOT_PASSWORD = process.env
-    .MONGO_INITDB_ROOT_PASSWORD as string;
-if (!MONGO_INITDB_ROOT_PASSWORD) {
-    throw new Error("Missing MONGO_INITDB_ROOT_PASSWORD");
+export const MONGO_PASSWORD = process.env.MONGO_PASSWORD as string;
+if (!MONGO_PASSWORD) {
+    throw new Error("Missing MONGO_PASSWORD");
 }
 
 // ==================== JWT ==================== //

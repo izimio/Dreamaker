@@ -20,8 +20,8 @@ import {
     MONGO_HOST,
     MONGO_PORT,
     ALLOWED_ORIGINS,
-    MONGO_INITDB_ROOT_USERNAME,
-    MONGO_INITDB_ROOT_PASSWORD,
+    MONGO_USER,
+    MONGO_PASSWORD,
 } from "./utils/config";
 import admin from "./firebase/Bucket";
 import Bucket from "./firebase/Bucket";
@@ -65,19 +65,19 @@ function useRoute(app: Koa, router: Router) {
 
 mongoose.set("strictQuery", false);
 mongoose
-    .connect(`mongodb://${MONGO_HOST}:${MONGO_PORT}/`, {
+    .connect(`mongodb://${MONGO_HOST}:${MONGO_PORT}/${MONGO_INITDB_DATABASE}`, {
         autoCreate: true,
-        user: MONGO_INITDB_ROOT_USERNAME,
-        pass: MONGO_INITDB_ROOT_PASSWORD,
+        user: MONGO_USER,
+        pass: MONGO_PASSWORD,
     })
     .then((e) => {
         log("🌱 MongoDB connected");
-        console.log();
     })
     .catch((err) => {
         logErr("MongoDB Connection error, retrying...\n" + err);
     });
 
+// mongosh -u root -p a8ze48az4e8***94azen
 app.use(
     bodyParser({
         includeUnparsed: true,

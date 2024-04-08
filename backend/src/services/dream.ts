@@ -45,7 +45,7 @@ export const postDream = async (
     owner: string,
     title: string,
     description: string,
-    deadlineTime: bigint,
+    deadlineTime: number,
     targetAmount: bigint,
     minFundingAmount: bigint,
     files: {
@@ -54,7 +54,6 @@ export const postDream = async (
         newFilename: string;
     }[]
 ) => {
-    
     let assets: Asset[] = [];
     try {
         assets = await uploadFilesToFirebase(files);
@@ -63,11 +62,14 @@ export const postDream = async (
             "Failed to upload files to firebase: " + error.message
         );
     }
-
-    const dream = new DreamModel({
+    console.log(assets);
+    const dream = await DreamModel.create({
         title,
         description,
         assets,
         owner,
+        deadlineTime,
+        targetAmount,
+        minFundingAmount,
     });
 };

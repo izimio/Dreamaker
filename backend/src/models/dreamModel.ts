@@ -7,7 +7,7 @@ type IFunder = {
 
 type Asset = {
     type: string;
-    url: string;
+    link: string;
 };
 
 export enum DreamStatus {
@@ -35,7 +35,13 @@ const dreamSchema = new mongoose.Schema<IDream>({
     createdAt: { type: Date, default: Date.now },
     title: { type: String, required: true },
     description: { type: String, required: true },
-    assets: { type: [{ type: String, url: String }], default: [] },
+    assets: {
+        type: Array({
+            type: { type: String, required: true },
+            link: { type: String, required: true },
+        }),
+        default: [],
+    },
     owner: { type: String, required: true },
     status: {
         type: String,
