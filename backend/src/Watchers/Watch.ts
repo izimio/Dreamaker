@@ -115,7 +115,8 @@ class EventWatcher {
 
         const dream = await DreamModel.updateOne(
             { owner: owner, proxyAddress: null },
-            { proxyAddress: proxy }
+            { proxyAddress: proxy, status: DreamStatus.ACTIVE }
+
         );
 
         if (!dream || dream.matchedCount === 0) {

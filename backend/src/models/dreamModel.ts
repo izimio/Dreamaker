@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 type IFunder = {
     address: string;
-    amount: number;
+    amount: BigInt;
 };
 
 type Asset = {
@@ -49,7 +49,7 @@ const dreamSchema = new mongoose.Schema<IDream>({
         default: DreamStatus.PENDING_VALIDATION,
     },
     deadlineTime: { type: Number, required: true },
-    funders: { type: [{ address: String, amount: Number }], default: [] },
+    funders: { type: [{ address: String, amount: BigInt }], default: [] },
     targetAmount: { type: BigInt, required: true },
     minFundingAmount: { type: BigInt, default: BigInt(1) },
     proxyAddress: { type: String, default: null },

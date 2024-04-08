@@ -21,9 +21,9 @@ export const authMiddleware = async (
         throw new AuthError("Token invalide");
     }
     const { address } = decodedToken as { address: string };
-    ctx.state.address = address;
     if (!address) {
         throw new AuthError("Token invalide");
     }
+    ctx.state.address = address;
     return next();
 };

@@ -1,5 +1,8 @@
+import { ethers } from "ethers";
 import { uploadFileToFirebase } from "../firebase/uploadFile";
 import { DreamModel } from "../models/dreamModel";
+import { ABIs, provider, signer } from "../utils/EProviders";
+import { DREAM_PROXY_FACTORY_ADDRESS } from "../utils/config";
 import { InternalError } from "../utils/error";
 
 type Asset = {
@@ -47,7 +50,6 @@ export const postDream = async (
     description: string,
     deadlineTime: number,
     targetAmount: bigint,
-    minFundingAmount: bigint,
     files: {
         mimetype: string;
         filepath: string;
@@ -62,7 +64,6 @@ export const postDream = async (
             "Failed to upload files to firebase: " + error.message
         );
     }
-    console.log(assets);
     const dream = await DreamModel.create({
         title,
         description,
@@ -70,6 +71,35 @@ export const postDream = async (
         owner,
         deadlineTime,
         targetAmount,
-        minFundingAmount,
     });
 };
+
+export const createDreamOnChain = async (
+    owner: string,
+    targetAmount: bigint,
+    deadlineTime: number
+) => {
+
+    const proxyFactory = new ethers.Contract(
+        DREAM_PROXY_FACTORY_ADDRESS,
+        ABIs.ProxyFactory,
+        signer
+    );
+    let txHash = "";
+    try {
+        const tx = await proxyFactory.deployClone(
+            owner,
+            targetAmount,
+            deadlineTime
+        );
+        txHash = tx.hash;
+        await tx.wait();
+    } catch (error: any) {
+        throw new InternalError("Failed to create dream on chain: " + error.message);
+    }
+
+    return txHash;
+}
+export const getDreams = async () => {
+    return await DreamModel.find() || [];
+}

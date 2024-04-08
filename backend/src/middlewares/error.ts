@@ -7,6 +7,7 @@ import {
     BusinessError,
     ObjectNotFoundError,
     errorHandler,
+    ConflictError
 } from "../utils/error";
 
 const log = logger.extend("middlewares:error");
@@ -51,6 +52,12 @@ export const errorMiddleware: Koa.Middleware = async (ctx: Context, next) => {
         if (error instanceof ObjectNotFoundError) {
             log("ObjectNotFoundError:", error.message);
             ctx.status = 404;
+            ctx.body = { ok: false, error: error.message };
+            return;
+        }
+        if (error instanceof ConflictError) {
+            log("ConflictError:", error.message);
+            ctx.status = 409;
             ctx.body = { ok: false, error: error.message };
             return;
         }

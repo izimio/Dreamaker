@@ -85,6 +85,20 @@ export class InternalError extends Error {
     }
 }
 
+export class ConflictError extends Error {
+    originalError?: Error;
+
+    constructor(message: string, originalError?: Error) {
+        super(message);
+        this.name = this.constructor.name;
+        this.originalError = originalError;
+        if (originalError && typeof originalError === "object") {
+            Object.assign(this, getPropsToCopy(originalError));
+        }
+    }
+}
+
+
 export const errorHandler = (error: unknown, context: object): void => {
     if (
         !(error instanceof ValidationError) &&

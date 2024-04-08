@@ -14,6 +14,16 @@ const d1 = h1 * 24;
 const m1 = d1 * 30;
 const y1 = m1 * 12;
 
+export const validateEthAddress = string().required().matches(
+    /^0x[a-fA-F0-9]{40}$/,
+    "Invalid Ethereum address"
+);
+
+export const validateVerifyEcRecoverChallenge = object().shape({
+    address: validateEthAddress,
+    signature: string().required(),
+});
+
 export const parseFormData = (formData: {
     title?: string;
     description?: string;
@@ -74,16 +84,4 @@ export const validateNewDream = object().shape({
             }
             return value > BigInt(0);
         }),
-    minFundingAmount: mixed()
-        .required()
-        .test(
-            "is-valid-min-funding-amount",
-            "Invalid minimum funding amount",
-            (value) => {
-                if (typeof value !== "bigint") {
-                    return false;
-                }
-                return value >= BigInt(0);
-            }
-        ),
 });

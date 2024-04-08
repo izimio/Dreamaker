@@ -11,6 +11,7 @@ import { Watcher } from "./Watchers/Watch";
 // Routers
 import versionRouter from "./routes/version";
 import dreamRouter from "./routes/dream";
+import authRouter from "./routes/auth";
 
 // Middleware & config
 import { errorMiddleware } from "./middlewares/error";
@@ -89,8 +90,9 @@ app.use(RateLimiter());
 
 useRoute(app, versionRouter);
 useRoute(app, dreamRouter);
+useRoute(app, authRouter);
 
 // Start watchers
-// Watcher.watch();
+Watcher.watch();
 
 export default serverKoa;

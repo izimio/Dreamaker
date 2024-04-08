@@ -9,6 +9,7 @@ const router: Router = new Router();
 
 router.prefix("/dream");
 
-router.post("/", filesMiddleware, dreamCotroller.createDream);
+router.post("/",authMiddleware,  filesMiddleware, dreamCotroller.createDream);
 
+router.get("/", dreamCotroller.getDreams);
 export default router;

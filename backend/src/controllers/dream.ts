@@ -18,23 +18,35 @@ export const createDream = async (ctx: Context) => {
         description,
         deadlineTime,
         targetAmount,
-        minFundingAmount,
         files,
     } = await validateNewDream.validate(parsedFormData);
 
-    ctx.state.user = {
-        address: "0x1234567890123456789012345678901234567890",
-    };
+    // database call
     await dreamServices.postDream(
-        ctx.state.user.address,
+        ctx.state.address,
         title,
         description,
         deadlineTime,
         targetAmount as bigint,
-        minFundingAmount as bigint,
         files || []
     );
+
+    const txHash = await dreamServices.createDreamOnChain(ctx.state.address, targetAmount as bigint, deadlineTime);
+
     ctx.body = {
-        message: "Dream created",
+        ok: true,
+        data : {
+            txHash,
+        }
+    };
+};
+
+export const getDreams = async (ctx: Context) => {
+    const dreams = await dreamServices.getDreams();
+    ctx.body = {
+        ok: true,
+        data: {
+            dreams,
+        }
     };
 };

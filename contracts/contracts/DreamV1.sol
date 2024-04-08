@@ -60,6 +60,7 @@ contract DreamV1 {
         owner = _owner;
         targetAmount = _targetAmount;
         deadlineTimestamp = _deadlineTimestamp;
+        minFundingAmount = 1 wei;
         isInitialized = true;
     }
 
