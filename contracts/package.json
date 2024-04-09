@@ -11,7 +11,7 @@
     "tcmfa": "hardhat run test-tx/changeMinFundingAmount.ts",
     "tfund": "npx hardhat fund",
     "tfees": "hardhat run test-tx/receiveFees.ts",
-    "tdeploy": "hardhat run scripts/deployAll.ts",
+    "tdeploy": "npx hardhat deployAll",
     "tall": "npm run tcreate && npm run tfund && npm run tfees",
     "clean": "rm -rf artifacts/ cache/ coverage/ reports/ && hardhat clean",
     "coverage": "hardhat coverage",

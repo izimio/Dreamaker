@@ -1,6 +1,6 @@
 import { Context } from "koa";
 import * as dreamServices from "../services/dream";
-import { parseFormData, validateNewDream } from "../utils/validator";
+import { parseFormData, validateEditDream, validateNewDream } from "../utils/validator";
 
 export const createDream = async (ctx: Context) => {
     const ctxFiles = (ctx.request.files as { [key: string]: any }) || {};
@@ -50,3 +50,24 @@ export const getDreams = async (ctx: Context) => {
         }
     };
 };
+
+export const getMyDreams = async (ctx: Context) => {
+    const dreams = await dreamServices.getDreams(ctx.state.address);
+    ctx.body = {
+        ok: true,
+        data: {
+            dreams,
+        }
+    };
+}
+
+export const updateDream = async (ctx: Context) => {
+    const { id } = ctx.params;
+    const edits = await validateEditDream.validate(ctx.request.body);
+
+    await dreamServices.updateDream(id, edits);
+
+    ctx.body = {
+        ok: true,
+    };
+}

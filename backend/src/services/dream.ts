@@ -3,7 +3,7 @@ import { uploadFileToFirebase } from "../firebase/uploadFile";
 import { DreamModel } from "../models/dreamModel";
 import { ABIs, provider, signer } from "../utils/EProviders";
 import { DREAM_PROXY_FACTORY_ADDRESS } from "../utils/config";
-import { InternalError } from "../utils/error";
+import { InternalError, ObjectNotFoundError } from "../utils/error";
 
 type Asset = {
     type: string;
@@ -100,6 +100,32 @@ export const createDreamOnChain = async (
 
     return txHash;
 }
-export const getDreams = async () => {
-    return await DreamModel.find() || [];
+export const getDreams = async (params: {
+    _id?: string;
+    owner?: string;
+    status?: string;
+    deadlineTime?: number;
+    targetAmount?: bigint;
+    title?: string;
+    description?: string;
+    tags?: string[];
+} = {}) => {
+    const dreams = await DreamModel.find(params);
+    return dreams;
+}
+
+export const updateDream = async (id: string, edits: {
+    title?: string;
+    description?: string;
+}) => {
+    const dream = await DreamModel.findOneAndUpdate(
+        { _id: id },
+        { $set: edits },
+        { new: true }
+    );
+
+    if (!dream) {
+        throw new ObjectNotFoundError("Dream not found");
+    }
+    return dream;
 }

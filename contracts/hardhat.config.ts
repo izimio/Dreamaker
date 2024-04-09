@@ -2,6 +2,7 @@ import { HardhatUserConfig } from "hardhat/config";
 import "@nomicfoundation/hardhat-toolbox";
 import "./test-tx/fund";
 import "./test-tx/balanceOf";
+import "./test-tx/deployAll";
 
 import dotenv from "dotenv";
 

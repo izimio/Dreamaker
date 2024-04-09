@@ -12,4 +12,6 @@ router.prefix("/dream");
 router.post("/",authMiddleware,  filesMiddleware, dreamCotroller.createDream);
 
 router.get("/", dreamCotroller.getDreams);
+router.get("/me", authMiddleware, dreamCotroller.getDreams);
+
 export default router;

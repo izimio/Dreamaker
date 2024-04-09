@@ -24,6 +24,11 @@ export const validateVerifyEcRecoverChallenge = object().shape({
     signature: string().required(),
 });
 
+export const validateEditDream = object().shape({
+    title: string().min(5).max(50),
+    description: string().min(20).max(500),
+});
+
 export const parseFormData = (formData: {
     title?: string;
     description?: string;
