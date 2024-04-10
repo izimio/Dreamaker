@@ -98,7 +98,6 @@ export class ConflictError extends Error {
     }
 }
 
-
 export const errorHandler = (error: unknown, context: object): void => {
     if (
         !(error instanceof ValidationError) &&

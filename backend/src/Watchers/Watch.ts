@@ -116,9 +116,7 @@ class EventWatcher {
         const dream = await DreamModel.updateOne(
             { owner: owner, proxyAddress: null },
             { proxyAddress: proxy, status: DreamStatus.ACTIVE }
-
         );
-
         if (!dream || dream.matchedCount === 0) {
             logErr("Dream not found: ", owner);
         }
@@ -208,7 +206,6 @@ class EventWatcher {
             { proxyAddress: origin },
             { minFundingAmount: amount }
         );
-        console.log(dream);
         if (!dream || dream.matchedCount === 0) {
             logErr("Dream not found: ", origin);
         }
@@ -245,7 +242,7 @@ class EventWatcher {
             default:
                 this.handleUnknownEvent(name);
         }
-        console.log();
+        console.log("");
     }
 }
 

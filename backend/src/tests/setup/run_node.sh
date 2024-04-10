@@ -24,6 +24,6 @@ if [ ! -d "node_modules" ]; then
     npm install
 fi
 
-echo "🏃‍♂️ Running node"
+echo "🚦 Running node"
 
 npm run node > /dev/null

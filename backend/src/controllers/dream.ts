@@ -1,6 +1,11 @@
 import { Context } from "koa";
 import * as dreamServices from "../services/dream";
-import { parseFormData, validateEditDream, validateNewDream } from "../utils/validator";
+import {
+    parseFormData,
+    validateEditDream,
+    validateNewDream,
+} from "../utils/validator";
+import { ethers } from "ethers";
 
 export const createDream = async (ctx: Context) => {
     const ctxFiles = (ctx.request.files as { [key: string]: any }) || {};
@@ -13,31 +18,39 @@ export const createDream = async (ctx: Context) => {
                 newFilename: file.newFilename,
             })) || [],
     };
-    const {
-        title,
-        description,
-        deadlineTime,
-        targetAmount,
-        files,
-    } = await validateNewDream.validate(parsedFormData);
+    const { title, description, deadlineTime, targetAmount, files, tags } =
+        await validateNewDream.validate(parsedFormData);
 
     // database call
     await dreamServices.postDream(
         ctx.state.address,
         title,
+        tags,
         description,
         deadlineTime,
         targetAmount as bigint,
         files || []
     );
 
-    const txHash = await dreamServices.createDreamOnChain(ctx.state.address, targetAmount as bigint, deadlineTime);
+    const txHash = await dreamServices.createDreamOnChain(
+        ctx.state.address,
+        targetAmount as bigint,
+        deadlineTime
+    );
 
     ctx.body = {
         ok: true,
-        data : {
+        data: {
             txHash,
-        }
+            dream: {
+                title,
+                description,
+                deadlineTime,
+                targetAmount,
+                minFundingAmount: ethers.parseUnits("1", "wei"),
+                files,
+            },
+        },
     };
 };
 
@@ -47,7 +60,7 @@ export const getDreams = async (ctx: Context) => {
         ok: true,
         data: {
             dreams,
-        }
+        },
     };
 };
 
@@ -57,9 +70,9 @@ export const getMyDreams = async (ctx: Context) => {
         ok: true,
         data: {
             dreams,
-        }
+        },
     };
-}
+};
 
 export const updateDream = async (ctx: Context) => {
     const { id } = ctx.params;
@@ -70,4 +83,4 @@ export const updateDream = async (ctx: Context) => {
     ctx.body = {
         ok: true,
     };
-}
+};

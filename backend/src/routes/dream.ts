@@ -9,7 +9,9 @@ const router: Router = new Router();
 
 router.prefix("/dream");
 
-router.post("/",authMiddleware,  filesMiddleware, dreamCotroller.createDream);
+router.post("/", authMiddleware, filesMiddleware, dreamCotroller.createDream);
+
+router.put("/:id", authMiddleware, dreamCotroller.updateDream);
 
 router.get("/", dreamCotroller.getDreams);
 router.get("/me", authMiddleware, dreamCotroller.getDreams);

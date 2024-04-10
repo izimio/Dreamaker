@@ -1,7 +1,7 @@
 import { ethers } from "ethers";
 import { uploadFileToFirebase } from "../firebase/uploadFile";
 import { DreamModel } from "../models/dreamModel";
-import { ABIs, provider, signer } from "../utils/EProviders";
+import { ABIs, signer } from "../utils/EProviders";
 import { DREAM_PROXY_FACTORY_ADDRESS } from "../utils/config";
 import { InternalError, ObjectNotFoundError } from "../utils/error";
 
@@ -47,6 +47,7 @@ const uploadFilesToFirebase = async (
 export const postDream = async (
     owner: string,
     title: string,
+    tags: string[],
     description: string,
     deadlineTime: number,
     targetAmount: bigint,
@@ -64,14 +65,19 @@ export const postDream = async (
             "Failed to upload files to firebase: " + error.message
         );
     }
-    const dream = await DreamModel.create({
-        title,
-        description,
-        assets,
-        owner,
-        deadlineTime,
-        targetAmount,
-    });
+    try {
+        await DreamModel.create({
+            title,
+            description,
+            assets,
+            tags,
+            owner,
+            deadlineTime,
+            targetAmount,
+        });
+    } catch (error: any) {
+        throw new InternalError("Failed to post dream: " + error.message);
+    }
 };
 
 export const createDreamOnChain = async (
@@ -79,7 +85,6 @@ export const createDreamOnChain = async (
     targetAmount: bigint,
     deadlineTime: number
 ) => {
-
     const proxyFactory = new ethers.Contract(
         DREAM_PROXY_FACTORY_ADDRESS,
         ABIs.ProxyFactory,
@@ -95,29 +100,36 @@ export const createDreamOnChain = async (
         txHash = tx.hash;
         await tx.wait();
     } catch (error: any) {
-        throw new InternalError("Failed to create dream on chain: " + error.message);
+        throw new InternalError(
+            "Failed to create dream on chain: " + error.message
+        );
     }
 
     return txHash;
-}
-export const getDreams = async (params: {
-    _id?: string;
-    owner?: string;
-    status?: string;
-    deadlineTime?: number;
-    targetAmount?: bigint;
-    title?: string;
-    description?: string;
-    tags?: string[];
-} = {}) => {
+};
+export const getDreams = async (
+    params: {
+        _id?: string;
+        owner?: string;
+        status?: string;
+        deadlineTime?: number;
+        targetAmount?: bigint;
+        title?: string;
+        description?: string;
+        tags?: string[];
+    } = {}
+) => {
     const dreams = await DreamModel.find(params);
     return dreams;
-}
+};
 
-export const updateDream = async (id: string, edits: {
-    title?: string;
-    description?: string;
-}) => {
+export const updateDream = async (
+    id: string,
+    edits: {
+        title?: string;
+        description?: string;
+    }
+) => {
     const dream = await DreamModel.findOneAndUpdate(
         { _id: id },
         { $set: edits },
@@ -128,4 +140,4 @@ export const updateDream = async (id: string, edits: {
         throw new ObjectNotFoundError("Dream not found");
     }
     return dream;
-}
+};

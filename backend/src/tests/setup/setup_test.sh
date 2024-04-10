@@ -1,8 +1,8 @@
 #!/bin/bash
 
 PATH_TO_BIN=$(pwd)/src/tests/setup
+cd $PATH_TO_BIN
 
-echo $1
 kill_pid() {
     local pid=$1
 
@@ -12,11 +12,7 @@ kill_pid() {
     fi
 }
 
-# kill_pid
-
-
-cd $PATH_TO_BIN
-
+kill_pid
 
 ./run_node.sh &
 
@@ -28,13 +24,9 @@ sleep 1
 
 cd -
 
-jest --setupFiles dotenv/config --silent=false --coverage=$1
+jest --setupFiles dotenv/config --detectOpenHandles --silent=false $@
 
 wait 
-
-
-
-
 
 kill_pid
 

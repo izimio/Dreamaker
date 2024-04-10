@@ -7,7 +7,7 @@ import {
     BusinessError,
     ObjectNotFoundError,
     errorHandler,
-    ConflictError
+    ConflictError,
 } from "../utils/error";
 
 const log = logger.extend("middlewares:error");
