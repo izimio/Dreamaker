@@ -66,7 +66,7 @@ export const postDream = async (
         );
     }
     try {
-        await DreamModel.create({
+        const dream = await DreamModel.create({
             title,
             description,
             assets,
@@ -75,6 +75,8 @@ export const postDream = async (
             deadlineTime,
             targetAmount,
         });
+        return dream._id;
+
     } catch (error: any) {
         throw new InternalError("Failed to post dream: " + error.message);
     }

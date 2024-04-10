@@ -8,6 +8,7 @@ import {
     createRandomDream,
     createRandomDreamData,
 } from "./utils/utils";
+import { DreamModel } from "../models/dreamModel";
 
 let request: supertest.SuperTest<supertest.Test> | undefined;
 let server: Server | undefined;
@@ -32,20 +33,7 @@ const ROUTE_UPDATE_DREAM = "/dream/:id";
 
 describe(`POST ${ROUTE_CREATE_DREAM}`, () => {
     it("Create dream, OK", async () => {
-        const signer = await authWallet(request);
-        const { title, description, tags, deadlineTime, targetAmount } =
-            createRandomDreamData();
-        const response = await request
-            ?.post(ROUTE_CREATE_DREAM)
-            .set("Authorization", `Bearer ${signer.token}`)
-            .field("title", title)
-            .field("description", description)
-            .field("tags", tags.join(","))
-            .field("deadlineTime", deadlineTime)
-            .field("targetAmount", targetAmount);
-
-        console.log(response?.body);
-        expect(response?.status).toBe(201);
+        await createRandomDream(request, undefined, {});
     });
     it("Create dream, Unauthorized", async () => {
         const { title, description, tags, deadlineTime, targetAmount } =

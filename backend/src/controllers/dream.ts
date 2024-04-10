@@ -22,7 +22,7 @@ export const createDream = async (ctx: Context) => {
         await validateNewDream.validate(parsedFormData);
 
     // database call
-    await dreamServices.postDream(
+    const id = await dreamServices.postDream(
         ctx.state.address,
         title,
         tags,
@@ -43,15 +43,18 @@ export const createDream = async (ctx: Context) => {
         data: {
             txHash,
             dream: {
+                id,
                 title,
                 description,
+                tags,
                 deadlineTime,
-                targetAmount,
-                minFundingAmount: ethers.parseUnits("1", "wei"),
+                targetAmount: targetAmount.toString(),
+                minFundingAmount: "1",
                 files,
             },
         },
     };
+    ctx.status = 201;
 };
 
 export const getDreams = async (ctx: Context) => {
