@@ -1,8 +1,7 @@
 import { HDNodeWallet, ethers } from "ethers";
 import { TAGS } from "../../utils/constants";
-import { DreamModel } from "../../models/dreamModel";
 
-const randomString = (length: number): string => {
+export const randomString = (length: number): string => {
     const characters =
         "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     let result = "";
@@ -14,7 +13,7 @@ const randomString = (length: number): string => {
     return result;
 };
 
-const randomTags = (length: number): string[] => {
+export const randomTags = (length: number): string[] => {
     const tags = [...TAGS];
     const result = [];
     for (let i = 0; i < length; i++) {
@@ -43,6 +42,7 @@ export const authWallet = async (
     request: any,
     privateKey?: string
 ): Promise<{ wallet: HDNodeWallet | ethers.Wallet; token: string }> => {
+    
     const wallet = createWallet(privateKey);
 
     const response = await request?.post("/auth/challenge").send({

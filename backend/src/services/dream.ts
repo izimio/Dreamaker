@@ -50,7 +50,7 @@ export const postDream = async (
     tags: string[],
     description: string,
     deadlineTime: number,
-    targetAmount: bigint,
+    targetAmount: string,
     files: {
         mimetype: string;
         filepath: string;
@@ -84,7 +84,7 @@ export const postDream = async (
 
 export const createDreamOnChain = async (
     owner: string,
-    targetAmount: bigint,
+    targetAmount: string,
     deadlineTime: number
 ) => {
     const proxyFactory = new ethers.Contract(
@@ -96,7 +96,7 @@ export const createDreamOnChain = async (
     try {
         const tx = await proxyFactory.deployClone(
             owner,
-            targetAmount,
+            ethers.parseUnits(targetAmount, "wei"),
             deadlineTime
         );
         txHash = tx.hash;
@@ -114,32 +114,42 @@ export const getDreams = async (
         _id?: string;
         owner?: string;
         status?: string;
-        deadlineTime?: number;
-        targetAmount?: bigint;
-        title?: string;
-        description?: string;
-        tags?: string[];
     } = {}
 ) => {
-    const dreams = await DreamModel.find(params);
+
+    const dreams = await DreamModel.find({
+        ...(params._id && { _id: params._id }),
+        ...(params.owner && { owner: params.owner }),
+        ...(params.status && { status: params.status }),
+    })
+
     return dreams;
 };
 
 export const updateDream = async (
     id: string,
+    me: string,
     edits: {
         title?: string;
         description?: string;
+        tags?: string[];
     }
 ) => {
     const dream = await DreamModel.findOneAndUpdate(
-        { _id: id },
-        { $set: edits },
+        { _id: id, owner: me },
+        {
+            $set: {
+                ...(edits.title && { title: edits.title }),
+                ...(edits.description && { description: edits.description }),
+                ...(edits.tags && { tags: edits.tags })
+            }
+        },
         { new: true }
     );
 
     if (!dream) {
-        throw new ObjectNotFoundError("Dream not found");
+        throw new ObjectNotFoundError("Dream not found or not owned by user");
     }
+
     return dream;
 };

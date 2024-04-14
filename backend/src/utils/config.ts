@@ -77,6 +77,11 @@ if (!DEPLOYER_PRIVATE_KEY) {
     throw new Error("Missing DEPLOYER_PRIVATE_KEY");
 }
 
+export const ADMIN_ADDRESS = process.env.ADMIN_ADDRESS as string;
+if (!ADMIN_ADDRESS) {
+    throw new Error("Missing ADMIN_ADDRESS");
+}
+
 export const BASE_MINING_DREAMAKER = process.env
     .BASE_MINING_DREAMAKER as string;
 if (!BASE_MINING_DREAMAKER) {

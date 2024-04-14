@@ -17,5 +17,7 @@ cd_to_root() {
 
 cd_to_root && cd contracts
 
+echo "🚀 Deploying basic contracts"
+
 npm run tdeploy true
 

@@ -7,21 +7,26 @@ import {
     authWallet,
     createRandomDream,
     createRandomDreamData,
+    randomString,
+    randomTags,
 } from "./utils/utils";
-import { DreamModel } from "../models/dreamModel";
 
+import { Watcher } from "../Watchers/Watch";
+import { SyncronInstance } from "../syncron/Syncron";
 let request: supertest.SuperTest<supertest.Test> | undefined;
 let server: Server | undefined;
 
 beforeAll(async () => {
-    process.env.DEBUG = "";
     server = app.listen();
     request = supertest(app);
+    SyncronInstance.stop();
 });
 
 afterAll(async () => {
     server?.close();
     mongoose.connection.close();
+    Watcher.stop();
+    SyncronInstance.stop();
 });
 
 const ROUTE_CREATE_DREAM = "/dream";
@@ -127,5 +132,187 @@ describe(`POST ${ROUTE_CREATE_DREAM}`, () => {
 
         expect(response?.status).toBe(400);
         expect(response?.body.ok).toBe(false);
+    });
+});
+
+describe(`GET ${ROUTE_GET_DREAMS}`, () => {
+
+    let wSigner: {
+        wallet: HDNodeWallet | ethers.Wallet;
+        token: string;
+    }
+    beforeAll(async () => {
+        ({ wSigner } = await createRandomDream(request, undefined, {}));
+    }, 1000000);
+
+    it("Get dreams, OK", async () => {
+        const response = await request?.get(ROUTE_GET_DREAMS);
+        expect(response?.status).toBe(200);
+        expect(response?.body.ok).toBe(true);
+        expect(response?.body.data.dreams).toBeDefined();
+        const dreams = response?.body.data.dreams;
+
+        let found = 0;
+        dreams.forEach((dream: any) => {
+            expect(dream.title).toBeDefined();
+            expect(dream.description).toBeDefined();
+            expect(dream.tags).toBeDefined();
+            expect(dream.deadlineTime).toBeDefined();
+            expect(dream.targetAmount).toBeDefined();
+            expect(dream.minFundingAmount).toBeDefined();
+            expect(dream.assets).toBeDefined();
+
+            if (dream.owner === wSigner.wallet.address) {
+                found++;
+            }
+        });
+        expect(found).toBe(1);
+    });
+    it("GET dreams, TAGS", async () => {
+
+        const { dream } = await createRandomDream(request, undefined, {});
+
+        const response = await request?.get(ROUTE_GET_DREAMS + "?_id=" + dream.id);
+        expect(response?.status).toBe(200);
+        expect(response?.body.ok).toBe(true);
+
+        const dreams = response?.body.data.dreams;
+
+        expect(dreams.length).toBe(1);
+        expect(dreams[0]._id).toBe(dream.id);
+    });
+});
+
+describe(`GET ${ROUTE_GET_MY_DREAMS}`, () => {
+
+    let wSigner: {
+        wallet: HDNodeWallet | ethers.Wallet;
+        token: string;
+    }
+
+    beforeAll(async () => {
+        wSigner = await authWallet(request);
+    });
+
+    it("Get my dreams, OK", async () => {
+        const response = await request
+            ?.get(ROUTE_GET_MY_DREAMS)
+            .set("Authorization", `Bearer ${wSigner.token}`);
+        expect(response?.status).toBe(200);
+        expect(response?.body.ok).toBe(true);
+        expect(response?.body.data.dreams).toBeDefined();
+
+        const dreams = response?.body.data.dreams;
+
+        expect(dreams.length).toBe(0);
+
+        await createRandomDream(request, wSigner, {});
+
+        const response2 = await request
+            ?.get(ROUTE_GET_MY_DREAMS)
+            .set("Authorization", `Bearer ${wSigner.token}`);
+        expect(response2?.status).toBe(200);
+        expect(response2?.body.ok).toBe(true);
+        expect(response2?.body.data.dreams).toBeDefined();
+        const dreams2 = response2?.body.data.dreams;
+
+        expect(dreams2.length).toBe(1);
+        expect(dreams2[0].owner).toBe(wSigner.wallet.address);
+    });
+
+});
+
+describe(`PUT ${ROUTE_UPDATE_DREAM}`, () => {
+    let gSigner: {
+        wallet: HDNodeWallet | ethers.Wallet;
+        token: string;
+    }
+    let gDream: any;
+    beforeAll(async () => {
+        gSigner = await authWallet(request);
+       const res = await createRandomDream(request, gSigner, {});
+        gDream = res.dream;
+    });
+    it("Update dream, OK", async () => {
+        const signer = await authWallet(request);
+        const { dream } = await createRandomDream(request, signer, {});
+        const response = await request
+            ?.put(ROUTE_UPDATE_DREAM.replace(":id", dream.id))
+            .set("Authorization", `Bearer ${signer.token}`)
+            .send({ title: "New title" });
+        expect(response?.status).toBe(200);
+        expect(response?.body.ok).toBe(true);
+        expect(response?.body.data.dream).toBeDefined();
+        expect(response?.body.data.dream.title).toBe("New title");
+    });
+    it("Update dream, Unauthorized", async () => {
+        const { dream } = await createRandomDream(request, undefined, {});
+        const response = await request
+            ?.put(ROUTE_UPDATE_DREAM.replace(":id", dream.id))
+            .set("Authorization", `Bearer invalid token`)
+            .send({ title: "New title" });
+        expect(response?.status).toBe(401);
+        expect(response?.body.ok).toBe(false);
+    });
+    it("Update dream, Invalid Id", async () => {
+        const signer = await authWallet(request);
+        const response = await request
+            ?.put(ROUTE_UPDATE_DREAM.replace(":id", "invalid id"))
+            .set("Authorization", `Bearer ${signer.token}`)
+            .send({ title: "New title" });
+        expect(response?.status).toBe(400);
+        expect(response?.body.ok).toBe(false);
+    });
+    it("Update dream, not found", async () => {
+        const randomId = "661bbd6c855700b93eb3ea66"
+        const signer = await authWallet(request);
+        const response = await request
+            ?.put(ROUTE_UPDATE_DREAM.replace(":id", randomId))
+            .set("Authorization", `Bearer ${signer.token}`)
+            .send({ title: "New title" });
+        expect(response?.status).toBe(404);
+        expect(response?.body.ok).toBe(false);
+    });
+    it("Update dream, Nothing", async () => {
+        const { dream } = await createRandomDream(request, undefined, {});
+        const signer = await authWallet(request);
+        const response = await request
+            ?.put(ROUTE_UPDATE_DREAM.replace(":id", dream.id))
+            .set("Authorization", `Bearer ${signer.token}`)
+            .send({});
+        expect(response?.status).toBe(400);
+        expect(response?.body.ok).toBe(false);
+    });
+    it("Update dream, no-sens Tags", async () => {
+        const response = await request
+            ?.put(ROUTE_UPDATE_DREAM.replace(":id", gDream.id))
+            .set("Authorization", `Bearer ${gSigner.token}`)
+            .send({
+                tags: [
+                    "no-sens"
+                ]
+            });
+        expect(response?.status).toBe(400);
+        expect(response?.body.ok).toBe(false);
+    });
+    it("Update dream, big update, OK", async () => {
+        const nTags = randomTags(4);
+        const rTitle = randomString(10);
+        const rDescription = randomString(50);
+        
+        const response = await request
+            ?.put(ROUTE_UPDATE_DREAM.replace(":id", gDream.id))
+            .set("Authorization", `Bearer ${gSigner.token}`)
+            .send({
+                title: rTitle,
+                description: rDescription,
+                tags: nTags
+            });
+        expect(response?.status).toBe(200);
+        expect(response?.body.ok).toBe(true);
+        expect(response?.body.data.dream).toBeDefined();
+        expect(response?.body.data.dream.title).toBe(rTitle);
+        expect(response?.body.data.dream.description).toBe(rDescription);
+        expect(response?.body.data.dream.tags).toStrictEqual(nTags);
     });
 });

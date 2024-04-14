@@ -14,6 +14,6 @@ router.post("/", authMiddleware, filesMiddleware, dreamCotroller.createDream);
 router.put("/:id", authMiddleware, dreamCotroller.updateDream);
 
 router.get("/", dreamCotroller.getDreams);
-router.get("/me", authMiddleware, dreamCotroller.getDreams);
+router.get("/me", authMiddleware, dreamCotroller.getMyDreams);
 
 export default router;

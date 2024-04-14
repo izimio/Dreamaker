@@ -28,6 +28,7 @@
         "koa-ratelimit": "^5.0.1",
         "koa-router": "^12.0.0",
         "mongoose": "^7.5.1",
+        "node-cron": "^3.0.3",
         "ts-node": "^10.9.1",
         "yup": "^1.2.0"
     },
@@ -41,6 +42,7 @@
         "@types/koa-ratelimit": "^5.0.1",
         "@types/koa-router": "^7.4.4",
         "@types/node": "^20.6.0",
+        "@types/node-cron": "^3.0.11",
         "@types/supertest": "^2.0.12",
         "@typescript-eslint/eslint-plugin": "^6.7.0",
         "@typescript-eslint/parser": "^6.7.0",
@@ -64,6 +66,9 @@
     },
     "jest": {
         "preset": "ts-jest",
-        "testEnvironment": "node"
+        "testEnvironment": "node",
+        "setupFiles": [
+            "./src/tests/setup/setupTest.js"
+        ]
     }
 }

@@ -4,6 +4,7 @@ import { logger, logError } from "../utils/logger";
 import { DreamModel, DreamStatus } from "../models/dreamModel";
 import { IEvent, events } from "./config";
 import { BASE_MINING_DREAMAKER, DREAMAKER_ADDRESS } from "../utils/config";
+import mongoose from "mongoose";
 
 const log = logger.extend("ws");
 const logErr = logError.extend("ws");
@@ -56,7 +57,7 @@ class EventWatcher {
             const decoded = this.parseLogs(signature, event.data);
             const origin = event.address;
 
-            await this.handleEvents(name, origin, decoded);
+            this.handleEvents(name, origin, decoded);
         });
 
         log("🟢", name);
@@ -108,6 +109,11 @@ class EventWatcher {
         log("🚀 Watchers started");
     }
 
+    async stop() {
+        await this.removeAllWatchers();
+        log("🛑 Watchers stopped");
+    }
+
     async handleProxyCreated(args: any[], event: IEvent) {
         const [proxy, owner] = args;
 
@@ -117,8 +123,9 @@ class EventWatcher {
             { owner: owner, proxyAddress: null },
             { proxyAddress: proxy, status: DreamStatus.ACTIVE }
         );
+
         if (!dream || dream.matchedCount === 0) {
-            logErr("Dream not found: ", owner);
+            logErr("[HPC] Dream not found: ", owner);
         }
     }
 
@@ -128,7 +135,7 @@ class EventWatcher {
         const dream = await DreamModel.findOne({ proxyAddress: proxy });
 
         if (!dream) {
-            logErr("Dream not found: ", proxy);
+            logErr("[HRF] Dream not found: ", proxy);
             return;
         }
 
@@ -175,7 +182,7 @@ class EventWatcher {
 
         const dream = await DreamModel.findOne({ proxyAddress: origin });
         if (!dream) {
-            logErr("Dream not found: ", origin);
+            logErr("[HDF] Dream not found: ", origin);
             return;
         }
 
@@ -207,7 +214,7 @@ class EventWatcher {
             { minFundingAmount: amount }
         );
         if (!dream || dream.matchedCount === 0) {
-            logErr("Dream not found: ", origin);
+            logErr("[HMFA] Dream not found: ", origin);
         }
     }
 
@@ -242,7 +249,6 @@ class EventWatcher {
             default:
                 this.handleUnknownEvent(name);
         }
-        console.log("");
     }
 }
 

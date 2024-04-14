@@ -1,22 +1,26 @@
 import app from "../app";
 import supertest from "supertest";
-import { Server } from "http";
 import mongoose from "mongoose";
+import { Server } from "http";
 import { HDNodeWallet, ethers } from "ethers";
 import { authWallet } from "./utils/utils";
+import { Watcher } from "../Watchers/Watch";
+import { SyncronInstance } from "../syncron/Syncron";
 
 let request: supertest.SuperTest<supertest.Test> | undefined;
 let server: Server | undefined;
 
 beforeAll(async () => {
-    process.env.DEBUG = "";
     server = app.listen();
     request = supertest(app);
+    process.env.DEBUG = "";
+    SyncronInstance.stop();
 });
 
 afterAll(async () => {
     server?.close();
     mongoose.connection.close();
+    Watcher.stop();
 });
 
 const ROUTE_CHALLENGE = "/auth/challenge";

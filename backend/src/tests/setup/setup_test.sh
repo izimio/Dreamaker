@@ -24,7 +24,7 @@ sleep 1
 
 cd -
 
-jest --setupFiles dotenv/config --detectOpenHandles --silent=false $@
+jest --setupFiles dotenv/config ./src/tests/setup/setupTest.js --detectOpenHandles --silent=false $@
 
 wait 
 

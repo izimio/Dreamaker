@@ -19,6 +19,10 @@ export const validateEthAddress = string()
     .required()
     .matches(/^0x[a-fA-F0-9]{40}$/, "Invalid Ethereum address");
 
+export const validateObjectId = object().shape({
+    id: string().required().length(24).matches(/^[0-9a-fA-F]{24}$/),
+});
+
 export const validateVerifyEcRecoverChallenge = object()
     .shape({
         address: validateEthAddress,
@@ -30,6 +34,10 @@ export const validateEditDream = object()
     .shape({
         title: string().min(5).max(50),
         description: string().min(20).max(500),
+        tags: array()
+            .of(string().oneOf(TAGS).required())
+            .min(1, "At least one tag is required")
+            .max(5, "Maximum 5 tags are allowed")
     })
     .noUnknown();
 
@@ -47,9 +55,7 @@ export const parseFormData = (formData: {
         deadlineTime: formData.deadlineTime
             ? Number(formData.deadlineTime)
             : Number(-1),
-        targetAmount: formData.targetAmount
-            ? ethers.parseUnits(formData.targetAmount, "wei")
-            : ethers.parseUnits("0", "wei"),
+        targetAmount: formData.targetAmount || "0",
         tags: formData.tags ? formData.tags.split(",") : [],
     };
 };
@@ -92,17 +98,11 @@ export const validateNewDream = object()
                 const time = Number(value);
                 return time > secondTime;
             }),
-        targetAmount: mixed()
+        targetAmount: string()
             .required()
-            .test(
-                "is-valid-target-amount",
-                "Invalid target amount",
-                (value) => {
-                    if (typeof value !== "bigint") {
-                        return false;
-                    }
-                    return value > BigInt(0);
-                }
-            ),
+            .matches(/^[1-9][0-9]*$/, "Invalid target amount")
+            .test("is-valid-amount", "Invalid target amount", (value) => {
+                return ethers.parseEther(value) > ethers.parseUnits("1", "wei");
+            }),
     })
     .noUnknown();

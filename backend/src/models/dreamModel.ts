@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { TAGS } from "../utils/constants";
 
 type IFunder = {
     address: string;
@@ -15,6 +16,7 @@ export enum DreamStatus {
     REACHED = "reached",
     PENDING_VALIDATION = "pending_validation",
     EXPIRED = "expired",
+    WITHDRAWN = "withdrawn",
 }
 
 export interface IDream {
@@ -25,9 +27,10 @@ export interface IDream {
     owner: string;
     deadlineTime: number;
     status: DreamStatus;
+    tags: string[];
     funders: IFunder[];
-    targetAmount: bigint;
-    minFundingAmount: bigint;
+    targetAmount: string;
+    minFundingAmount: string;
     proxyAddress: string;
 }
 
@@ -48,10 +51,14 @@ const dreamSchema = new mongoose.Schema<IDream>({
         required: true,
         default: DreamStatus.PENDING_VALIDATION,
     },
+    tags: {
+        type: Array({ type: String, enum: TAGS }),
+        default: [],
+    },
     deadlineTime: { type: Number, required: true },
     funders: { type: [{ address: String, amount: BigInt }], default: [] },
-    targetAmount: { type: BigInt, required: true },
-    minFundingAmount: { type: BigInt, default: BigInt(1) },
+    targetAmount: { type: String, required: true, match: /[1-9][0-9]*/ },
+    minFundingAmount: { type: String, default: "1", match: /[1-9][0-9]*/ },
     proxyAddress: { type: String, default: null },
 });
 

@@ -4,8 +4,10 @@ import {
     parseFormData,
     validateEditDream,
     validateNewDream,
+    validateObjectId,
 } from "../utils/validator";
 import { ethers } from "ethers";
+import { ValidationError } from "yup";
 
 export const createDream = async (ctx: Context) => {
     const ctxFiles = (ctx.request.files as { [key: string]: any }) || {};
@@ -28,13 +30,13 @@ export const createDream = async (ctx: Context) => {
         tags,
         description,
         deadlineTime,
-        targetAmount as bigint,
+        targetAmount,
         files || []
     );
 
     const txHash = await dreamServices.createDreamOnChain(
         ctx.state.address,
-        targetAmount as bigint,
+        targetAmount,
         deadlineTime
     );
 
@@ -58,7 +60,10 @@ export const createDream = async (ctx: Context) => {
 };
 
 export const getDreams = async (ctx: Context) => {
-    const dreams = await dreamServices.getDreams();
+    if (ctx.query.id) {
+        await validateObjectId.validate(ctx.query);
+    }
+    const dreams = await dreamServices.getDreams(ctx.query);
     ctx.body = {
         ok: true,
         data: {
@@ -68,7 +73,13 @@ export const getDreams = async (ctx: Context) => {
 };
 
 export const getMyDreams = async (ctx: Context) => {
-    const dreams = await dreamServices.getDreams(ctx.state.address);
+    if (ctx.query.id) {
+        await validateObjectId.validate(ctx.query);
+    }
+    const dreams = await dreamServices.getDreams({
+        ...ctx.query,
+        owner: ctx.state.address,
+    });
     ctx.body = {
         ok: true,
         data: {
@@ -78,12 +89,20 @@ export const getMyDreams = async (ctx: Context) => {
 };
 
 export const updateDream = async (ctx: Context) => {
-    const { id } = ctx.params;
+    const { id } = await validateObjectId.validate(ctx.params)
     const edits = await validateEditDream.validate(ctx.request.body);
+    const me = ctx.state.address;
 
-    await dreamServices.updateDream(id, edits);
+    if (!Object.keys(edits).length) {
+        throw new ValidationError("No editions provided");
+    }
+
+    const ndream = await dreamServices.updateDream(id, me, edits);
 
     ctx.body = {
         ok: true,
+        data: {
+            dream: ndream,
+        },
     };
 };

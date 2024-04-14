@@ -8,6 +8,7 @@ import mongoose from "mongoose";
 import { logger, logError } from "./utils/logger";
 
 import { Watcher } from "./Watchers/Watch";
+import {SyncronInstance} from "./syncron/Syncron";
 // Routers
 import versionRouter from "./routes/version";
 import dreamRouter from "./routes/dream";
@@ -24,9 +25,6 @@ import {
     MONGO_USER,
     MONGO_PASSWORD,
 } from "./utils/config";
-import admin from "./firebase/Bucket";
-import Bucket from "./firebase/Bucket";
-import { ValidationError } from "yup";
 
 const log = logger.extend("app");
 const logErr = logError.extend("app");
@@ -73,12 +71,14 @@ mongoose
     })
     .then((e) => {
         log("🌱 MongoDB connected");
+        Watcher.watch();
+        SyncronInstance.start();
     })
     .catch((err) => {
         logErr("MongoDB Connection error, retrying...\n" + err);
     });
 
-// mongosh -u root -p a8ze48az4e8***94azen
+
 app.use(
     bodyParser({
         includeUnparsed: true,
@@ -91,8 +91,5 @@ app.use(RateLimiter());
 useRoute(app, versionRouter);
 useRoute(app, dreamRouter);
 useRoute(app, authRouter);
-
-// Start watchers
-Watcher.watch();
 
 export default serverKoa;
