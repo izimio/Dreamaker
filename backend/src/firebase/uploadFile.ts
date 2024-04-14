@@ -11,7 +11,6 @@ export async function uploadFileToFirebase(
     const metadata = {
         contentType: mimetype,
     };
-
     return Bucket.upload(filepath, {
         destination: newFilename,
         metadata: metadata,

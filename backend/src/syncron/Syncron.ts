@@ -12,7 +12,7 @@ class Syncron {
     public cronString: string = CRON_EVERY_HOUR;
     private isStarted = false;
 
-    constructor(cronString: string = CRON_EVERY_5_SECONDS) {
+    constructor(cronString: string = CRON_EVERY_HOUR) {
         this.cronString = cronString;
     }
 

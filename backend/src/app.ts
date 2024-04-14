@@ -8,11 +8,12 @@ import mongoose from "mongoose";
 import { logger, logError } from "./utils/logger";
 
 import { Watcher } from "./Watchers/Watch";
-import {SyncronInstance} from "./syncron/Syncron";
+import { SyncronInstance } from "./syncron/Syncron";
 // Routers
 import versionRouter from "./routes/version";
 import dreamRouter from "./routes/dream";
 import authRouter from "./routes/auth";
+import withdrawRouter from "./routes/withdraw"
 
 // Middleware & config
 import { errorMiddleware } from "./middlewares/error";
@@ -24,6 +25,7 @@ import {
     ALLOWED_ORIGINS,
     MONGO_USER,
     MONGO_PASSWORD,
+    IS_TEST_MODE,
 } from "./utils/config";
 
 const log = logger.extend("app");
@@ -71,6 +73,11 @@ mongoose
     })
     .then((e) => {
         log("🌱 MongoDB connected");
+
+        if (IS_TEST_MODE) {
+            log("🧪 Test mode enabled");
+            return;
+        }
         Watcher.watch();
         SyncronInstance.start();
     })
@@ -91,5 +98,6 @@ app.use(RateLimiter());
 useRoute(app, versionRouter);
 useRoute(app, dreamRouter);
 useRoute(app, authRouter);
+useRoute(app, withdrawRouter);
 
 export default serverKoa;

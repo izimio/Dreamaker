@@ -1,1 +1,3 @@
-console.log("🔍 Running Test...")
+process.env.IS_TEST_MODE = "true";
+process.env.DEBUG = "pouet";
+

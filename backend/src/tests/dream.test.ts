@@ -2,6 +2,8 @@ import app from "../app";
 import supertest from "supertest";
 import { Server } from "http";
 import mongoose from "mongoose";
+import * as dreamServices from "../services/dream";
+
 import { HDNodeWallet, ethers } from "ethers";
 import {
     authWallet,
@@ -16,17 +18,21 @@ import { SyncronInstance } from "../syncron/Syncron";
 let request: supertest.SuperTest<supertest.Test> | undefined;
 let server: Server | undefined;
 
+
+// mock the createDreamOnChain to return a random txHash
+jest.spyOn(dreamServices, "createDreamOnChain").mockImplementation(async () => {
+    return Promise.resolve("0x" + randomString(64));
+});
+
 beforeAll(async () => {
     server = app.listen();
     request = supertest(app);
-    SyncronInstance.stop();
 });
 
 afterAll(async () => {
     server?.close();
     mongoose.connection.close();
     Watcher.stop();
-    SyncronInstance.stop();
 });
 
 const ROUTE_CREATE_DREAM = "/dream";

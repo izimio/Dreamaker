@@ -4,6 +4,7 @@ import { DreamModel } from "../models/dreamModel";
 import { ABIs, signer } from "../utils/EProviders";
 import { DREAM_PROXY_FACTORY_ADDRESS } from "../utils/config";
 import { InternalError, ObjectNotFoundError } from "../utils/error";
+import fs from "fs";
 
 type Asset = {
     type: string;
@@ -18,6 +19,7 @@ const uploadFilesToFirebase = async (
     }[]
 ): Promise<Asset[]> => {
     const filePromises = [];
+    const filesPaths = [];
 
     if (files.length === 0) {
         return [];
@@ -27,9 +29,16 @@ const uploadFilesToFirebase = async (
         filePromises.push(
             uploadFileToFirebase(file.mimetype, file.filepath, file.newFilename)
         );
+        filesPaths.push(file.filepath);
     }
     try {
         const res = await Promise.all(filePromises);
+        
+        // Delete files after uploading
+        for (const file of filesPaths) {
+            fs.unlinkSync(file);
+        }
+        
         return res.map((ret) => {
             const firebaseData = ret[1] as any;
             return {
@@ -122,7 +131,6 @@ export const getDreams = async (
         ...(params.owner && { owner: params.owner }),
         ...(params.status && { status: params.status }),
     })
-
     return dreams;
 };
 
