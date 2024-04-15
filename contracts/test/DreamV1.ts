@@ -544,20 +544,27 @@ describe("DreamV1", function () {
             const { dreamV1, otherAccount } = await deployInitializedFixture({
                 targetAmount: BigInt(ethers.parseEther("1")),
             });
-            const [,,,,random, r2] = await hre.ethers.getSigners();
-        
+            const [, , , , random, r2] = await hre.ethers.getSigners();
+
             await fund(dreamV1, otherAccount, ethers.parseEther("0.5"));
             await fund(dreamV1, random, ethers.parseEther("0.5"));
             await fund(dreamV1, r2, ethers.parseEther("0.3"));
 
-            expect(await dreamV1.getFunders()).to.eql([otherAccount.address, random.address, r2.address]);
+            expect(await dreamV1.getFunders()).to.eql([
+                otherAccount.address,
+                random.address,
+                r2.address,
+            ]);
 
             const ret = await dreamV1.getFundersAndAmounts();
             expect(ret).to.eql([
                 [otherAccount.address, random.address, r2.address],
-                [ethers.parseEther("0.5"), ethers.parseEther("0.5"), ethers.parseEther("0.3")]
-            ])
+                [
+                    ethers.parseEther("0.5"),
+                    ethers.parseEther("0.5"),
+                    ethers.parseEther("0.3"),
+                ],
+            ]);
         });
-
     });
 });

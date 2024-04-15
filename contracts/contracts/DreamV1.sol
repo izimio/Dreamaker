@@ -4,7 +4,6 @@ pragma solidity ^0.8.24;
 import "./lib/ProtocoLib.sol";
 
 contract DreamV1 {
-
     event DreamFunded(address funder, uint256 amount);
     event DreamRefunded(address funder, uint256 amount);
     event MinFundingAmountChanged(uint256 minFundingAmount);
@@ -18,11 +17,13 @@ contract DreamV1 {
     error DreamDidNotReachTargetAmount();
     error NothingToRefund();
     error Forbidden();
+    error AlreadyWithdrawn();
 
     uint256 public targetAmount;
     uint256 public deadlineTimestamp;
     uint256 public minFundingAmount;
     bool public isInitialized;
+    bool public isWithdrawn;
     address public owner;
     address public admin;
     address[] public funders;
@@ -62,6 +63,7 @@ contract DreamV1 {
         deadlineTimestamp = _deadlineTimestamp;
         minFundingAmount = 1 wei;
         isInitialized = true;
+        isWithdrawn = false;
     }
 
     /**
@@ -115,7 +117,11 @@ contract DreamV1 {
      * @return address[] Returns an array of all funders
      * @return uint256[] Returns an array of the amount funded by each funder
      **/
-    function getFundersAndAmounts() public view returns (address[] memory, uint256[] memory) {
+    function getFundersAndAmounts()
+        public
+        view
+        returns (address[] memory, uint256[] memory)
+    {
         uint256[] memory amounts = new uint256[](funders.length);
         for (uint256 i = 0; i < funders.length; i++) {
             amounts[i] = fundedAmount[funders[i]];
@@ -172,11 +178,15 @@ contract DreamV1 {
      * contract and after the dream has ended and the target amount has been reached
      **/
     function withdraw() external onlyOwner onlyEndedDream {
+        if (isWithdrawn) {
+            revert AlreadyWithdrawn();
+        }
         if (!isDreamFunded()) {
             revert DreamDidNotReachTargetAmount();
         }
         _payAdmin();
         uint256 balance = address(this).balance;
+        isWithdrawn = true;
 
         payable(owner).transfer(balance);
     }

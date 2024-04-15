@@ -1,13 +1,10 @@
 import { ethers } from "hardhat";
 
-import { DREAM_SINGLETON_ADDRESS, DREAM_PROXY_FACTORY_ADDRESS, PROXY_ADDRESS } from "./utils";
+import { PROXY_ADDRESS } from "./utils";
 
 async function main() {
-    const [deployer] = await ethers.getSigners();
-
     const proxy = await ethers.getContractAt("DreamV1", PROXY_ADDRESS);
 
-    const minFundingAmount = await proxy.minFundingAmount();
     const targetAmount = await proxy.targetAmount();
 
     const txx = await proxy.fund({

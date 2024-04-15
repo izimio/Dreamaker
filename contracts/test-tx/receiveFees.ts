@@ -1,6 +1,6 @@
 import { ethers } from "hardhat";
 
-import {DREAM_PROXY_FACTORY_ADDRESS, PROXY_ADDRESS } from "./utils";
+import {PROXY_ADDRESS } from "./utils";
 
 async function jumpAfterTimestamp(timestamp: number) {
 

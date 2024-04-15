@@ -2,12 +2,14 @@ import { PROXY_ADDRESS } from "./utils";
 import { task } from "hardhat/config";
 
 task("fund", "Fund a dream")
+    .addPositionalParam("proxy")
     .addOptionalPositionalParam("amount")
     .setAction(async (taskArgs, hre) => {
         const [owner] = await hre.ethers.getSigners();
         const randomWallet = hre.ethers.Wallet.createRandom().connect(hre.ethers.provider);
 
-        const proxy = await hre.ethers.getContractAt("DreamV1", PROXY_ADDRESS, randomWallet);
+        const rAddr = taskArgs.proxy.length === 42 ? taskArgs.proxy : PROXY_ADDRESS;
+        const proxy = await hre.ethers.getContractAt("DreamV1", rAddr, randomWallet);
         const targetAmount = await proxy.targetAmount();
 
         const ts = await owner.sendTransaction({
@@ -24,7 +26,7 @@ task("fund", "Fund a dream")
         await txx.wait()
 
         console.table({
-            proxy: PROXY_ADDRESS,
+            proxy: rAddr,
             funder: randomWallet.address,
             value: value.toString()
         })

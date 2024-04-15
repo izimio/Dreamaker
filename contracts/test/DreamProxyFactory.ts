@@ -230,7 +230,9 @@ describe("DreamFactory", function () {
             );
 
             await expect(
-                proxy1.dreamProxy.connect(otherAccount).fund()
+                proxy1.dreamProxy.connect(otherAccount).fund({
+                    value: ethers.parseUnits("1", "wei"),
+                })
             ).to.be.revertedWithCustomError(
                 proxy1.dreamProxy,
                 "FundingNotOpenToowner"
