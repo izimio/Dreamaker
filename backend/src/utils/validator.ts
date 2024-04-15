@@ -23,6 +23,11 @@ export const validateObjectId = object().shape({
     id: string().required().length(24).matches(/^[0-9a-fA-F]{24}$/),
 });
 
+export const validateWithdraw = object().shape({
+    amount: string().matches(/^[1-9][0-9]*$/, "Invalid amount"),
+    to: validateEthAddress,
+});
+
 export const validateVerifyEcRecoverChallenge = object()
     .shape({
         address: validateEthAddress,

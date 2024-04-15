@@ -3,7 +3,7 @@ import { cronWorker } from './worker';
 import { logger } from '../utils/logger';
 
 const CRON_EVERY_HOUR = '0 * * * *';
-const CRON_EVERY_5_SECONDS = '*/5 * * * * *';
+const CRON_EVERY_15_SECONDS = '*/15 * * * * *';
 
 const log = logger.extend('syncron');
 
@@ -12,7 +12,7 @@ class Syncron {
     public cronString: string = CRON_EVERY_HOUR;
     private isStarted = false;
 
-    constructor(cronString: string = CRON_EVERY_HOUR) {
+    constructor(cronString: string = CRON_EVERY_15_SECONDS) {
         this.cronString = cronString;
     }
 

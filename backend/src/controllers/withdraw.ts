@@ -1,19 +1,31 @@
 import { Context } from "koa";
 
 import * as withdrawService from "../services/withdraw";
+import { validateWithdraw } from "../utils/validator";
 
 export const withdraw = async (ctx: Context) => {
-};
+    const { amount, to} = await validateWithdraw.validate(ctx.request.body);
 
-export const getWithdrawList = async (ctx: Context) => {
-
-    const dreams = await withdrawService.getWithdrawList();
+    const res = await withdrawService.withdraw(amount, to);
 
     ctx.body = {
         ok: true,
         data: {
-            dreams: dreams,
-            numberOfDreams: dreams.length
+            status: res.status,
+            amount: res.amount,
         }
     }
+};
+
+export const getBalance = async (ctx: Context) => {
+
+    const balance = await withdrawService.getBalance();
+
+    ctx.body = {
+        ok: true,
+        data: {
+            balance: balance
+        }
+    }
+    ctx.status = 200;
 };

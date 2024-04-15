@@ -9,14 +9,12 @@ enum WorkerDreamStatus {
     ACTIVE = "active",
     EXPIRED = "expired",
     REACHED = "reached",
-    UNCHANGED = "unchanged",
 }
 
 export const cronWorkerEach = async (dream: IDream): Promise<WorkerDreamStatus> => {
 
     const proxyAddress = dream.proxyAddress;
     const targetAmount = ethers.parseUnits(dream.targetAmount, "wei");
-    const deadlineTime = dream.deadlineTime;
 
     const dreamContract = new ethers.Contract(
         proxyAddress,
@@ -30,23 +28,25 @@ export const cronWorkerEach = async (dream: IDream): Promise<WorkerDreamStatus> 
         return WorkerDreamStatus.REACHED;
     }
 
-    const now = Math.floor(Date.now() / 1000);
-
-    if (now > deadlineTime) {
-        return WorkerDreamStatus.EXPIRED;
-    }
-
-    return WorkerDreamStatus.UNCHANGED;
+    return WorkerDreamStatus.EXPIRED;
 }
 
 export const cronWorker = async () => {
+    const now = Math.floor(Date.now() / 1000);
+
     const dreams = await DreamModel.find({
         status: WorkerDreamStatus.ACTIVE,
     });
+
     const reached = [];
     const expired = [];
 
     for (const dream of dreams) {
+        // If the dream is not endex yet, skip it
+        if (now <  dream.deadlineTime) {
+            continue;
+        }
+
         let status;
         try {
             status = await cronWorkerEach(dream);

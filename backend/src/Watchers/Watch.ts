@@ -139,11 +139,6 @@ class EventWatcher {
             return;
         }
 
-        if (dream.status !== DreamStatus.ACTIVE) {
-            logErr("Dream is not active: ", proxy);
-            return;
-        }
-
         await this.manageProxyWatcher(proxy, false);
 
         const proxyContract = new ethers.Contract(proxy, ABIs.Dream, provider);
@@ -161,7 +156,7 @@ class EventWatcher {
             funders.push(...fa[0]);
             amounts.push(...fa[1]);
         } catch (error) {
-            logErr("Failed to get funders and amounts: ", error);
+            logErr("[HRF] Failed to get funders and amounts: ", error);
             return;
         }
 
@@ -169,11 +164,11 @@ class EventWatcher {
         try {
             await DreamakerToken.offer(funders, offeredAmounts);
         } catch (error) {
-            logErr("Failed to offer dreamaker: ", error);
+            logErr("[HRF] Failed to offer dreamaker: ", error);
             return;
         }
 
-        dream.status = DreamStatus.REACHED;
+        dream.status = DreamStatus.WITHDRAWN;
         await dream.save();
     }
 

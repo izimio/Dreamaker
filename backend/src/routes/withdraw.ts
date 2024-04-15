@@ -7,7 +7,7 @@ const router: Router = new Router();
 
 router.prefix("/withdraw");
 
-router.get("/", authMiddleware, AdminMiddleware, withdrawnController.withdraw);
-router.get("/list", authMiddleware, AdminMiddleware, withdrawnController.getWithdrawList);
+router.post("/", authMiddleware, AdminMiddleware, withdrawnController.withdraw);
+router.get("/", authMiddleware, AdminMiddleware, withdrawnController.getBalance);
 
 export default router;

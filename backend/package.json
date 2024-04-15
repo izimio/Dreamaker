@@ -16,7 +16,7 @@
     "dependencies": {
         "@google-cloud/storage": "^7.9.0",
         "@koa/cors": "^5.0.0",
-        "axios": "^1.5.0",
+        "axios": "^1.6.8",
         "debug": "^4.3.4",
         "dotenv": "^16.3.1",
         "ethers": "^6.11.1",
@@ -53,6 +53,7 @@
         "prettier": "^3.2.5",
         "supertest": "^6.2.4",
         "ts-jest": "^29.1.1",
+        "tsx": "^4.7.2",
         "typescript": "^5.2.2"
     },
     "scripts": {
@@ -62,7 +63,9 @@
         "parse": "prettier --ignore-path .gitignore --write \"**/**/*.+(js|ts|json)\"",
         "build": "tsc -p tsconfig.build.json",
         "test": "./src/tests/setup/setup_test.sh",
-        "test:coverage": "./src/tests/setup/setup_test.sh true"
+        "test:coverage": "./src/tests/setup/setup_test.sh true",
+        "ftest:proxy": "tsx ./src/ftests/createProxy.ts",
+        "ftest:fees": "tsx ./src/ftests/receiveProxyFees.ts"
     },
     "jest": {
         "preset": "ts-jest",
