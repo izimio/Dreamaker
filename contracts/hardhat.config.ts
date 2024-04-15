@@ -3,7 +3,6 @@ import "@nomicfoundation/hardhat-toolbox";
 import "./test-tx/fund";
 import "./test-tx/balanceOf";
 import "./test-tx/deployAll";
-import "./test-tx/signChallenge";
 
 import dotenv from "dotenv";
 
