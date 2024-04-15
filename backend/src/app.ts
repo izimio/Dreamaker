@@ -7,13 +7,16 @@ import bodyParser from "koa-body";
 import mongoose from "mongoose";
 import { logger, logError } from "./utils/logger";
 
+// Watcher & Syncron
 import { Watcher } from "./Watchers/Watch";
 import { SyncronInstance } from "./syncron/Syncron";
+
 // Routers
 import versionRouter from "./routes/version";
 import dreamRouter from "./routes/dream";
 import authRouter from "./routes/auth";
-import withdrawRouter from "./routes/withdraw"
+import withdrawRouter from "./routes/withdraw";
+import userRouter from "./routes/user";
 
 // Middleware & config
 import { errorMiddleware } from "./middlewares/error";
@@ -34,6 +37,18 @@ const logErr = logError.extend("app");
 const app: Koa = new Koa();
 const serverKoa = http.createServer(app.callback());
 
+function verifyOrigin(ctx: Context) {
+    const allowedOrigins = ALLOWED_ORIGINS.split(",");
+    const origin = ctx.headers.origin as string;
+    if (!origin) {
+        return "";
+    }
+    if (allowedOrigins.includes(origin)) {
+        return origin;
+    }
+    return "";
+}
+
 // app runs behind a proxy handling TLS
 app.proxy = true;
 
@@ -47,18 +62,6 @@ app.use(
     })
 );
 
-function verifyOrigin(ctx: Context) {
-    const allowedOrigins = ALLOWED_ORIGINS.split(",");
-    const origin = ctx.headers.origin as string;
-    if (!origin) {
-        return "";
-    }
-    if (allowedOrigins.includes(origin)) {
-        return origin;
-    }
-    return "";
-}
-
 function useRoute(app: Koa, router: Router) {
     app.use(router.routes());
     app.use(router.allowedMethods());
@@ -71,7 +74,7 @@ mongoose
         user: MONGO_USER,
         pass: MONGO_PASSWORD,
     })
-    .then((e) => {
+    .then((_) => {
         log("🌱 MongoDB connected");
 
         if (IS_TEST_MODE) {
@@ -84,7 +87,6 @@ mongoose
     .catch((err) => {
         logErr("MongoDB Connection error, retrying...\n" + err);
     });
-
 
 app.use(
     bodyParser({
@@ -99,5 +101,6 @@ useRoute(app, versionRouter);
 useRoute(app, dreamRouter);
 useRoute(app, authRouter);
 useRoute(app, withdrawRouter);
+useRoute(app, userRouter);
 
 export default serverKoa;

@@ -46,7 +46,7 @@ export class AuthError extends OperationalError {
     }
 }
 
-export class BusinessError extends OperationalError {
+export class Forbidden extends OperationalError {
     originalError?: Error;
 
     constructor(message: string, originalError?: Error) {

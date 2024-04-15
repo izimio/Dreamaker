@@ -1,13 +1,9 @@
-import axios from "axios";
 import { ethers } from "ethers";
 import dotenv from "dotenv";
 import DreamArtifact from "../abis/DreamV1.sol/DreamV1.json";
 
-
-
 dotenv.config();
 
-const API_URL = "http://localhost:8080";
 const RPC_URL = "http://localhost:8545";
 
 const main = async () => {
@@ -24,7 +20,11 @@ const main = async () => {
         return;
     }
 
-    const CloneContract = new ethers.Contract(PROXY_ADDRESS, DreamArtifact.abi, Signer);
+    const CloneContract = new ethers.Contract(
+        PROXY_ADDRESS,
+        DreamArtifact.abi,
+        Signer
+    );
 
     try {
         const tx = await CloneContract.withdraw();
@@ -33,9 +33,8 @@ const main = async () => {
         console.error("Failed to withdraw", e);
     }
 
-    console.log("Withdrawn,");
-
-}
+    console.log("Withdrawn, OK");
+};
 
 main()
     .then(() => process.exit(0))

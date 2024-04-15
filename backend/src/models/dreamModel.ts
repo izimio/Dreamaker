@@ -3,7 +3,7 @@ import { TAGS } from "../utils/constants";
 
 type IFunder = {
     address: string;
-    amount: BigInt;
+    amount: bigint;
 };
 
 type Asset = {

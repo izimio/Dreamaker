@@ -1,10 +1,9 @@
-import { N, ethers } from "ethers";
-import { provider, ABIs, Contract, signer } from "../utils/EProviders";
+import { ethers } from "ethers";
+import { provider, ABIs, signer } from "../utils/EProviders";
 import { logger, logError } from "../utils/logger";
 import { DreamModel, DreamStatus } from "../models/dreamModel";
 import { IEvent, events } from "./config";
 import { BASE_MINING_DREAMAKER, DREAMAKER_ADDRESS } from "../utils/config";
-import mongoose from "mongoose";
 
 const log = logger.extend("ws");
 const logErr = logError.extend("ws");
@@ -25,7 +24,7 @@ class EventWatcher {
         };
     }
 
-    calcOfferedDreamer(amounts: BigInt[]): BigInt[] {
+    calcOfferedDreamer(amounts: bigint[]): bigint[] {
         const numberAmounts = amounts.map((amount) => Number(amount));
         const total = numberAmounts.reduce((acc, curr) => acc + curr, 0);
 
@@ -114,7 +113,7 @@ class EventWatcher {
         log("🛑 Watchers stopped");
     }
 
-    async handleProxyCreated(args: any[], event: IEvent) {
+    async handleProxyCreated(args: any[], _: IEvent) {
         const [proxy, owner] = args;
 
         await this.manageProxyWatcher(proxy, true);
@@ -129,8 +128,8 @@ class EventWatcher {
         }
     }
 
-    async handleReceivedFees(args: any[], event: IEvent) {
-        const [proxy, amount] = args;
+    async handleReceivedFees(args: any[], _: IEvent) {
+        const [proxy] = args;
 
         const dream = await DreamModel.findOne({ proxyAddress: proxy });
 
@@ -172,7 +171,7 @@ class EventWatcher {
         await dream.save();
     }
 
-    async handleDreamFunded(origin: string, args: any[], event: IEvent) {
+    async handleDreamFunded(origin: string, args: any[], _: IEvent) {
         const [funder, amount] = args;
 
         const dream = await DreamModel.findOne({ proxyAddress: origin });
@@ -200,7 +199,7 @@ class EventWatcher {
     async handleMinFundingAmountChanged(
         origin: string,
         args: any[],
-        event: IEvent
+        _: IEvent
     ) {
         const [amount] = args;
 

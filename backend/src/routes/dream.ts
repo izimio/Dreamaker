@@ -1,9 +1,8 @@
 import Router from "koa-router";
-import { Context } from "koa";
-
-import { authMiddleware } from "../middlewares/auth";
-import * as dreamCotroller from "../controllers/dream";
 import { filesMiddleware } from "../middlewares/files";
+import { authMiddleware } from "../middlewares/auth";
+
+import * as dreamCotroller from "../controllers/dream";
 
 const router: Router = new Router();
 

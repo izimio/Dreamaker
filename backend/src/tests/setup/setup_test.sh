@@ -18,9 +18,9 @@ kill_pid
 
 sleep 1
 
-./deploy_contracts.sh &
+# ./deploy_contracts.sh &
 
-sleep 1
+# sleep 1
 
 cd -
 

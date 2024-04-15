@@ -1,26 +1,18 @@
-import yup, {
-    string,
-    number,
-    object,
-    array,
-    mixed,
-    ValidationError,
-} from "yup";
+import { string, number, object, array, ValidationError } from "yup";
 import { ALLOWED_EXTENSIONS, TAGS } from "./constants";
 import { ethers } from "ethers";
 
 const min1 = 60;
-const h1 = min1 * 60;
-const d1 = h1 * 24;
-const m1 = d1 * 30;
-const y1 = m1 * 12;
 
 export const validateEthAddress = string()
     .required()
     .matches(/^0x[a-fA-F0-9]{40}$/, "Invalid Ethereum address");
 
 export const validateObjectId = object().shape({
-    id: string().required().length(24).matches(/^[0-9a-fA-F]{24}$/),
+    id: string()
+        .required()
+        .length(24)
+        .matches(/^[0-9a-fA-F]{24}$/),
 });
 
 export const validateWithdraw = object().shape({
@@ -42,7 +34,7 @@ export const validateEditDream = object()
         tags: array()
             .of(string().oneOf(TAGS).required())
             .min(1, "At least one tag is required")
-            .max(5, "Maximum 5 tags are allowed")
+            .max(5, "Maximum 5 tags are allowed"),
     })
     .noUnknown();
 

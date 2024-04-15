@@ -1,5 +1,6 @@
 import { HDNodeWallet, ethers } from "ethers";
 import { TAGS } from "../../utils/constants";
+import { DreamModel, DreamStatus } from "../../models/dreamModel";
 
 export const randomString = (length: number): string => {
     const characters =
@@ -42,7 +43,6 @@ export const authWallet = async (
     request: any,
     privateKey?: string
 ): Promise<{ wallet: HDNodeWallet | ethers.Wallet; token: string }> => {
-    
     const wallet = createWallet(privateKey);
 
     const response = await request?.post("/auth/challenge").send({
@@ -137,4 +137,44 @@ export const createRandomDream = async (
 
     const dream = response?.body.data.dream;
     return { dream, wSigner };
+};
+
+export const fundDream = async (
+    request: any,
+    params: {
+        address?: string;
+        dreamId?: string;
+        amount?: bigint;
+    } = {}
+) => {
+    const address = params.address || ethers.Wallet.createRandom().address;
+    const amount: any =
+        params.amount || BigInt(Math.floor(Math.random() * 1e18) + 1);
+    let dreamId = params.dreamId;
+
+    if (!params.dreamId) {
+        const { dream } = await createRandomDream(request, undefined, {});
+        dreamId = dream.id;
+    }
+
+    const r = await DreamModel.findOne({ _id: dreamId });
+    if (!r) {
+        throw new Error("Dream not found");
+    }
+
+    // if address is already in funders, update amount else push new funder
+    const funders = r.funders;
+    const index = funders.findIndex((f) => f.address === address);
+    if (index !== -1) {
+        funders[index].amount += amount;
+    } else {
+        funders.push({ address, amount });
+    }
+
+    r.funders = funders;
+    r.status = DreamStatus.ACTIVE;
+
+    await r.save();
+
+    return { dreamId, address, amount };
 };

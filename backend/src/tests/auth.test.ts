@@ -112,7 +112,7 @@ describe("POST auth/verify", () => {
         expect(response?.body.ok).toBe(false);
     });
     it("Verifying a challenge, missing signature", async () => {
-        const challenge = await createRandomChallenge();
+        await createRandomChallenge();
 
         const response = await request?.post(ROUTE_VERIFY).send({
             address: randomWallet.address,
@@ -121,7 +121,7 @@ describe("POST auth/verify", () => {
         expect(response?.body.ok).toBe(false);
     });
     it("Verifying a challenge, invalid signature", async () => {
-        const challenge = await createRandomChallenge();
+        await createRandomChallenge();
 
         const response = await request?.post(ROUTE_VERIFY).send({
             address: randomWallet.address,

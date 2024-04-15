@@ -4,7 +4,7 @@ import {
     ValidationError,
     AuthError,
     InternalError,
-    BusinessError,
+    Forbidden,
     ObjectNotFoundError,
     errorHandler,
     ConflictError,
@@ -43,8 +43,8 @@ export const errorMiddleware: Koa.Middleware = async (ctx: Context, next) => {
             ctx.body = { ok: false, error: error.message };
             return;
         }
-        if (error instanceof BusinessError) {
-            log("BusinessError:", error.message);
+        if (error instanceof Forbidden) {
+            log("Forbidden:", error.message);
             ctx.status = 403;
             ctx.body = { ok: false, error: error.message };
             return;

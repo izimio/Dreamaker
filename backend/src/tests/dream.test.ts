@@ -14,10 +14,8 @@ import {
 } from "./utils/utils";
 
 import { Watcher } from "../Watchers/Watch";
-import { SyncronInstance } from "../syncron/Syncron";
 let request: supertest.SuperTest<supertest.Test> | undefined;
 let server: Server | undefined;
-
 
 // mock the createDreamOnChain to return a random txHash
 jest.spyOn(dreamServices, "createDreamOnChain").mockImplementation(async () => {
@@ -51,7 +49,7 @@ describe(`POST ${ROUTE_CREATE_DREAM}`, () => {
             createRandomDreamData();
         const response = await request
             ?.post(ROUTE_CREATE_DREAM)
-            .set("Authorization", `Bearer invalid token`)
+            .set("Authorization", "Bearer invalid token")
             .field("title", title)
             .field("description", description)
             .field("tags", tags.join(","))
@@ -142,11 +140,10 @@ describe(`POST ${ROUTE_CREATE_DREAM}`, () => {
 });
 
 describe(`GET ${ROUTE_GET_DREAMS}`, () => {
-
     let wSigner: {
         wallet: HDNodeWallet | ethers.Wallet;
         token: string;
-    }
+    };
     beforeAll(async () => {
         ({ wSigner } = await createRandomDream(request, undefined, {}));
     }, 1000000);
@@ -175,10 +172,11 @@ describe(`GET ${ROUTE_GET_DREAMS}`, () => {
         expect(found).toBe(1);
     });
     it("GET dreams, TAGS", async () => {
-
         const { dream } = await createRandomDream(request, undefined, {});
 
-        const response = await request?.get(ROUTE_GET_DREAMS + "?_id=" + dream.id);
+        const response = await request?.get(
+            ROUTE_GET_DREAMS + "?_id=" + dream.id
+        );
         expect(response?.status).toBe(200);
         expect(response?.body.ok).toBe(true);
 
@@ -190,11 +188,10 @@ describe(`GET ${ROUTE_GET_DREAMS}`, () => {
 });
 
 describe(`GET ${ROUTE_GET_MY_DREAMS}`, () => {
-
     let wSigner: {
         wallet: HDNodeWallet | ethers.Wallet;
         token: string;
-    }
+    };
 
     beforeAll(async () => {
         wSigner = await authWallet(request);
@@ -225,18 +222,17 @@ describe(`GET ${ROUTE_GET_MY_DREAMS}`, () => {
         expect(dreams2.length).toBe(1);
         expect(dreams2[0].owner).toBe(wSigner.wallet.address);
     });
-
 });
 
 describe(`PUT ${ROUTE_UPDATE_DREAM}`, () => {
     let gSigner: {
         wallet: HDNodeWallet | ethers.Wallet;
         token: string;
-    }
+    };
     let gDream: any;
     beforeAll(async () => {
         gSigner = await authWallet(request);
-       const res = await createRandomDream(request, gSigner, {});
+        const res = await createRandomDream(request, gSigner, {});
         gDream = res.dream;
     });
     it("Update dream, OK", async () => {
@@ -255,7 +251,7 @@ describe(`PUT ${ROUTE_UPDATE_DREAM}`, () => {
         const { dream } = await createRandomDream(request, undefined, {});
         const response = await request
             ?.put(ROUTE_UPDATE_DREAM.replace(":id", dream.id))
-            .set("Authorization", `Bearer invalid token`)
+            .set("Authorization", "Bearer invalid token")
             .send({ title: "New title" });
         expect(response?.status).toBe(401);
         expect(response?.body.ok).toBe(false);
@@ -270,7 +266,7 @@ describe(`PUT ${ROUTE_UPDATE_DREAM}`, () => {
         expect(response?.body.ok).toBe(false);
     });
     it("Update dream, not found", async () => {
-        const randomId = "661bbd6c855700b93eb3ea66"
+        const randomId = "661bbd6c855700b93eb3ea66";
         const signer = await authWallet(request);
         const response = await request
             ?.put(ROUTE_UPDATE_DREAM.replace(":id", randomId))
@@ -294,9 +290,7 @@ describe(`PUT ${ROUTE_UPDATE_DREAM}`, () => {
             ?.put(ROUTE_UPDATE_DREAM.replace(":id", gDream.id))
             .set("Authorization", `Bearer ${gSigner.token}`)
             .send({
-                tags: [
-                    "no-sens"
-                ]
+                tags: ["no-sens"],
             });
         expect(response?.status).toBe(400);
         expect(response?.body.ok).toBe(false);
@@ -305,14 +299,14 @@ describe(`PUT ${ROUTE_UPDATE_DREAM}`, () => {
         const nTags = randomTags(4);
         const rTitle = randomString(10);
         const rDescription = randomString(50);
-        
+
         const response = await request
             ?.put(ROUTE_UPDATE_DREAM.replace(":id", gDream.id))
             .set("Authorization", `Bearer ${gSigner.token}`)
             .send({
                 title: rTitle,
                 description: rDescription,
-                tags: nTags
+                tags: nTags,
             });
         expect(response?.status).toBe(200);
         expect(response?.body.ok).toBe(true);

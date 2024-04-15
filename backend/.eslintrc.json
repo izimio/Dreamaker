@@ -5,10 +5,7 @@
         "project": "./tsconfig.json",
         "ecmaVersion": "latest"
     },
-    "extends": [
-        "airbnb-typescript/base",
-        "plugin:@typescript-eslint/recommended"
-    ],
+    "extends": ["plugin:@typescript-eslint/recommended"],
     "overrides": [
         {
             "files": ["scripts/**/*.ts", "test/**/*.ts", "hardhat.config.ts"],

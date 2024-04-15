@@ -6,7 +6,6 @@ import jwt from "jsonwebtoken";
 dotenv.config();
 
 const API_URL = "http://localhost:8080";
-const RPC_URL = "http://localhost:8545";
 
 const JWT_SECRET = process.env.JWT_SECRET as string;
 if (!JWT_SECRET) {
@@ -15,9 +14,11 @@ if (!JWT_SECRET) {
 }
 
 const getToken = async (Wallet: ethers.Wallet) => {
-    const token = jwt.sign({ address: Wallet.address }, JWT_SECRET, { expiresIn: "7d" });
-    return token
-}
+    const token = jwt.sign({ address: Wallet.address }, JWT_SECRET, {
+        expiresIn: "7d",
+    });
+    return token;
+};
 
 const main = async () => {
     const PK = process.env.DEPLOYER_PRIVATE_KEY as string;
@@ -37,26 +38,24 @@ const main = async () => {
 
     const MINUTE_NUMBERS = Number(process.argv[2]) || 2;
 
-    const provider = new ethers.JsonRpcProvider(RPC_URL); 
-
-    const time = Math.ceil((Date.now() / 1000) + (MINUTE_NUMBERS * 60))
-    console.log(time);
-    console.log(ethers.parseEther("1").toString());
+    const time = Math.ceil(Date.now() / 1000 + MINUTE_NUMBERS * 60);
 
     const formData = new FormData();
     formData.append("targetAmount", ethers.parseEther("1").toString());
     formData.append("deadlineTime", time.toString());
-    formData.append("description", "12345678901234567890123456789012345678901234567890123456789")
+    formData.append(
+        "description",
+        "12345678901234567890123456789012345678901234567890123456789"
+    );
     formData.append("title", "Test-" + MINUTE_NUMBERS);
-    formData.append("tags", "Politics,Sports")
+    formData.append("tags", "Politics,Sports");
 
     try {
-        const res = await axios.post(API_URL + "/dream", formData, {
+        await axios.post(API_URL + "/dream", formData, {
             headers: {
-                "Authorization": `Bearer ${token}`,
-            }
+                Authorization: `Bearer ${token}`,
+            },
         });
-
     } catch (e) {
         console.error("Failed to create dream", e);
         return;
@@ -64,9 +63,9 @@ const main = async () => {
 
     console.log({
         owner: Signer.address,
-        endsIn: time - (Date.now() / 1000)
-    })
-}
+        endsIn: time - Date.now() / 1000,
+    });
+};
 
 main()
     .then(() => process.exit(0))

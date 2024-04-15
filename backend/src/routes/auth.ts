@@ -1,5 +1,4 @@
 import Router from "koa-router";
-import { Context } from "koa";
 import * as authCotroller from "../controllers/auth";
 
 const router: Router = new Router();

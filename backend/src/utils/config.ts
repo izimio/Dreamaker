@@ -15,8 +15,10 @@ if (!ALLOWED_ORIGINS) {
     throw new Error("Missing ALLOWED_ORIGINS");
 }
 
-export const IS_TEST_MODE = process.env.IS_TEST_MODE && process.env.IS_TEST_MODE === "true" ? true : false;
-
+export const IS_TEST_MODE =
+    process.env.IS_TEST_MODE && process.env.IS_TEST_MODE === "true"
+        ? true
+        : false;
 
 // ==================== MONGO ==================== //
 

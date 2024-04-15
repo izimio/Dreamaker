@@ -1,15 +1,17 @@
-import Cron from 'node-cron';
-import { cronWorker } from './worker';
-import { logger } from '../utils/logger';
+import Cron from "node-cron";
+import { cronWorker } from "./worker";
+import { logger } from "../utils/logger";
 
-const CRON_EVERY_HOUR = '0 * * * *';
-const CRON_EVERY_15_SECONDS = '*/15 * * * * *';
+const CRON_EVERY_HOUR = "0 * * * *";
+const CRON_EVERY_15_SECONDS = "*/15 * * * * *";
 
-const log = logger.extend('syncron');
+const log = logger.extend("syncron");
 
 class Syncron {
     private cronInstance: Cron.ScheduledTask | null = null;
+
     public cronString: string = CRON_EVERY_HOUR;
+
     private isStarted = false;
 
     constructor(cronString: string = CRON_EVERY_15_SECONDS) {
@@ -20,7 +22,7 @@ class Syncron {
         if (!this.isStarted) {
             return;
         }
-        log('⛔ Stopping cron worker');
+        log("⛔ Stopping cron worker");
         this.cronInstance?.stop();
     }
 
@@ -28,10 +30,10 @@ class Syncron {
         if (this.isStarted) {
             return;
         }
-        log('👷 Starting cron worker');
+        log("👷 Starting cron worker");
         this.isStarted = true;
         this.cronInstance = Cron.schedule(this.cronString, () => {
-            log('====> ⏰ Running cron worker <====');
+            log("====> ⏰ Running cron worker <====");
             cronWorker();
         });
     }

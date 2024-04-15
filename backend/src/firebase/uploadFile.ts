@@ -1,4 +1,3 @@
-import PersistentFile from "formidable/PersistentFile";
 import Bucket from "./Bucket";
 import fs from "fs";
 
@@ -7,7 +6,7 @@ export async function uploadFileToFirebase(
     filepath: string,
     newFilename: string
 ) {
-    const fileStream = fs.createReadStream(filepath);
+    fs.createReadStream(filepath);
     const metadata = {
         contentType: mimetype,
     };

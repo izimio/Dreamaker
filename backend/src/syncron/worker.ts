@@ -11,8 +11,9 @@ enum WorkerDreamStatus {
     REACHED = "reached",
 }
 
-export const cronWorkerEach = async (dream: IDream): Promise<WorkerDreamStatus> => {
-
+export const cronWorkerEach = async (
+    dream: IDream
+): Promise<WorkerDreamStatus> => {
     const proxyAddress = dream.proxyAddress;
     const targetAmount = ethers.parseUnits(dream.targetAmount, "wei");
 
@@ -29,7 +30,7 @@ export const cronWorkerEach = async (dream: IDream): Promise<WorkerDreamStatus> 
     }
 
     return WorkerDreamStatus.EXPIRED;
-}
+};
 
 export const cronWorker = async () => {
     const now = Math.floor(Date.now() / 1000);
@@ -43,7 +44,7 @@ export const cronWorker = async () => {
 
     for (const dream of dreams) {
         // If the dream is not endex yet, skip it
-        if (now <  dream.deadlineTime) {
+        if (now < dream.deadlineTime) {
             continue;
         }
 
@@ -77,4 +78,4 @@ export const cronWorker = async () => {
         );
     }
     log("Dream treated: %O", dreams.length);
-}
+};

@@ -33,12 +33,12 @@ const uploadFilesToFirebase = async (
     }
     try {
         const res = await Promise.all(filePromises);
-        
+
         // Delete files after uploading
         for (const file of filesPaths) {
             fs.unlinkSync(file);
         }
-        
+
         return res.map((ret) => {
             const firebaseData = ret[1] as any;
             return {
@@ -85,7 +85,6 @@ export const postDream = async (
             targetAmount,
         });
         return dream._id;
-
     } catch (error: any) {
         throw new InternalError("Failed to post dream: " + error.message);
     }
@@ -125,13 +124,25 @@ export const getDreams = async (
         status?: string;
     } = {}
 ) => {
-
     const dreams = await DreamModel.find({
         ...(params._id && { _id: params._id }),
         ...(params.owner && { owner: params.owner }),
         ...(params.status && { status: params.status }),
-    })
-    return dreams;
+    }).lean();
+
+    const parsedBigIntToStringsDreams = dreams.map((dream) => {
+        return {
+            ...dream,
+            funders: dream.funders.map((funder) => {
+                return {
+                    ...funder,
+                    amount: funder.amount.toString(),
+                };
+            }),
+        };
+    });
+
+    return parsedBigIntToStringsDreams;
 };
 
 export const updateDream = async (
@@ -149,8 +160,8 @@ export const updateDream = async (
             $set: {
                 ...(edits.title && { title: edits.title }),
                 ...(edits.description && { description: edits.description }),
-                ...(edits.tags && { tags: edits.tags })
-            }
+                ...(edits.tags && { tags: edits.tags }),
+            },
         },
         { new: true }
     );

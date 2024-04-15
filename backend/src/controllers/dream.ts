@@ -6,7 +6,6 @@ import {
     validateNewDream,
     validateObjectId,
 } from "../utils/validator";
-import { ethers } from "ethers";
 import { ValidationError } from "yup";
 
 export const createDream = async (ctx: Context) => {
@@ -89,7 +88,7 @@ export const getMyDreams = async (ctx: Context) => {
 };
 
 export const updateDream = async (ctx: Context) => {
-    const { id } = await validateObjectId.validate(ctx.params)
+    const { id } = await validateObjectId.validate(ctx.params);
     const edits = await validateEditDream.validate(ctx.request.body);
     const me = ctx.state.address;
 
