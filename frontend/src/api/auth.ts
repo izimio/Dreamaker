@@ -13,3 +13,17 @@ export const getChallenge = async (address: string) => {
         return error.response.data;
     }
 }
+
+export const verifyChallenge = async (address: string, challenge: string, signature: string) => {
+
+    try {
+        const response = await axiosInstance.post("/verify", {
+            address,
+            challenge,
+            signature
+        });
+        return response.data;
+    } catch (error: any) {
+        return error.response.data;
+    }
+}

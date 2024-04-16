@@ -3,10 +3,29 @@ import { FC } from "react";
 import MetamaskLogo from "/metamaskLogo.png";
 import { useGlobal } from "../providers/global";
 import { connectWallet } from "../ethereum/metamask";
+import toast from "react-hot-toast";
+
 
 const Connect: FC = () => {
-    const { user } = useGlobal();
+    const { user, setToken } = useGlobal();
     const isConnected = !!user;
+    const isMetaMaskInstalled = !!window.ethereum;
+
+    const handleConnection = async () => {
+        if (!isMetaMaskInstalled) {
+            toast.error("Metamask is not installed");
+            return;
+        }
+
+        const result = await connectWallet();
+        if (!result.ok || !result.data) {
+            toast.error(result.message);
+            return;
+        }
+        toast.success("Connected to Metamask");
+        setToken(result.data.token);
+        console.log(result);
+    };
 
     if (!isConnected) {
         return (
@@ -14,7 +33,7 @@ const Connect: FC = () => {
                 <Box
                     rounded={"lg"}
                     color={"white"}
-                    onClick={() => connectWallet()}
+                    onClick={() => handleConnection()}
                     bgGradient={
                         "linear(to-r, metamaskWhite, metamaskLight, metamaskDark)"
                     }
