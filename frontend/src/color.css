@@ -1,0 +1,107 @@
+/* CSS HEX */
+--turquoise: #4ae3cbff;
+--dark-cyan: #2b9ba2ff;
+--penn-blue: #00003aff;
+--black: #000000ff;
+--federal-blue: #000054ff;
+
+/* CSS HSL */
+--turquoise: hsla(171, 73%, 59%, 1);
+--dark-cyan: hsla(184, 58%, 40%, 1);
+--penn-blue: hsla(240, 100%, 11%, 1);
+--black: hsla(0, 0%, 0%, 1);
+--federal-blue: hsla(240, 100%, 16%, 1);
+
+/* SCSS HEX */
+$turquoise: #4ae3cbff;
+$dark-cyan: #2b9ba2ff;
+$penn-blue: #00003aff;
+$black: #000000ff;
+$federal-blue: #000054ff;
+
+/* SCSS HSL */
+$turquoise: hsla(171, 73%, 59%, 1);
+$dark-cyan: hsla(184, 58%, 40%, 1);
+$penn-blue: hsla(240, 100%, 11%, 1);
+$black: hsla(0, 0%, 0%, 1);
+$federal-blue: hsla(240, 100%, 16%, 1);
+
+/* SCSS RGB */
+$turquoise: rgba(74, 227, 203, 1);
+$dark-cyan: rgba(43, 155, 162, 1);
+$penn-blue: rgba(0, 0, 58, 1);
+$black: rgba(0, 0, 0, 1);
+$federal-blue: rgba(0, 0, 84, 1);
+
+/* SCSS Gradient */
+$gradient-top: linear-gradient(
+    0deg,
+    #4ae3cbff,
+    #2b9ba2ff,
+    #00003aff,
+    #000000ff,
+    #000054ff
+);
+$gradient-right: linear-gradient(
+    90deg,
+    #4ae3cbff,
+    #2b9ba2ff,
+    #00003aff,
+    #000000ff,
+    #000054ff
+);
+$gradient-bottom: linear-gradient(
+    180deg,
+    #4ae3cbff,
+    #2b9ba2ff,
+    #00003aff,
+    #000000ff,
+    #000054ff
+);
+$gradient-left: linear-gradient(
+    270deg,
+    #4ae3cbff,
+    #2b9ba2ff,
+    #00003aff,
+    #000000ff,
+    #000054ff
+);
+$gradient-top-right: linear-gradient(
+    45deg,
+    #4ae3cbff,
+    #2b9ba2ff,
+    #00003aff,
+    #000000ff,
+    #000054ff
+);
+$gradient-bottom-right: linear-gradient(
+    135deg,
+    #4ae3cbff,
+    #2b9ba2ff,
+    #00003aff,
+    #000000ff,
+    #000054ff
+);
+$gradient-top-left: linear-gradient(
+    225deg,
+    #4ae3cbff,
+    #2b9ba2ff,
+    #00003aff,
+    #000000ff,
+    #000054ff
+);
+$gradient-bottom-left: linear-gradient(
+    315deg,
+    #4ae3cbff,
+    #2b9ba2ff,
+    #00003aff,
+    #000000ff,
+    #000054ff
+);
+$gradient-radial: radial-gradient(
+    #4ae3cbff,
+    #2b9ba2ff,
+    #00003aff,
+    #000000ff,
+    #000054ff
+);
