@@ -32,15 +32,19 @@ const Wave: FC = () => {
 };
 
 const Footer: FC = () => {
-    const isTablette = window.innerWidth < 768;
-
     return (
-        <Box bottom={0} left={0} position={"fixed"} w={"100%"}>
+        <Box
+            bottom={0}
+            left={0}
+            position={"relative"}
+            w={"100%"}
+            overflow={"hidden"}
+        >
             <Box zIndex={-1}>
                 <Wave />
             </Box>
             <Box
-                bgGradient={"linear(to-l, light,      darkBlue, dark)"}
+                bgGradient={"linear(to-l, light, darkBlue, dark)"}
                 color="white"
             >
                 <Flex
@@ -54,6 +58,7 @@ const Footer: FC = () => {
                     <Flex
                         justifyContent={"space-evenly"}
                         alignItems={"center"}
+                        zIndex={10}
                         mt={{
                             base: 0,
                             md: -20,
@@ -71,7 +76,8 @@ const Footer: FC = () => {
                                 cursor: "pointer",
                             }}
                             _hover={{
-                                boxShadow: "2px 2px 100px 5px #4AE3CB",
+                                boxShadow:
+                                    "2px 2px 100px 15px #4AE3CB !important",
                             }}
                             onClick={() =>
                                 window.open(
@@ -99,28 +105,30 @@ const Footer: FC = () => {
                             </Text>
                         </Box>
                     </Flex>
-                    <Box
-                        style={{
-                            transition: "500ms",
-                            position: "relative",
-                            bottom: "-50px",
-                            borderRadius: "50%",
-                        }}
-                        _hover={{
-                            cursor: "pointer",
-                            transform: "translateY(-40px)",
-                            boxShadow: "10px 10px 100px 50px #000054",
-                        }}
-                        onClick={() =>
-                            window.open("https://github.com/izimio/Dreamaker")
-                        }
-                    >
-                        <Tooltip label="Click on me" placement="top">
+                    <Tooltip label="Psstt: Click on me" placement="start" bg={"dark"}>
+                        <Box
+                            style={{
+                                transition: "500ms",
+                                transform: "translateY(50px) translateX(-50px)",
+                                borderRadius: "70%",
+                            }}
+                            _hover={{
+                                cursor: "pointer",
+                                transform:
+                                    "translateY(20px) translateX(-50px) !important",
+                                boxShadow: "10px 10px 100px 50px #000054",
+                                backgroundColor: "dark",
+                            }}
+                            onClick={() =>
+                                window.open(
+                                    "https://github.com/izimio/Dreamaker"
+                                )
+                            }
+                        >
                             {wizard("150", "150")}
-                        </Tooltip>
-                    </Box>
+                        </Box>
+                    </Tooltip>
                 </Flex>
-                {/* {chest("150", "150")} */}
             </Box>
         </Box>
     );

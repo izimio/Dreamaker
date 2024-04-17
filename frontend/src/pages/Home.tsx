@@ -6,7 +6,13 @@ const Home: FC = () => {
     return (
         <Box>
             <Container>
-                <Box>
+                <Box height={"500px"}>
+                    <h1>Home</h1>
+                </Box>
+                <Box height={"500px"}>
+                    <h1>Home</h1>
+                </Box>
+                <Box height={"500px"}>
                     <h1>Home</h1>
                 </Box>
             </Container>

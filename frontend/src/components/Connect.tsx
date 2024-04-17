@@ -1,12 +1,11 @@
-import { Box, Button, Flex, Text } from "@chakra-ui/react";
-import { FC, useEffect, useState } from "react";
+import { Box, Flex, Text } from "@chakra-ui/react";
+import { FC, useState } from "react";
 import MetamaskLogo from "/metamaskLogo.png";
 import { useGlobal } from "../providers/global";
 import { connectWallet } from "../ethereum/metamask";
 import toast from "react-hot-toast";
 import { getState, setState } from "../utils/storage";
 import AddressCadrant from "./AddressCadrant";
-import { DEFAULT_CHAINS } from "../ethereum/config";
 
 const Connect: FC = () => {
     const { user, setToken } = useGlobal();
@@ -51,6 +50,7 @@ const Connect: FC = () => {
                     bgGradient={
                         "linear(to-r, metamaskWhite, metamaskLight, metamaskDark)"
                     }
+                    bg={"#f89d49"}
                     style={{
                         cursor: disabled ? "not-allowed" : "pointer",
                         opacity: disabled ? 0.5 : 1,

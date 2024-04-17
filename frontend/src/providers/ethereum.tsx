@@ -17,10 +17,11 @@ const EthereumContext = createContext({} as IEthereum);
 export const EthereumProvider: FC<Props> = ({ children }) => {
     const [chainId, setChainId] = useState<number | null>(null);
 
-    const {switchChainModal} = useModals();
+    const { switchChainModal } = useModals();
 
     useEffect(() => {
         if (!chainId) return;
+    
         if (!DEFAULT_CHAINS.includes(chainId)) {
             switchChainModal(true);
         } else {

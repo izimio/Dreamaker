@@ -5,7 +5,14 @@ import Connect from "./Connect";
 import { FC } from "react";
 const Upbar: FC = () => {
     return (
-        <Box  color="white" py={4} width={"100vw"} px={4} bgGradient={"linear(to-l, light, darkBlue, dark)"}>
+        <Box
+            color="white"
+            py={4}
+            width={"100vw"}
+            px={4}
+            pr={8}
+            bgGradient={"linear(to-l, light, darkBlue, dark)"}
+        >
             <Flex justifyContent={"space-between"} alignItems={"center"}>
                 <Box>
                     <Flex minWidth="max-content" alignItems="center" gap="2">
@@ -21,9 +28,7 @@ const Upbar: FC = () => {
                             <Text fontSize="xl" fontWeight="bold">
                                 Dreamaker
                             </Text>
-                            <Text fontSize="sm">
-                                We are Dream Makers
-                            </Text>
+                            <Text fontSize="sm">We are Dream Makers</Text>
                         </Box>
                     </Flex>
                 </Box>

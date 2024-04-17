@@ -1,7 +1,6 @@
 import {
     Modal,
     ModalBody,
-    ModalCloseButton,
     ModalContent,
     ModalHeader,
     ModalOverlay,
@@ -11,16 +10,14 @@ import { useModals } from "../providers/modals";
 import metamaskLogo from "/public/metamaskLogo.png";
 
 function ChainModal() {
-    const { chainModal, switchChainModal } = useModals();
+    const { chainModal } = useModals();
     return (
-        <Modal
-            isOpen={chainModal}
-            onClose={() => {}}
-            isCentered={true}
-        >
+        <Modal isOpen={chainModal} onClose={() => {}} isCentered={true}>
             <ModalOverlay />
             <ModalContent>
-                <ModalHeader textAlign={"center"}>🚧 Unsupported Chain </ModalHeader>
+                <ModalHeader textAlign={"center"}>
+                    🚧 Unsupported Chain{" "}
+                </ModalHeader>
                 <ModalBody
                     style={{
                         display: "flex",
