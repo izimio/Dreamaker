@@ -8,7 +8,7 @@ import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../utils/config";
 
 export const createEcRecoverChallenge = async (ctx: Context) => {
-    const address = await validateEthAddress.validate(ctx.request.body.address);
+    const address = await validateEthAddress.validate(ctx.params.address);
 
     const challenge = await userServices.createEcRecoverChallenge(address);
 

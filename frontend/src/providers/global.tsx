@@ -37,22 +37,33 @@ export const GlobalProvider: FC<Props> = ({ children }) => {
     const [user, setUser] = useState<User | null>(null);
 
     useEffect(() => {
-        const token = getState("token");
-        if (token) {
-            setToken(token);
-        }
+        setToken(getState("token"));
+
+        const initGlobalStates = async () => {
+            const response = await axiosInstance.get("/dream");
+            setDreams(response.data.data);
+
+            if (!getState("token")) return;
+            retrieveUser();
+        };
+        initGlobalStates();
     }, []);
 
     useEffect(() => {
-        if (token) {
-            axiosInstance.defaults.headers["Authorization"] = `Bearer ${token}`;
-            axiosInstance.get("/user/me").then((response) => {
-                console.log("user", response.data);
-                setUser(response.data);
-            });
-        }
+        if (!getState("token")) return;
+        retrieveUser();
     }, [token]);
 
+    const retrieveUser = async () => {
+        axiosInstance.defaults.headers["Authorization"] = `Bearer ${token}`;
+        const response = await axiosInstance.get("/user/me");
+        const data = response.data.data;
+        setUser({
+            address: data.address,
+            DMK: data.numberOfDMK,
+            dreams: data.dreams || [],
+        });
+    };
     const logout = () => {
         removeState("token");
         setToken(null);

@@ -5,7 +5,6 @@ import Upbar from "../components/Upbar";
 const Home: FC = () => {
     return (
         <Box>
-            <Upbar />
             <Container>
                 <Box>
                     <h1>Home</h1>

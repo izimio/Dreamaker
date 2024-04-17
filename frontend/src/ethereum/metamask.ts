@@ -43,3 +43,24 @@ export const connectWallet = async () => {
         }
     }
 }
+
+
+export const changeChain = async (chainId: number) => {
+    try {
+        if (window.ethereum.isOpen === true) {
+            return;
+        }
+        // if same request is alreadt sent don't send again
+        await window.ethereum.request({
+            method: "wallet_switchEthereumChain",
+            params: [{ chainId: `0x${chainId.toString(16)}` }],
+        });
+    } catch (error) {
+        // console.error(error);
+    }
+}
+
+export const getChainId = async () => {
+    const chainId = await window.ethereum.request({ method: 'eth_chainId' });
+    return parseInt(chainId, 16);
+}

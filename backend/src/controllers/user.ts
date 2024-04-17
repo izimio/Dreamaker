@@ -17,12 +17,13 @@ export const getMyFunds = async (ctx: Context) => {
 };
 
 export const getMe = async (ctx: Context) => {
-    const isAdmin = await userService.getMe(ctx.state.address);
+    const meInfos = await userService.getMe(ctx.state.address);
 
     ctx.body = {
         ok: true,
         data: {
-            isAdmin,
+            isAdmin: meInfos.isAdmin,
+            numberOfDMK: meInfos.numberOfDMK,
             address: ctx.state.address,
         },
     };

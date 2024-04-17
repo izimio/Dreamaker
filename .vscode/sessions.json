@@ -1,64 +1,75 @@
 {
-    "$schema": "https://cdn.statically.io/gh/nguyenngoclongdev/cdn/main/schema/v10/terminal-keeper.json",
-    "theme": "tribe",
-    "active": "dev-backend",
-    "activateOnStartup": true,
-    "keepExistingTerminals": false,
-    "sessions": {
-        "dev-backend": [
-            {
-                "name": "home",
-                "autoExecuteCommands": true,
-                "icon": "person",
-                "color": "terminal.ansiGreen",
-                "commands": [
-                    "echo hello"
-                ]
-            },
-            [
-                {
-                    "name": "backend",
-                    "focus": true,
-                    "autoExecuteCommands": true,
-                    "commands": [
-                        "cd backend"
-                    ]
-                },
-                {
-                    "name": "backend scripts",
-                    "autoExecuteCommands": true,
-                    "commands": [
-                        "cd backend"
-                    ]
-                }
-            ],
-            [
-                {
-                    "name": "node",
-                    "cwd": "contracts",
-                    "autoExecuteCommands": true,
-                    "commands": [
-                        "npm run node"
-                    ]
-                },
-                {
-                    "name": "deployer & scripts",
-                    "autoExecuteCommands": true,
-                    "cwd": "contracts",
-                    "commands": [
-                        "sleep 1",
-                        "npm run tdeploy"
-                    ]
-                }
-            ]
-        ],
-        "default": [
-            {
-                "name": "home",
-                "commands": [
-                    ""
-                ]
-            }
+  "$schema": "https://cdn.statically.io/gh/nguyenngoclongdev/cdn/main/schema/v10/terminal-keeper.json",
+  "theme": "tribe",
+  "active": "dev-classic",
+  "activateOnStartup": true,
+  "keepExistingTerminals": false,
+  "sessions": {
+    "dev-classic": [
+      {
+        "name": "home",
+        "autoExecuteCommands": true,
+        "icon": "person",
+        "color": "terminal.ansiGreen",
+        "commands": [
+          "echo hello"
         ]
-    }
+      },
+      {
+        "name": "frontend",
+        "cwd": "frontend",
+        "autoExecuteCommands": true,
+        "icon": "person",
+        "color": "terminal.ansiGreen",
+        "commands": [
+          "npm run dev"
+        ]
+      },
+      [
+        {
+          "name": "backend",
+          "focus": true,
+          "autoExecuteCommands": true,
+          "commands": [
+            "cd backend",
+            "npm start"
+          ]
+        },
+        {
+          "name": "backend scripts",
+          "autoExecuteCommands": true,
+          "commands": [
+            "cd backend"
+          ]
+        }
+      ],
+      [
+        {
+          "name": "node",
+          "cwd": "contracts",
+          "autoExecuteCommands": true,
+          "commands": [
+            "npm run node"
+          ]
+        },
+        {
+          "name": "deployer & scripts",
+          "autoExecuteCommands": true,
+          "cwd": "contracts",
+          "commands": [
+            "sleep 1",
+            "npm run tdeploy"
+          ]
+        }
+      ]
+    ],
+    "default": [
+      {
+        "name": "home",
+        "commands": [
+          ""
+        ]
+      }
+    ]
+  }
 }

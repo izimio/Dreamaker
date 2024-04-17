@@ -7,7 +7,7 @@ export interface IEcRecoverChallenge {
 }
 
 const ecRecoverChallengeSchema = new mongoose.Schema({
-    createdAt: { type: Date, default: Date.now, expires: 180 },
+    createdAt: { type: Date, default: Date.now, expires: 20 },
     address: {
         type: String,
         required: true,

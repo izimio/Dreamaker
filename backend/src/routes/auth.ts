@@ -5,7 +5,7 @@ const router: Router = new Router();
 
 router.prefix("/auth");
 
-router.post("/challenge", authCotroller.createEcRecoverChallenge);
+router.get("/challenge/:address", authCotroller.createEcRecoverChallenge);
 router.post("/verify", authCotroller.verifyEcRecoverChallenge);
 
 export default router;
