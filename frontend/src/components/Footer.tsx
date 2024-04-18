@@ -1,6 +1,7 @@
-import { Avatar, Box, Flex, Highlight, Text, Tooltip } from "@chakra-ui/react";
+import { Avatar, Box, Flex, Text, Tooltip } from "@chakra-ui/react";
 import { FC } from "react";
 import wizard from "../illustrations/wizard";
+import bg from "/bg.png";
 
 const Wave: FC = () => {
     const LIGHT = "#4AE3CB";
@@ -39,6 +40,14 @@ const Footer: FC = () => {
             position={"relative"}
             w={"100%"}
             overflow={"hidden"}
+            style={{
+                backgroundImage: `url(${bg})`,
+                backgroundSize: "cover",
+                backgroundRepeat: "repeat",
+                backgroundPosition: "center",
+                backgroundPositionX: "start",
+                backgroundPositionY: "revert",
+            }}
         >
             <Box zIndex={-1}>
                 <Wave />
@@ -105,7 +114,11 @@ const Footer: FC = () => {
                             </Text>
                         </Box>
                     </Flex>
-                    <Tooltip label="Psstt: Click on me" placement="start" bg={"dark"}>
+                    <Tooltip
+                        label="Psstt: Click on me"
+                        placement="start"
+                        bg={"dark"}
+                    >
                         <Box
                             style={{
                                 transition: "500ms",

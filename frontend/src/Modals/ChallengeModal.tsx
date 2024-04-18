@@ -30,7 +30,9 @@ function ChallengeModal() {
         <Modal isOpen={challengeModal} onClose={() => {}} isCentered={true}>
             <ModalOverlay />
             <ModalContent>
-                <ModalHeader textAlign={"center"}>✍️ Sign the challenge in the Metamask extension</ModalHeader>
+                <ModalHeader textAlign={"center"}>
+                    ✍️ Sign the challenge in the Metamask extension
+                </ModalHeader>
                 <ModalBody
                     style={{
                         display: "flex",
@@ -45,10 +47,14 @@ function ChallengeModal() {
                         style={{ width: "200px", height: "200px" }}
                     />
                     <Text mt={4} textAlign={"center"} fontSize={"md"}>
-                        Using: <span style={{
-                            backgroundColor: "rgba(0, 0, 0, 0.1)",
-                        }}>{address}
-                            </span>
+                        Using:{" "}
+                        <span
+                            style={{
+                                backgroundColor: "rgba(0, 0, 0, 0.1)",
+                            }}
+                        >
+                            {address}
+                        </span>
                     </Text>
                 </ModalBody>
             </ModalContent>

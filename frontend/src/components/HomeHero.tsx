@@ -104,7 +104,7 @@ const blobMaker = (
                             style={{
                                 width: "70%",
                                 textAlign: params.reverse ? "justify" : "start",
-                                fontSize: "1.2em",
+                                fontSize: "1.5em",
                             }}
                         >
                             <Highlight

@@ -1,7 +1,4 @@
-
-
-
-const marketplace = (width = '292', height = '398') => {
+const marketplace = (width = "292", height = "398") => {
     return (
         <svg
             width={width}

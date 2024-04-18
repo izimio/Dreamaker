@@ -1,7 +1,4 @@
-
-
-
-const bundle = (width = '303', height = '398') => {
+const bundle = (width = "303", height = "398") => {
     return (
         <svg
             width={width}

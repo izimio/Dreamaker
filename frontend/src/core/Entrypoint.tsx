@@ -30,7 +30,7 @@ export const shadedColors: { [key: string]: string } = {};
 
 Object.keys(colors).forEach((colorName) => {
     const color = colors[colorName];
-    shadedColors[`${colorName}`] = color
+    shadedColors[`${colorName}`] = color;
     shadedColors[`${colorName}+1`] = lightenColor(color, 0.1);
     shadedColors[`${colorName}+2`] = lightenColor(color, 0.2);
     shadedColors[`${colorName}+3`] = lightenColor(color, 0.3);
@@ -58,11 +58,17 @@ const Entrypoint: FC = () => {
                 <EthereumProvider>
                     <GlobalProvider>
                         <Router>
-                            <Upbar />
-                            <Box flex={1}>
-                                <RoutesContainer />
+                            <Box
+                                style={{
+                                    minHeight: "100vh",
+                                }}
+                            >
+                                <Upbar />
+                                <Box flex={1}>
+                                    <RoutesContainer />
+                                </Box>
+                                <Footer />
                             </Box>
-                            <Footer />
                         </Router>
                     </GlobalProvider>
                 </EthereumProvider>

@@ -22,7 +22,7 @@ export const EthereumProvider: FC<Props> = ({ children }) => {
 
     useEffect(() => {
         if (!chainId) return;
-    
+
         if (!DEFAULT_CHAINS.includes(chainId)) {
             switchChainModal(true);
         } else {
@@ -32,11 +32,13 @@ export const EthereumProvider: FC<Props> = ({ children }) => {
 
     useEffect(() => {
         const initAccounts = async () => {
-            const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
+            const accounts = await window.ethereum.request({
+                method: "eth_requestAccounts",
+            });
             if (!accounts.length) {
                 toast.error("No account found");
             }
-        }
+        };
         if (!chainId) {
             const handleChainIdRetrieved = async () => {
                 const chainId = await getChainId();

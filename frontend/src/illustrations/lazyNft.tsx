@@ -1,7 +1,4 @@
-
-
-
-const lazyNft = (width = '289', height = '398') => {
+const lazyNft = (width = "289", height = "398") => {
     return (
         <svg
             width={width}

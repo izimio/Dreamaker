@@ -1,6 +1,6 @@
-import { Size } from '../../types';
+import { Size } from "../../types";
 
-const checklist = (width = '73', height = '72') => {
+const checklist = (width = "73", height = "72") => {
     return (
         <svg
             width={width}

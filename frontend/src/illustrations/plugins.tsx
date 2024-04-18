@@ -1,6 +1,6 @@
-import { Size } from '../../types';
+import { Size } from "../../types";
 
-const plugins = (width = '248', height = '304') => {
+const plugins = (width = "248", height = "304") => {
     return (
         <svg
             width={width}

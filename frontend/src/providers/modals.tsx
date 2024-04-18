@@ -16,7 +16,6 @@ interface Props {
 const ModalsContext = createContext({} as IModals);
 
 export const ModalsProviders: FC<Props> = ({ children }) => {
-
     const [chainModal, setChainModal] = useState<boolean>(false);
     const [challengeModal, setChallengeModal] = useState<boolean>(false);
 
@@ -26,7 +25,7 @@ export const ModalsProviders: FC<Props> = ({ children }) => {
                 challengeModal,
                 chainModal,
                 switchChallengeModal: setChallengeModal,
-                switchChainModal: setChainModal
+                switchChainModal: setChainModal,
             }}
         >
             <>

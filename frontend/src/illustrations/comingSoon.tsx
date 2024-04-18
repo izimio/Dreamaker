@@ -1,7 +1,4 @@
-
-
-
-const comingSoon = (width = '491', height = '329') => {
+const comingSoon = (width = "491", height = "329") => {
     return (
         <svg
             width={width}

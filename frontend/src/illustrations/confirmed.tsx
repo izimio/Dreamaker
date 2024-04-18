@@ -1,7 +1,4 @@
-
-
-
-const confirmed = (width = '491', height = '329') => {
+const confirmed = (width = "491", height = "329") => {
     return (
         <svg
             width={width}

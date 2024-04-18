@@ -1,7 +1,4 @@
-
-
-
-const chest = (width = '298', height = '398') => {
+const chest = (width = "298", height = "398") => {
     return (
         <svg
             width={width}

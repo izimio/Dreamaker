@@ -1,7 +1,4 @@
-
-
-
-const servers = (width = '323', height = '398') => {
+const servers = (width = "323", height = "398") => {
     return (
         <svg
             width={width}

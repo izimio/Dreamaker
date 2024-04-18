@@ -27,7 +27,6 @@ const AddressCadrant = (props: { address: string; DMKBalance: number }) => {
     const location = useLocation();
 
     const chooseLabelColor = (url: string) => {
-        
         if (location.pathname === url) {
             return "regular-2";
         }

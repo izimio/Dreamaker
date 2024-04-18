@@ -1,7 +1,4 @@
-
-
-
-const pack = (width = '300', height = '398') => {
+const pack = (width = "300", height = "398") => {
     return (
         <svg
             width={width}

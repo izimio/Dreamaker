@@ -1,7 +1,4 @@
-
-
-
-const token = (width = '284', height = '398') => {
+const token = (width = "284", height = "398") => {
     return (
         <svg
             width={width}

@@ -1,17 +1,20 @@
 import { FC } from "react";
-import { Box, Container, Heading, Text } from "@chakra-ui/react";
+import { Box, Heading } from "@chakra-ui/react";
 import HomeHero from "../components/HomeHero";
-import bg from "/bg.png"
+import bg from "/bg.png";
 
 const Home: FC = () => {
     return (
-        <Box  style={{
-            backgroundImage: `url(${bg})`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            backgroundPositionX: "start",
-            backgroundPositionY: "revert",
-        }}>
+        <Box
+            style={{
+                backgroundImage: `url(${bg})`,
+                backgroundSize: "cover",
+                backgroundRepeat: "repeat",
+                backgroundPosition: "center",
+                backgroundPositionX: "start",
+                backgroundPositionY: "revert",
+            }}
+        >
             <Heading
                 fontSize="8xl"
                 textAlign="center"

@@ -1,6 +1,6 @@
-import { Size } from '../../types';
+import { Size } from "../../types";
 
-const cat = (width = '73', height = '74') => {
+const cat = (width = "73", height = "74") => {
     return (
         <svg
             width={width}

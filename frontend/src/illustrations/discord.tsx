@@ -1,6 +1,6 @@
-import { Size } from '../../types';
+import { Size } from "../../types";
 
-const discord = (width = '84', height = '84') => {
+const discord = (width = "84", height = "84") => {
     return (
         <svg
             width={width}

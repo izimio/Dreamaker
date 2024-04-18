@@ -1,7 +1,6 @@
-import React from 'react';
+import React from "react";
 
-
-const cryptoLogo = (width = '120', height = '160') => {
+const cryptoLogo = (width = "120", height = "160") => {
     return (
         <svg
             xmlns="http://www.w3.org/2000/svg"
