@@ -2,6 +2,7 @@
 export const HOME = "/";
 
 // ===== AUTH ROUTES ===== //
-export const DASHBOARD = "/dashboard";
+export const DREAMS = "/dreams"
+export const PROFILE = "/profile"
 
 

@@ -3,6 +3,7 @@ import { getState, removeState } from "../utils/storage";
 import { DEFAULT_CHAINS } from "../ethereum/config";
 import { changeChain, getChainId } from "../ethereum/metamask";
 import { useModals } from "./modals";
+import toast from "react-hot-toast";
 
 interface IEthereum {
     chainId: number | null;
@@ -30,6 +31,12 @@ export const EthereumProvider: FC<Props> = ({ children }) => {
     }, [chainId]);
 
     useEffect(() => {
+        const initAccounts = async () => {
+            const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
+            if (!accounts.length) {
+                toast.error("No account found");
+            }
+        }
         if (!chainId) {
             const handleChainIdRetrieved = async () => {
                 const chainId = await getChainId();
@@ -49,6 +56,7 @@ export const EthereumProvider: FC<Props> = ({ children }) => {
             setChainId(pchainId);
         };
 
+        initAccounts();
         window.ethereum.on("chainChanged", handleChainChanged);
 
         return () => {

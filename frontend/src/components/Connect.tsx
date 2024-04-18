@@ -6,12 +6,15 @@ import { connectWallet } from "../ethereum/metamask";
 import toast from "react-hot-toast";
 import { getState, setState } from "../utils/storage";
 import AddressCadrant from "./AddressCadrant";
+import { useModals } from "../providers/modals";
 
 const Connect: FC = () => {
     const { user, setToken } = useGlobal();
+    const { switchChallengeModal } = useModals();
+
     const isConnected = !!getState("token");
     const isMetaMaskInstalled = !!window.ethereum;
-    
+
     const [disabled, setDisabled] = useState(false);
 
     const handleConnection = async () => {
@@ -27,9 +30,7 @@ const Connect: FC = () => {
             return;
         }
 
-        setDisabled(true);
         const result = await connectWallet();
-        setDisabled(false);
         if (!result.ok || !result.data) {
             toast.error(result.message);
             return;
@@ -46,7 +47,14 @@ const Connect: FC = () => {
                 <Box
                     rounded={"lg"}
                     color={"white"}
-                    onClick={() => handleConnection()}
+                    onClick={() => {
+                        setDisabled(true);
+                        switchChallengeModal(true);
+                        handleConnection().then(() => {
+                            setDisabled(false);
+                            switchChallengeModal(false);
+                        });
+                    }}
                     bgGradient={
                         "linear(to-r, metamaskWhite, metamaskLight, metamaskDark)"
                     }

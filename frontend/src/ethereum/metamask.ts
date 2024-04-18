@@ -1,17 +1,30 @@
 import { getChallenge, verifyChallenge } from "../api/auth";
 
+
+export const getEthAccount = async () => {
+    const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+    if (accounts.length === 0) {
+            return {
+                ok: false,
+                message: 'No account found'
+            }
+        }
+    return {
+        ok: true,
+        data: accounts[0]
+    }
+}
+
 export const connectWallet = async () => {
 
-    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-    if (accounts.length === 0) {
+    const {ok, data: address} = await getEthAccount();
+    if (!ok) {
         return {
             ok: false,
-            message: "No accounts found"
+            message: address.message
         }
     }
-
-    const address = accounts[0];
-
+    console.log(address);
     const data1 = await getChallenge(address);
     if (!data1.ok) {
         return {

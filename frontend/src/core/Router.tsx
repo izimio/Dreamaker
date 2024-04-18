@@ -1,5 +1,4 @@
 import { FC } from "react";
-import { extendTheme } from "@chakra-ui/react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { getState } from "../utils/storage";
 
@@ -8,10 +7,8 @@ import * as ROUTES from "../constants/routes";
 
 // ======= Pages ======= //
 import Home from "../pages/Home";
-import Dashboard from "../pages/Dashboard";
-
-// ======= Generics Components ======= //
-import Upbar from "../components/Upbar";
+import Dreams from "../pages/Dreams";
+import Profile from "../pages/Profile";
 
 const ProtectedRoute = ({ children }: any) => {
     if (!getState("token")) {
@@ -26,10 +23,18 @@ const RoutesContainer: FC = () => {
         <Routes>
             <Route path={ROUTES.HOME} element={<Home />} />
             <Route
-                path={ROUTES.DASHBOARD}
+                path={ROUTES.DREAMS}
                 element={
                     <ProtectedRoute>
-                        <Dashboard />
+                        <Dreams />
+                    </ProtectedRoute>
+                }
+            />
+            <Route
+                path={ROUTES.PROFILE}
+                element={
+                    <ProtectedRoute>
+                        <Profile />
                     </ProtectedRoute>
                 }
             />
