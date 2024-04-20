@@ -45,7 +45,6 @@ Object.keys(colors).forEach((colorName) => {
     shadedColors[`${colorName}-5`] = darkenColor(color, 0.5);
 });
 
-console.log(shadedColors);
 const theme = extendTheme({
     components: {
         MultiSelect: MultiSelectTheme,

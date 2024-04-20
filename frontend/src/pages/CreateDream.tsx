@@ -12,7 +12,7 @@ const CreateDream: FC = () => {
             }
             p={5}
         >
-            <Container maxW="container.lg">
+            <Container maxW="container.lg" h={"100%"} minH={"500px"}>
                 <DreamStepper />
             </Container>
         </Box>

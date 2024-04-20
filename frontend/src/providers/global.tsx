@@ -3,6 +3,7 @@ import { getState, removeState } from "../utils/storage";
 import { API_URL } from "../utils/env.config";
 import axios from "axios";
 import Loading from "../pages/Loading";
+import toast from "react-hot-toast";
 
 type Dream = {};
 
@@ -112,6 +113,7 @@ export const GlobalProvider: FC<Props> = ({ children }) => {
     };
 
     const logout = () => {
+        toast.success("Logged out successfully");
         removeState("token");
         setToken(null);
         setUser(null);

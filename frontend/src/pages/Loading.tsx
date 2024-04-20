@@ -1,10 +1,12 @@
+import { useEthereum } from "../providers/ethereum";
 import { useGlobal } from "../providers/global";
 import { Box, Spinner, Text } from "@chakra-ui/react";
 
 const Loading = ({ children }: any) => {
     const { constants } = useGlobal();
+    const {ethPrice } = useEthereum();
 
-    if (constants.tags.length === 0) {
+    if (constants.tags.length === 0 || !ethPrice) {
         return (
             <Box h="70vh"  color="white" display="flex" justifyContent="center" alignItems="center" flexDirection="column">
                 <Spinner

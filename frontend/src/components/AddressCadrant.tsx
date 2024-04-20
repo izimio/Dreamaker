@@ -1,5 +1,5 @@
 import {
-    Box,
+    Flex,
     Icon,
     Menu,
     MenuButton,
@@ -11,20 +11,27 @@ import {
 } from "@chakra-ui/react";
 import * as ROUTES from "../constants/routes";
 
-import { DragHandleIcon, LockIcon, StarIcon } from "@chakra-ui/icons";
+import {
+    ChevronUpIcon,
+    DragHandleIcon,
+    LockIcon,
+    StarIcon,
+} from "@chakra-ui/icons";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import CottageIcon from "@mui/icons-material/Cottage";
 
-import toast from "react-hot-toast";
 import { useEthereum } from "../providers/ethereum";
 import { useGlobal } from "../providers/global";
 import { Link, useLocation } from "react-router-dom";
+import { useState } from "react";
 
 const AddressCadrant = (props: { address: string; DMKBalance: number }) => {
     const { chainId } = useEthereum();
     const { logout } = useGlobal();
     const location = useLocation();
+
+    const [isOpened, setIsOpened] = useState(false);
 
     const chooseLabelColor = (url: string) => {
         if (location.pathname === url) {
@@ -34,27 +41,34 @@ const AddressCadrant = (props: { address: string; DMKBalance: number }) => {
     };
 
     return (
-        <Menu>
+        <Menu
+            onOpen={() => setIsOpened(true)}
+            onClose={() => setIsOpened(false)}
+        >
             <MenuButton>
-                <Box
+                <Flex
+                    gap={2}
                     p={2}
+                    align={"center"}
                     rounded={"lg"}
                     bg={"federalBlue"}
                     _hover={{ cursor: "pointer" }}
-                    onClick={() => {
-                        navigator.clipboard.writeText(props.address);
-                        toast.dismiss("address-copied-toast");
-                        toast.success("Address copied to clipboard", {
-                            icon: "📋",
-                            id: "address-copied-toast",
-                            duration: 800,
-                        });
-                    }}
                 >
                     <Text userSelect={"none"}>
                         {props.address.substring(0, 15) + "..."}
                     </Text>
-                </Box>
+                    <ChevronUpIcon
+                        color={"white"}
+                        w={8}
+                        h={6}
+                        style={{
+                            transform: isOpened
+                                ? "rotate(180deg)"
+                                : "rotate(0deg)",
+                            transition: "all 0.3s",
+                        }}
+                    />
+                </Flex>
             </MenuButton>
             <MenuList color={"black"} p={0} zIndex={999}>
                 <MenuGroup title="Sections">

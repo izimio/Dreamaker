@@ -7,17 +7,19 @@ interface IconButtonProps {
     disable: boolean;
     reverse?: boolean;
 }
-const IconButton = ({ icon, text, onClick, disable, reverse }: IconButtonProps) => {
+const IconButton = ({
+    icon,
+    text,
+    onClick,
+    disable,
+    reverse,
+}: IconButtonProps) => {
     return (
-        <Box >
+        <Box>
             <Flex
                 onClick={() => {
-                    if (disable) {
-                        return;
-                    }
                     onClick();
                 }}
-
                 alignItems="center"
                 justifyContent="center"
                 cursor="pointer"
@@ -33,12 +35,12 @@ const IconButton = ({ icon, text, onClick, disable, reverse }: IconButtonProps) 
                     cursor: disable ? "not-allowed" : "pointer",
                 }}
                 opacity={disable ? 0.5 : 1}
-
             >
                 <Text
                     fontSize="lg"
                     fontWeight="bold"
-                    textShadow="1px 1px 1px cyan"   
+                    textShadow="1px 1px 1px cyan"
+                    userSelect={"none"}
                 >
                     {text}
                 </Text>

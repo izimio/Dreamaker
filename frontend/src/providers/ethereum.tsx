@@ -1,12 +1,15 @@
 import { FC, createContext, useContext, useEffect, useState } from "react";
-import { getState, removeState } from "../utils/storage";
+import { getState, removeState, setState } from "../utils/storage";
 import { DEFAULT_CHAINS } from "../ethereum/config";
 import { changeChain, getChainId } from "../ethereum/metamask";
 import { useModals } from "./modals";
 import toast from "react-hot-toast";
+import { getETH_USDTPrice } from "../api/external";
+import { m } from "framer-motion";
 
 interface IEthereum {
     chainId: number | null;
+    ethPrice: number;
 }
 
 interface Props {
@@ -17,7 +20,7 @@ const EthereumContext = createContext({} as IEthereum);
 
 export const EthereumProvider: FC<Props> = ({ children }) => {
     const [chainId, setChainId] = useState<number | null>(null);
-
+    const [ethPrice, setEthPrice] = useState<number>(0);
     const { switchChainModal } = useModals();
 
     useEffect(() => {
@@ -31,6 +34,27 @@ export const EthereumProvider: FC<Props> = ({ children }) => {
     }, [chainId]);
 
     useEffect(() => {
+        const fetchEthPrice = async () => {
+            let ethPriceLS = getState("ethPrice");
+
+            if (ethPriceLS) {
+                if (new Date().getTime() > ethPriceLS.date + 1000 * 60) {
+                    ethPriceLS = null;
+                    removeState("ethPrice");
+                } else {
+                    setEthPrice(ethPriceLS.ethPrice);
+                }
+            }
+
+            if (!ethPriceLS) {
+                const res = await getETH_USDTPrice();
+                setEthPrice(res);
+                setState("ethPrice", {
+                    ethPrice: res,
+                    date: new Date().getTime(),
+                });
+            }
+        };
         const initAccounts = async () => {
             const accounts = await window.ethereum.request({
                 method: "eth_requestAccounts",
@@ -42,7 +66,6 @@ export const EthereumProvider: FC<Props> = ({ children }) => {
         if (!chainId) {
             const handleChainIdRetrieved = async () => {
                 const chainId = await getChainId();
-                console.log(chainId);
                 if (!DEFAULT_CHAINS.includes(chainId)) {
                     changeChain(DEFAULT_CHAINS[0]);
                 }
@@ -59,6 +82,7 @@ export const EthereumProvider: FC<Props> = ({ children }) => {
         };
 
         initAccounts();
+        fetchEthPrice();
         window.ethereum.on("chainChanged", handleChainChanged);
 
         return () => {
@@ -70,6 +94,7 @@ export const EthereumProvider: FC<Props> = ({ children }) => {
         <EthereumContext.Provider
             value={{
                 chainId,
+                ethPrice,
             }}
         >
             {children}

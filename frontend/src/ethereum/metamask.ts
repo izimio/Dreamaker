@@ -22,7 +22,6 @@ export const connectWallet = async () => {
             message: address.message,
         };
     }
-    console.log(address);
     const data1 = await getChallenge(address);
     if (!data1.ok) {
         return {
