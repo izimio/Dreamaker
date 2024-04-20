@@ -8,7 +8,6 @@ const Upbar: FC = () => {
         <Box
             color="white"
             py={4}
-            width={"100vw"}
             px={4}
             pr={8}
             bgGradient={"linear(to-l, light, darkBlue, dark)"}

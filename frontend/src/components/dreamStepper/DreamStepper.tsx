@@ -10,8 +10,13 @@ import {
     StepIcon,
     useSteps,
     StepSeparator,
+    Button,
+    Center,
+    Divider,
 } from "@chakra-ui/react";
 import StepperGeneral from "./StepperGeneral";
+import { ArrowLeftIcon, ArrowRightIcon } from "@chakra-ui/icons";
+import IconButton from "../IconButton";
 
 const DreamStepper: FC = () => {
     const steps = [
@@ -24,7 +29,7 @@ const DreamStepper: FC = () => {
         { title: "Visualize your dream", description: "Date & Time" },
         { title: "Let's go ?", description: "Skyrocket your hopes" },
     ];
-    const { activeStep, setActiveStep, goToNext, goToPrevious } = useSteps({
+    const { activeStep, goToNext, goToPrevious } = useSteps({
         count: steps.length,
     });
 
@@ -32,6 +37,13 @@ const DreamStepper: FC = () => {
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
     const [tags, setTags] = useState<string[]>([]);
+    const [valideStep, setValideStep] = useState<boolean[]>([
+        false,
+        false,
+        false,
+        false,
+        false,
+    ]);
     // !!============= States =============!! //
     const activeStepContent = steps[activeStep];
     return (
@@ -46,16 +58,17 @@ const DreamStepper: FC = () => {
                     </Step>
                 ))}
             </Stepper>
-            <Text
-                fontSize="2xl"
-                fontWeight="bold"
-                textAlign="center"
-                color="white"
-                textShadow="1px 1px 1px cyan"
-            >
-                {activeStepContent.title}
-            </Text>
             <Box mt={5} p={5} rounded="lg">
+                <Text
+                    fontSize="2xl"
+                    fontWeight="bold"
+                    textAlign="center"
+                    color="white"
+                    textShadow="1px 1px 1px cyan"
+                    mb={5}
+                >
+                    {activeStepContent.title}
+                </Text>
                 {
                     {
                         0: (
@@ -66,6 +79,10 @@ const DreamStepper: FC = () => {
                                 setName={setName}
                                 setDescription={setDescription}
                                 setTags={setTags}
+                                setValideStep={(f) => {
+                                    valideStep[0] = f;
+                                    setValideStep([...valideStep]);
+                                }}
                             />
                         ),
                         // 1: <StepperGeneral />,
@@ -74,6 +91,26 @@ const DreamStepper: FC = () => {
                         // 4: <StepperGeneral />,
                     }[activeStep]
                 }
+                <Center mt={5} gap={5}>
+                    {activeStep !== 0 && (
+                        <IconButton
+                            icon={<ArrowLeftIcon />}
+                            text="Back"
+                            reverse={true}
+                            disable={false}
+                            onClick={goToPrevious}
+                        />
+                    )}
+                    {/* <Box></Box> */}
+                    {activeStep !== steps.length - 1 && (
+                        <IconButton
+                            icon={<ArrowRightIcon />}
+                            text="Next"
+                            disable={!valideStep[activeStep]}
+                            onClick={goToNext}
+                        />
+                    )}
+                </Center>
             </Box>
         </Stack>
     );

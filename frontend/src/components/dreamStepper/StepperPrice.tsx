@@ -3,7 +3,6 @@ import {
     Container,
     Flex,
     Input,
-    Spinner,
     Text,
     Textarea,
 } from "@chakra-ui/react";
@@ -12,52 +11,30 @@ import { FC, useEffect } from "react";
 import { useGlobal } from "../../providers/global";
 import toast from "react-hot-toast";
 
-interface StepperProps {
-    name: string;
-    description: string;
-    tags: string[];
-    setName: (name: string) => void;
-    setDescription: (description: string) => void;
-    setTags: (tags: string[]) => void;
+interface StepperPriceProps {
+    price: {
+        amount: string;
+        currency: string;
+    };
+    setPrice: (price: { amount: string; currency: string }) => void;
     setValideStep: (f: boolean) => void;
 }
 
-const StepperGeneral: FC<StepperProps> = ({
-    name,
-    description,
-    tags,
-    setName,
-    setDescription,
-    setTags,
+const bigNumberRegex = new RegExp("^[0-9]*$");
+const ethersFormatRegex = new RegExp("^[0-9]*[.]?[0-9]*$");
+const gweiFormatRegex = new RegExp("^[0-9]*[.]?[0-9]*$");
+
+const StepperGeneral: FC<StepperPriceProps> = ({
+    price,
+    setPrice,
     setValideStep,
 }) => {
     const { constants } = useGlobal();
-    const { value, options, onChange } = useMultiSelect({
-        value: tags || [],
-        options: constants.tags.map((tag) => ({ value: tag, label: tag })),
-    });
 
     const validate = () => {
         if (
-            name.length < constants.limits.dreamTitle.min ||
-            name.length > constants.limits.dreamTitle.max
-        ) {
-            setValideStep(false);
-            return;
-        }
-
-        if (
-            description.length < constants.limits.dreamDescription.min ||
-            description.length > constants.limits.dreamDescription.max
-        ) {
-            setValideStep(false);
-            return;
-        }
-
-        if (tags.length < constants.limits.dreamTags.min) {
-            setValideStep(false);
-            return;
-        }
+            !price.amount.length ||
+        )
         setValideStep(true);
     };
 
@@ -82,9 +59,8 @@ const StepperGeneral: FC<StepperProps> = ({
                     </Text>
                     <Input
                         isInvalid={
-                            name.length > 0 &&
-                            (name.length < constants.limits.dreamTitle.min ||
-                                name.length > constants.limits.dreamTitle.max)
+                            name.length < constants.limits.dreamTitle.min ||
+                            name.length > constants.limits.dreamTitle.max
                         }
                         placeholder="description"
                         maxLength={constants.limits.dreamTitle.max}
