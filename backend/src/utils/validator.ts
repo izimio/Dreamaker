@@ -1,5 +1,5 @@
 import { string, number, object, array, ValidationError } from "yup";
-import { ALLOWED_EXTENSIONS, TAGS } from "./constants";
+import { ALLOWED_EXTENSIONS, LIMITS, TAGS } from "./constants";
 import { ethers } from "ethers";
 
 const min1 = 60;
@@ -29,12 +29,12 @@ export const validateVerifyEcRecoverChallenge = object()
 
 export const validateEditDream = object()
     .shape({
-        title: string().min(5).max(50),
-        description: string().min(20).max(500),
+        title: string().min(LIMITS.dreamTitle.min).max(LIMITS.dreamTitle.max),
+        description: string().min(LIMITS.dreamDescription.min).max(LIMITS.dreamDescription.max),
         tags: array()
             .of(string().oneOf(TAGS).required())
-            .min(1, "At least one tag is required")
-            .max(5, "Maximum 5 tags are allowed"),
+            .min(LIMITS.dreamTags.min, "At least one tag is required")
+            .max(LIMITS.dreamTags.max, "Maximum 5 tags are allowed"),
     })
     .noUnknown();
 
@@ -69,16 +69,16 @@ const fileSchema = object()
 
 export const validateNewDream = object()
     .shape({
-        title: string().required().min(5).max(50),
-        description: string().required().min(20).max(500),
+        title: string().required().min(LIMITS.dreamTitle.min).max(LIMITS.dreamTitle.max),
+        description: string().required().min(LIMITS.dreamDescription.min).max(LIMITS.dreamDescription.max),
         tags: array()
             .of(string().oneOf(TAGS).required())
-            .min(1, "At least one tag is required")
-            .max(5, "Maximum 5 tags are allowed")
+            .min(LIMITS.dreamTags.min, "At least one tag is required")
+            .max(LIMITS.dreamTags.max, "Maximum 5 tags are allowed")
             .required("Tags are required"),
         files: array()
             .test("files-validation", "Files validation failed", (value) => {
-                if (value && value.length > 5) {
+                if (value && value.length > LIMITS.files.max) {
                     throw new ValidationError(
                         "Files array cannot contain more than 5 items",
                         value,

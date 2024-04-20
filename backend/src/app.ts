@@ -12,7 +12,7 @@ import { Watcher } from "./Watchers/Watch";
 import { SyncronInstance } from "./syncron/Syncron";
 
 // Routers
-import versionRouter from "./routes/version";
+import versionRouter from "./routes/tools";
 import dreamRouter from "./routes/dream";
 import authRouter from "./routes/auth";
 import withdrawRouter from "./routes/withdraw";
