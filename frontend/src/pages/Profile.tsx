@@ -1,10 +1,11 @@
+import { Box } from "@chakra-ui/react";
 import { FC } from "react";
 
 const Profile: FC = () => {
     return (
-        <div>
+        <Box>
             <h1>Profile</h1>
-        </div>
+        </Box>
     );
 };
 

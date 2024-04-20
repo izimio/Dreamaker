@@ -29,8 +29,13 @@ const Connect: FC = () => {
             toast.error("Metamask is not installed");
             return;
         }
-
-        const result = await connectWallet();
+        let result
+        try {
+            result = await connectWallet();
+        } catch (error) {
+            toast.error("Transaction rejected");
+            return;
+        }
         if (!result.ok || !result.data) {
             toast.error(result.message);
             return;
@@ -38,7 +43,6 @@ const Connect: FC = () => {
         toast.success("Connected to Metamask");
         setState("token", result.data.token);
         setToken(result.data.token);
-        console.log(result);
     };
 
     if (!isConnected) {

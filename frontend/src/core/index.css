@@ -21,6 +21,49 @@ body {
     min-height: 100vh;
 }
 
+@keyframes levitate {
+    0% {
+        transform: translateY(0);
+        box-shadow: 10px 10px 100px 5px #000054;
+    }
+    50% {
+        transform: translateY(-10px);
+        box-shadow: 10px 10px 100px 15px #000054;
+    }
+    100% {
+        transform: translateY(0);
+        box-shadow: 10px 10px 100px 5px #000054;
+    }
+}
+
+@keyframes rocketShake {
+    0% {
+        transform: rotate(0deg);
+    }
+    10%,
+    30%,
+    50% {
+        transform: rotate(-5deg);
+    }
+    20%,
+    40% {
+        transform: rotate(5deg);
+    }
+    60% {
+        transform: translateX(50px) translateY(-50px);
+    }
+    61% {
+        transform: translateX(0px) translateY(-50px) rotate(314deg);
+    }
+    95% {
+        transform: translateY(0px) rotate(314deg);
+    }
+    100% {
+        transform: translateY(0px) rotate(0deg);
+    }
+
+}
+
 @keyframes spin {
     0% {
         transform: rotate(0deg);

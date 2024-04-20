@@ -9,6 +9,7 @@ import * as ROUTES from "../constants/routes";
 import Home from "../pages/Home";
 import Dreams from "../pages/Dreams";
 import Profile from "../pages/Profile";
+import CreateDream from "../pages/CreateDream";
 
 const ProtectedRoute = ({ children }: any) => {
     if (!getState("token")) {
@@ -21,24 +22,32 @@ const ProtectedRoute = ({ children }: any) => {
 const RoutesContainer: FC = () => {
     return (
         <Routes>
-            <Route path={ROUTES.HOME} element={<Home />} />
-            <Route
-                path={ROUTES.DREAMS}
-                element={
-                    <ProtectedRoute>
-                        <Dreams />
-                    </ProtectedRoute>
-                }
-            />
-            <Route
-                path={ROUTES.PROFILE}
-                element={
-                    <ProtectedRoute>
-                        <Profile />
-                    </ProtectedRoute>
-                }
-            />
-            <Route path="*" element={<Navigate to={ROUTES.HOME} />} />
+                <Route path={ROUTES.HOME} element={<Home />} />
+                <Route
+                    path={ROUTES.DREAMS}
+                    element={
+                        <ProtectedRoute>
+                            <Dreams />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path={ROUTES.PROFILE}
+                    element={
+                        <ProtectedRoute>
+                            <Profile />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path={ROUTES.CREATE_DREAM}
+                    element={
+                        <ProtectedRoute>
+                            <CreateDream />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route path="*" element={<Navigate to={ROUTES.HOME} />} />
         </Routes>
     );
 };

@@ -1,10 +1,11 @@
+import { Box } from "@chakra-ui/react";
 import { FC } from "react";
 
 const Dreams: FC = () => {
     return (
-        <div>
+        <Box>
             <h1>Dreams</h1>
-        </div>
+        </Box>
     );
 };
 

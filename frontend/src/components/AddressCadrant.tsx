@@ -56,7 +56,7 @@ const AddressCadrant = (props: { address: string; DMKBalance: number }) => {
                     </Text>
                 </Box>
             </MenuButton>
-            <MenuList color={"black"} p={0}>
+            <MenuList color={"black"} p={0} zIndex={999}>
                 <MenuGroup title="Sections">
                     <Link to={ROUTES.HOME}>
                         <MenuItem

@@ -1,14 +1,8 @@
 import { FC } from "react";
 import { shadedColors } from "../core/Entrypoint";
 import { Box, Flex, Highlight, Text } from "@chakra-ui/react";
-import chest from "../illustrations/chest";
 import token from "../illustrations/token";
-import marketplace from "../illustrations/marketplace";
-import cryptoLogo from "../illustrations/cryptoweb";
-import plugins from "../illustrations/plugins";
-import bundle from "../illustrations/bundle";
 import data from "../illustrations/data";
-import BeanBoyFront from "../illustrations/beanBoyFront";
 import BeanBoyUpLeft from "../illustrations/beanBoyUpLeft";
 
 const blobMaker = (

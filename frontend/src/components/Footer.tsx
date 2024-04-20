@@ -11,7 +11,6 @@ const Wave: FC = () => {
     return (
         <svg
             width="100%"
-            height="100%"
             viewBox="0 0 1440 230"
             xmlns="http://www.w3.org/2000/svg"
         >
@@ -44,12 +43,9 @@ const Footer: FC = () => {
                 backgroundImage: `url(${bg})`,
                 backgroundSize: "cover",
                 backgroundRepeat: "repeat",
-                backgroundPosition: "center",
-                backgroundPositionX: "start",
-                backgroundPositionY: "revert",
             }}
         >
-            <Box zIndex={-1}>
+            <Box>
                 <Wave />
             </Box>
             <Box
@@ -118,6 +114,7 @@ const Footer: FC = () => {
                         label="Psstt: Click on me"
                         placement="start"
                         bg={"dark"}
+                        zIndex={50000}
                     >
                         <Box
                             style={{

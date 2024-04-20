@@ -1,4 +1,4 @@
-import { FC, useEffect } from "react";
+import { Component, FC, useEffect } from "react";
 import { BrowserRouter as Router } from "react-router-dom";
 import RoutesContainer from "./Router";
 import { Box, ChakraProvider, extendTheme } from "@chakra-ui/react";
@@ -8,9 +8,10 @@ import Upbar from "../components/Upbar";
 import Footer from "../components/Footer";
 import { EthereumProvider } from "../providers/ethereum";
 import { ModalsProviders } from "../providers/modals";
+import { MultiSelectTheme } from "chakra-multiselect";
 
 import { lightenColor, darkenColor } from "../utils/color";
-
+import Loading from "../pages/Loading";
 const colors: {
     [key: string]: string;
 } = {
@@ -46,6 +47,9 @@ Object.keys(colors).forEach((colorName) => {
 
 console.log(shadedColors);
 const theme = extendTheme({
+    components: {
+        MultiSelect: MultiSelectTheme,
+    },
     colors: shadedColors,
 });
 
@@ -65,7 +69,9 @@ const Entrypoint: FC = () => {
                             >
                                 <Upbar />
                                 <Box flex={1}>
-                                    <RoutesContainer />
+                                    <Loading>
+                                        <RoutesContainer />
+                                    </Loading>
                                 </Box>
                                 <Footer />
                             </Box>
