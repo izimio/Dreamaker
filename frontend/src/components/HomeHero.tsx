@@ -1,6 +1,6 @@
 import { FC } from "react";
 import { shadedColors } from "../core/Entrypoint";
-import { Box, Flex, Highlight, Text } from "@chakra-ui/react";
+import { Box, Flex, Highlight } from "@chakra-ui/react";
 import token from "../illustrations/token";
 import data from "../illustrations/data";
 import BeanBoyUpLeft from "../illustrations/beanBoyUpLeft";

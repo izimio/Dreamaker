@@ -1,18 +1,20 @@
-import { Box, Container, Flex, Input, Spinner, Text } from "@chakra-ui/react";
-import { FC, useEffect, useRef, useState } from "react";
+import { Box, Container, Flex, Spinner, Text } from "@chakra-ui/react";
+import { FC, useRef, useState } from "react";
 import Rocket from "../../illustrations/rocket";
 
 interface StepperFinalProps {
-    setValideStep: (f: boolean) => void;
+    onLaunch: () => void;
+    isLoading: boolean;
+    setIsLoading: (value: boolean) => void;
 }
 
-const StepperFinal: FC<StepperFinalProps> = ({ setValideStep }) => {
-    const rocketRef = useRef(null);
+const StepperFinal: FC<StepperFinalProps> = ({
+    onLaunch,
+    isLoading,
+    setIsLoading,
+}) => {
+    const rocketRef = useRef({} as HTMLDivElement);
     const [isRocketLaunched, setIsRocketLaunched] = useState(false);
-    const validate = () => {
-        setValideStep(true);
-        return true;
-    };
 
     const onTextHovered = () => {
         if (isRocketLaunched) {
@@ -30,19 +32,17 @@ const StepperFinal: FC<StepperFinalProps> = ({ setValideStep }) => {
     };
 
     const onLaunchClicked = () => {
-        if (isRocketLaunched) {
-            return;
-        }
-        setIsRocketLaunched(true);
-        if (rocketRef.current.style.animation.includes("flyHigh")) {
-            return;
-        }
-        rocketRef.current.style.animation = "flyHigh 7s ease forwards";
-    };
+        // if (isRocketLaunched) {
+        //     return;
+        // }
+        rocketRef.current.style.animation = "flyHigh 5s ease forwards";
 
-    useEffect(() => {
-        validate();
-    }, []);
+        setIsRocketLaunched(true);
+        setTimeout(() => {
+            setIsLoading(true);
+            onLaunch();
+        }, 2000);
+    };
 
     return (
         <Container maxW="container.sm">
@@ -61,7 +61,6 @@ const StepperFinal: FC<StepperFinalProps> = ({ setValideStep }) => {
                         alignItems="center"
                         flexWrap="wrap"
                     >
-                        {/* {BeanBoyStepThree()} */}
                         <Flex
                             flexDirection="column"
                             alignItems="center"
@@ -69,9 +68,9 @@ const StepperFinal: FC<StepperFinalProps> = ({ setValideStep }) => {
                             gap={5}
                         >
                             <Box ref={rocketRef}>
-                                <Rocket size={100} ref={rocketRef} />
+                                <Rocket size={100} />
                             </Box>
-                            {isRocketLaunched && (
+                            {isLoading && (
                                 <Spinner
                                     thickness="4px"
                                     speed="0.65s"
@@ -80,6 +79,7 @@ const StepperFinal: FC<StepperFinalProps> = ({ setValideStep }) => {
                                     size="xl"
                                 />
                             )}
+                            {isLoading}
                             <Text
                                 color={"white"}
                                 textShadow={" 1px 1px 1px cyan"}

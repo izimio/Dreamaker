@@ -1,5 +1,3 @@
-import { Size } from "../../types";
-
 const data = (width = "237", height = "303") => {
     return (
         <svg

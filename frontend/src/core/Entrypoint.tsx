@@ -1,4 +1,4 @@
-import { Component, FC, useEffect } from "react";
+import { FC } from "react";
 import { BrowserRouter as Router } from "react-router-dom";
 import RoutesContainer from "./Router";
 import { Box, ChakraProvider, extendTheme } from "@chakra-ui/react";
@@ -53,7 +53,6 @@ const theme = extendTheme({
 });
 
 const Entrypoint: FC = () => {
-    useEffect(() => {}, [window.screen.width]);
     return (
         <ChakraProvider theme={theme}>
             <Toaster />

@@ -1,6 +1,11 @@
-const Rocket = (prop: { size: number, ref?: any }) => {
+const Rocket = (prop: { size: number }) => {
     return (
-        <svg width={prop.size} height={prop.size} viewBox="0 0 24 24" id="rocket" ref={prop.ref}>
+        <svg
+            width={prop.size}
+            height={prop.size}
+            viewBox="0 0 24 24"
+            id="rocket"
+        >
             <defs>
                 <linearGradient
                     id="rocketGradient"
@@ -9,9 +14,9 @@ const Rocket = (prop: { size: number, ref?: any }) => {
                     x2="100%"
                     y2="0%"
                 >
-                    <stop offset="0%" stop-color="#FE6B8B" />
-                    <stop offset="30%" stop-color="#FE6B8B" />
-                    <stop offset="90%" stop-color="#FF8E53" />
+                    <stop offset="0%" stopColor="#FE6B8B" />
+                    <stop offset="30%" stopColor="#FE6B8B" />
+                    <stop offset="90%" stopColor="#FF8E53" />
                 </linearGradient>
             </defs>
             <path

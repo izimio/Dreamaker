@@ -1,5 +1,3 @@
-import { Size } from "../../types";
-
 const wallet = (width = "73", height = "72") => {
     return (
         <svg

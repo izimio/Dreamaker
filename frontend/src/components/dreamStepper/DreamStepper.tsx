@@ -10,10 +10,10 @@ import {
     StepIcon,
     useSteps,
     StepSeparator,
-    Button,
     Center,
-    Divider,
 } from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";
+
 import StepperGeneral from "./StepperGeneral";
 import { ArrowLeftIcon, ArrowRightIcon } from "@chakra-ui/icons";
 import IconButton from "../IconButton";
@@ -21,8 +21,12 @@ import StepperPrice from "./StepperPrice";
 import StepperDate from "./StepperDate";
 import StepperFiles from "./StepperFiles";
 import StepperFinal from "./StepperFinal";
+import { createAPIDream } from "../../api/dream";
+import toast from "react-hot-toast";
 
 const DreamStepper: FC = () => {
+    const navigate = useNavigate();
+
     const steps = [
         { title: "Make that dream come true", description: "Contact Info" },
         {
@@ -34,18 +38,16 @@ const DreamStepper: FC = () => {
         { title: "Let's go ?", description: "Skyrocket your hopes" },
     ];
     const { activeStep, goToNext, goToPrevious } = useSteps({
-        index: 4,
         count: steps.length,
     });
+
     // ============= States ============= //
     const [valideStep, setValideStep] = useState<boolean[]>([
         false,
         false,
         false,
         false,
-        false,
     ]);
-    console.log(valideStep);
 
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
@@ -68,7 +70,37 @@ const DreamStepper: FC = () => {
 
     const [files, setFiles] = useState<any>([]);
 
+    const [isLoading, setIsLoading] = useState(false);
     // !!============= States =============!! //
+    const createDream = async () => {
+        if (valideStep.indexOf(false) !== -1) {
+            const title = steps[valideStep.indexOf(false)].title;
+            toast.error("Please complete the " + title + " step");
+            setIsLoading(false);
+            return;
+        }
+        try {
+            const res = await createAPIDream(
+                name,
+                description,
+                tags,
+                price,
+                date,
+                files
+            );
+            if (!res.ok) {
+                toast.error(res.data);
+                return;
+            }
+            toast.success("Dream created successfully");
+            const id = res.data.dream.id;
+            navigate(`/dream/${id}`);
+        } catch (e) {
+            console.error("Dream creation error: ", e);
+            toast.error("An error occured while creating your dream");
+        }
+        setIsLoading(false);
+    };
     const activeStepContent = steps[activeStep];
     return (
         <Stack
@@ -154,10 +186,9 @@ const DreamStepper: FC = () => {
                         ),
                         4: (
                             <StepperFinal
-                                setValideStep={(f) => {
-                                    valideStep[4] = f;
-                                    setValideStep([...valideStep]);
-                                }}
+                                onLaunch={createDream}
+                                isLoading={isLoading}
+                                setIsLoading={setIsLoading}
                             />
                         ),
                     }[activeStep]
@@ -179,7 +210,6 @@ const DreamStepper: FC = () => {
                             text="Next"
                             disable={!valideStep[activeStep]}
                             onClick={() => {
-                                console.log(valideStep);
                                 if (valideStep[activeStep]) {
                                     goToNext();
                                 }

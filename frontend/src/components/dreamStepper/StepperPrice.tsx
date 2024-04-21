@@ -7,14 +7,17 @@ interface StepperPriceProps {
         amount: string;
         currency: "ETH" | "GWEI" | "WEI";
     };
-    setPrice: (price: { amount: string; currency: "ETH" | "GWEI" | "WEI" }) => void;
+    setPrice: (price: {
+        amount: string;
+        currency: "ETH" | "GWEI" | "WEI";
+    }) => void;
     setValideStep: (f: boolean) => void;
 }
 
 const regexPatterns: { [key: string]: RegExp } = {
-    ethers: /^\d+(\.\d+)?/,
-    gwei: /^\d+(\.\d+)?/,
-    wei: /^\d+/,
+    eth: /^\d+(\.\d{1,18})?$/,
+    gwei: /^\d+(\.\d{1,9})?$/,
+    wei: /^\d+$/,
 };
 
 const StepperPrice: FC<StepperPriceProps> = ({
@@ -29,7 +32,7 @@ const StepperPrice: FC<StepperPriceProps> = ({
             setValideStep(false);
             return false;
         }
-        if(Number(price.amount) <= 0) {
+        if (Number(price.amount) <= 0) {
             setValideStep(false);
             return false;
         }
@@ -37,11 +40,11 @@ const StepperPrice: FC<StepperPriceProps> = ({
             setValideStep(false);
             return false;
         }
-        if (!price.amount.match(regexPatterns[price.currency])) {
+        if (!price.amount.match(regexPatterns[price.currency.toLowerCase()])) {
             setValideStep(false);
             return false;
         }
-        if(price.amount[0] === "0" && price.amount[1] !== ".") {
+        if (price.amount[0] === "0" && price.amount[1] !== ".") {
             setValideStep(false);
             return false;
         }
@@ -58,7 +61,11 @@ const StepperPrice: FC<StepperPriceProps> = ({
         <Container maxW="container.sm">
             <Flex direction="column" gap={10}>
                 <Box>
-                <PriceSelector price={price} setPrice={setPrice} isInvalid={!isValid} />
+                    <PriceSelector
+                        price={price}
+                        setPrice={setPrice}
+                        isInvalid={!isValid}
+                    />
                 </Box>
             </Flex>
         </Container>

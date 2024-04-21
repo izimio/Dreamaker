@@ -1,5 +1,3 @@
-import { Size } from "../../types";
-
 const discord = (width = "84", height = "84") => {
     return (
         <svg

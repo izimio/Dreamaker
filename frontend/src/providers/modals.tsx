@@ -1,4 +1,4 @@
-import { FC, createContext, useContext, useEffect, useState } from "react";
+import { FC, createContext, useContext, useState } from "react";
 import ChainModal from "../Modals/ChainModal";
 import ChallengeModal from "../Modals/ChallengeModal";
 

@@ -49,7 +49,8 @@ const StepperDate: FC<StepperDateProps> = ({
                         color={"grey"}
                         textShadow={" 1px 1px 1px cyan"}
                     >
-                        After this time, the dream will no longer be fundable. (Minimum of 1 hour from now)
+                        After this time, the dream will no longer be fundable.
+                        (Minimum of 1 hour from now)
                     </Text>
                     <Box position="relative">
                         <Input

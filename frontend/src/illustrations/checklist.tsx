@@ -1,5 +1,3 @@
-import { Size } from "../../types";
-
 const checklist = (width = "73", height = "72") => {
     return (
         <svg

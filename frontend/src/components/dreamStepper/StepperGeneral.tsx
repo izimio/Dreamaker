@@ -1,12 +1,4 @@
-import {
-    Box,
-    Container,
-    Flex,
-    Input,
-    Spinner,
-    Text,
-    Textarea,
-} from "@chakra-ui/react";
+import { Box, Container, Flex, Input, Text, Textarea } from "@chakra-ui/react";
 import { MultiSelect, useMultiSelect } from "chakra-multiselect";
 import { FC, useEffect } from "react";
 import { useGlobal } from "../../providers/global";

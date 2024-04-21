@@ -2,7 +2,6 @@ import { FC, createContext, useContext, useEffect, useState } from "react";
 import { getState, removeState } from "../utils/storage";
 import { API_URL } from "../utils/env.config";
 import axios from "axios";
-import Loading from "../pages/Loading";
 import toast from "react-hot-toast";
 
 type Dream = {};
@@ -79,10 +78,10 @@ export const GlobalProvider: FC<Props> = ({ children }) => {
                 tags: constantsResponse.data.data.tags,
                 limits: constantsResponse.data.data.limits,
                 allowedExtensions:
-                    constantsResponse.data.data.allowedExtensions.map((ext: string) =>
-                        ext.split("/")[1]
+                    constantsResponse.data.data.allowedExtensions.map(
+                        (ext: string) => ext.split("/")[1]
                     ),
-            })
+            });
             if (!token) {
                 return;
             }

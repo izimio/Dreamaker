@@ -23,14 +23,12 @@ interface PriceSelectorProps {
         currency: "ETH" | "GWEI" | "WEI";
     }) => void;
     isInvalid?: boolean;
-    setIsFocussed?: (isFocussed: boolean) => void;
 }
 
 const PriceSelector: FC<PriceSelectorProps> = ({
     price,
     setPrice,
     isInvalid,
-    setIsFocussed,
 }) => {
     const { ethPrice } = useEthereum();
     return (
@@ -58,6 +56,12 @@ const PriceSelector: FC<PriceSelectorProps> = ({
                         setPrice({ ...price, amount: value.toString() });
                     }}
                     onBlur={() => {
+                        const padding =
+                            price.currency === "ETH"
+                                ? 18
+                                : price.currency === "GWEI"
+                                  ? 9
+                                  : 0;
                         let value = price.amount;
                         if (value === "" || value === ".") {
                             value = "0";
@@ -65,7 +69,9 @@ const PriceSelector: FC<PriceSelectorProps> = ({
                         if (price.currency !== "WEI" && value.includes(".")) {
                             const subValue = value.split(".");
                             value =
-                                subValue[0] + "." + subValue[1].padEnd(18, "0");
+                                subValue[0] +
+                                "." +
+                                subValue[1].padEnd(padding, "0");
                         }
                         setPrice({ ...price, amount: value });
                     }}

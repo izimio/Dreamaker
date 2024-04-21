@@ -32,9 +32,7 @@ const Home: FC = () => {
             <Box mt={10} maxW="100%">
                 <HomeHero />
             </Box>
-            <Box
-                mt={10}
-            >
+            <Box mt={10}>
                 <Container
                     maxW={{
                         base: "container.sm",

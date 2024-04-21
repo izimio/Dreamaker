@@ -1,5 +1,3 @@
-import { Size } from "../../types";
-
 const plugins = (width = "248", height = "304") => {
     return (
         <svg

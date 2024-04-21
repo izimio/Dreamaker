@@ -1,12 +1,4 @@
-import {
-    Box,
-    Container,
-    Editable,
-    EditableInput,
-    EditablePreview,
-    Flex,
-    Text,
-} from "@chakra-ui/react";
+import { Box, Container, Flex, Text } from "@chakra-ui/react";
 import { FC, useEffect } from "react";
 import { FileUploader } from "react-drag-drop-files";
 import { useGlobal } from "../../providers/global";
@@ -92,7 +84,6 @@ const StepperFiles: FC<StepperFilesProps> = ({
         validate();
     }, [files]);
 
-    console.log("HERE", files);
     return (
         <Container maxW="container.sm">
             <Box>

@@ -1,5 +1,3 @@
-import { Size } from "../../types";
-
 const wizard = (width = "241", height = "210") => {
     return (
         <svg

@@ -5,7 +5,6 @@ import { changeChain, getChainId } from "../ethereum/metamask";
 import { useModals } from "./modals";
 import toast from "react-hot-toast";
 import { getETH_USDTPrice } from "../api/external";
-import { m } from "framer-motion";
 
 interface IEthereum {
     chainId: number | null;
@@ -31,7 +30,7 @@ export const EthereumProvider: FC<Props> = ({ children }) => {
         } else {
             switchChainModal(false);
         }
-    }, [chainId]);
+    }, [chainId, switchChainModal]);
 
     useEffect(() => {
         const fetchEthPrice = async () => {
@@ -88,7 +87,7 @@ export const EthereumProvider: FC<Props> = ({ children }) => {
         return () => {
             window.ethereum.removeListener("chainChanged", handleChainChanged);
         };
-    }, []);
+    }, [chainId]);
 
     return (
         <EthereumContext.Provider

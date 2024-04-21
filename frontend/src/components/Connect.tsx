@@ -29,7 +29,7 @@ const Connect: FC = () => {
             toast.error("Metamask is not installed");
             return;
         }
-        let result
+        let result;
         try {
             result = await connectWallet();
         } catch (error) {
