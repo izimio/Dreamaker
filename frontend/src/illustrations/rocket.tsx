@@ -1,6 +1,6 @@
-const Rocket = (prop: { size: number }) => {
+const Rocket = (prop: { size: number, ref?: any }) => {
     return (
-        <svg width={prop.size} height={prop.size} viewBox="0 0 24 24">
+        <svg width={prop.size} height={prop.size} viewBox="0 0 24 24" id="rocket" ref={prop.ref}>
             <defs>
                 <linearGradient
                     id="rocketGradient"

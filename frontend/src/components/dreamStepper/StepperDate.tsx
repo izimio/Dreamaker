@@ -1,10 +1,5 @@
-import { Box, Container, Flex, Icon, Input, Text } from "@chakra-ui/react";
+import { Box, Container, Input, Text } from "@chakra-ui/react";
 import { FC, useEffect } from "react";
-import { SingleDatepicker } from "chakra-dayzed-datepicker";
-import toast from "react-hot-toast";
-
-import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
-import AccessTimeIcon from "@mui/icons-material/AccessTime";
 
 interface StepperDateProps {
     date: Date;
@@ -34,7 +29,6 @@ const StepperDate: FC<StepperDateProps> = ({
         validate();
     }, [date]);
 
-    console.log(date.toString());
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0");
     const day = String(date.getDate()).padStart(2, "0");
@@ -42,7 +36,6 @@ const StepperDate: FC<StepperDateProps> = ({
     const minutes = String(date.getMinutes()).padStart(2, "0");
 
     const formattedDate = `${year}-${month}-${day}T${hours}:${minutes}`;
-    console.log(formattedDate);
     return (
         <Container maxW="container.sm">
             <Box>
@@ -56,8 +49,7 @@ const StepperDate: FC<StepperDateProps> = ({
                         color={"grey"}
                         textShadow={" 1px 1px 1px cyan"}
                     >
-                        After that, the dream will no longer be available to
-                        fund. (Minimum 1 hour from now)
+                        After this time, the dream will no longer be fundable. (Minimum of 1 hour from now)
                     </Text>
                     <Box position="relative">
                         <Input

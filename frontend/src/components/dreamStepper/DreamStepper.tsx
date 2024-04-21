@@ -19,6 +19,8 @@ import { ArrowLeftIcon, ArrowRightIcon } from "@chakra-ui/icons";
 import IconButton from "../IconButton";
 import StepperPrice from "./StepperPrice";
 import StepperDate from "./StepperDate";
+import StepperFiles from "./StepperFiles";
+import StepperFinal from "./StepperFinal";
 
 const DreamStepper: FC = () => {
     const steps = [
@@ -32,7 +34,7 @@ const DreamStepper: FC = () => {
         { title: "Let's go ?", description: "Skyrocket your hopes" },
     ];
     const { activeStep, goToNext, goToPrevious } = useSteps({
-        index: 2,
+        index: 4,
         count: steps.length,
     });
     // ============= States ============= //
@@ -43,7 +45,7 @@ const DreamStepper: FC = () => {
         false,
         false,
     ]);
-    console.log(valideStep)
+    console.log(valideStep);
 
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
@@ -56,13 +58,16 @@ const DreamStepper: FC = () => {
         amount: "0",
         currency: "ETH",
     });
-    
+
     const [date, setDate] = useState<Date>(() => {
         const currentDate = new Date();
         currentDate.setHours(currentDate.getHours() + 1);
         currentDate.setMinutes(currentDate.getMinutes() + 1);
         return currentDate;
-      });
+    });
+
+    const [files, setFiles] = useState<any>([]);
+
     // !!============= States =============!! //
     const activeStepContent = steps[activeStep];
     return (
@@ -137,8 +142,24 @@ const DreamStepper: FC = () => {
                                 }}
                             />
                         ),
-                        // 3: <StepperGeneral />,
-                        // 4: <StepperGeneral />,
+                        3: (
+                            <StepperFiles
+                                files={files}
+                                setFiles={setFiles}
+                                setValideStep={(f) => {
+                                    valideStep[3] = f;
+                                    setValideStep([...valideStep]);
+                                }}
+                            />
+                        ),
+                        4: (
+                            <StepperFinal
+                                setValideStep={(f) => {
+                                    valideStep[4] = f;
+                                    setValideStep([...valideStep]);
+                                }}
+                            />
+                        ),
                     }[activeStep]
                 }
                 <Center mt={5} gap={5}>

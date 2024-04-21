@@ -75,7 +75,14 @@ export const GlobalProvider: FC<Props> = ({ children }) => {
 
             const constantsResponse =
                 await axiosInstance.get("/tools/constants");
-            setConstants(constantsResponse.data.data);
+            setConstants({
+                tags: constantsResponse.data.data.tags,
+                limits: constantsResponse.data.data.limits,
+                allowedExtensions:
+                    constantsResponse.data.data.allowedExtensions.map((ext: string) =>
+                        ext.split("/")[1]
+                    ),
+            })
             if (!token) {
                 return;
             }
