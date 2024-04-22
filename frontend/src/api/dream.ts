@@ -14,7 +14,6 @@ const parsePriceToWei = (price: {
     const priceUnit =
         price.currency === "ETH" ? "ether" : price.currency.toLowerCase();
     const eth = ethers.parseUnits(price.amount, priceUnit);
-    console.log(eth.toString());
     return eth.toString();
 };
 

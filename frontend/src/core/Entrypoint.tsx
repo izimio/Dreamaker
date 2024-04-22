@@ -57,8 +57,8 @@ const Entrypoint: FC = () => {
         <ChakraProvider theme={theme}>
             <Toaster />
             <ModalsProviders>
-                <EthereumProvider>
-                    <GlobalProvider>
+                <GlobalProvider>
+                    <EthereumProvider>
                         <Router>
                             <Box
                                 style={{
@@ -75,8 +75,8 @@ const Entrypoint: FC = () => {
                                 <Footer />
                             </Box>
                         </Router>
-                    </GlobalProvider>
-                </EthereumProvider>
+                    </EthereumProvider>
+                </GlobalProvider>
             </ModalsProviders>
         </ChakraProvider>
     );

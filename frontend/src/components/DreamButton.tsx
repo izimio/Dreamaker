@@ -1,18 +1,23 @@
-import { Box, Flex, Text } from "@chakra-ui/react";
+import { Box, Flex, Text, Tooltip } from "@chakra-ui/react";
 import Rocket from "../illustrations/rocket";
 import { Link } from "react-router-dom";
 
-const DreamButton = () => {
-    return (
-        <Link to="/create-dream">
-            <Box mb={5} zIndex={999}>
+const DreamButton = ({ disabled }: { disabled: boolean }) => {
+    const buttonContent = (
+        <Box
+            mb={5}
+            zIndex={999}
+            opacity={disabled ? 0.5 : 1}
+            cursor={disabled ? "not-allowed" : "pointer"}
+        >
+            <Tooltip label={disabled ? "Login to create a dream" : ""}>
                 <Flex
                     bgGradient={
                         "linear(to-tr, regular, darkBlue, dark, darkBlue, regular)"
                     }
                     p={5}
                     rounded={"lg"}
-                    cursor={"pointer"}
+                    // cursor={"pointer"}
                     style={{
                         transition: "500ms",
                         animation: "levitate linear 4s infinite forwards",
@@ -39,9 +44,19 @@ const DreamButton = () => {
                     </Text>
                     <Rocket size={30} />
                 </Flex>
-            </Box>
-        </Link>
+            </Tooltip>
+        </Box>
     );
+
+    if (disabled) {
+        return buttonContent;
+    } else {
+        return (
+            <Link to={"/create-dream"} style={{ textDecoration: "none" }}>
+                {buttonContent}
+            </Link>
+        );
+    }
 };
 
 export default DreamButton;

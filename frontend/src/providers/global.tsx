@@ -4,12 +4,32 @@ import { API_URL } from "../utils/env.config";
 import axios from "axios";
 import toast from "react-hot-toast";
 
-type Dream = {};
+export type IDream = {
+    _id: string;
+    createdAt: string;
+    title: string;
+    description: string;
+    assets: {
+        link: string;
+        type: string;
+    }[];
+    tags: string[];
+    owner: string;
+    status: string;
+    deadlineTime: string;
+    targetAmount: string;
+    currentAmount: string;
+    proxyAddress: string;
+    minFundingAmount: string;
+    funders: {
+        address: string;
+        amount: string;
+    }[];
+};
 
-type User = {
+type IUser = {
     address: string;
     DMK: number;
-    dreams: Dream[];
 };
 
 type limits = {
@@ -29,11 +49,11 @@ type constants = {
 };
 
 interface IGlobal {
-    dreams: Dream[];
-    user: User | null;
+    dreams: IDream[];
+    user: IUser | null;
     token: string | null;
-    setDreams: (dreams: Dream[]) => void;
-    setUser: (user: User) => void;
+    setDreams: (dreams: IDream[]) => void;
+    setUser: (user: IUser) => void;
     setToken: (token: string) => void;
     logout: () => void;
     constants: constants;
@@ -50,9 +70,9 @@ const axiosInstance = axios.create({
 const GlobalContext = createContext({} as IGlobal);
 
 export const GlobalProvider: FC<Props> = ({ children }) => {
-    const [dreams, setDreams] = useState<Dream[]>([]);
+    const [dreams, setDreams] = useState<IDream[]>([]);
     const [token, setToken] = useState<string | null>(null);
-    const [user, setUser] = useState<User | null>(null);
+    const [user, setUser] = useState<IUser | null>(null);
     const [constants, setConstants] = useState<constants>({
         tags: [],
         limits: {
@@ -70,7 +90,7 @@ export const GlobalProvider: FC<Props> = ({ children }) => {
             const response = await axiosInstance.get("/dream");
 
             setToken(token);
-            setDreams(response.data.data);
+            setDreams(response.data.data.dreams);
 
             const constantsResponse =
                 await axiosInstance.get("/tools/constants");
@@ -93,11 +113,8 @@ export const GlobalProvider: FC<Props> = ({ children }) => {
         if (!token) {
             return;
         }
-        if (user && user.address) {
-            return;
-        }
         retrieveUser();
-    }, [token, user]);
+    }, [token]);
 
     const retrieveUser = async () => {
         axiosInstance.defaults.headers["Authorization"] = `Bearer ${token}`;
@@ -114,7 +131,6 @@ export const GlobalProvider: FC<Props> = ({ children }) => {
         setUser({
             address: data.address,
             DMK: data.numberOfDMK,
-            dreams: data.dreams || [],
         });
     };
 

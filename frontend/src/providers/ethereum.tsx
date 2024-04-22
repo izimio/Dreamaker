@@ -1,10 +1,11 @@
 import { FC, createContext, useContext, useEffect, useState } from "react";
 import { getState, removeState, setState } from "../utils/storage";
 import { DEFAULT_CHAINS } from "../ethereum/config";
-import { changeChain, getChainId } from "../ethereum/metamask";
+import { changeChain, connectWallet, getChainId } from "../ethereum/metamask";
 import { useModals } from "./modals";
 import toast from "react-hot-toast";
 import { getETH_USDTPrice } from "../api/external";
+import { useGlobal } from "./global";
 
 interface IEthereum {
     chainId: number | null;
@@ -20,7 +21,8 @@ const EthereumContext = createContext({} as IEthereum);
 export const EthereumProvider: FC<Props> = ({ children }) => {
     const [chainId, setChainId] = useState<number | null>(null);
     const [ethPrice, setEthPrice] = useState<number>(0);
-    const { switchChainModal } = useModals();
+    const { switchChainModal, switchAccountChangedModal } = useModals();
+    const { setToken, user } = useGlobal();
 
     useEffect(() => {
         if (!chainId) return;
@@ -72,6 +74,7 @@ export const EthereumProvider: FC<Props> = ({ children }) => {
             };
             handleChainIdRetrieved();
         }
+
         const handleChainChanged = (chainId: any) => {
             const pchainId = parseInt(chainId, 16);
             if (!DEFAULT_CHAINS.includes(pchainId)) {
@@ -80,12 +83,40 @@ export const EthereumProvider: FC<Props> = ({ children }) => {
             setChainId(pchainId);
         };
 
+        const handleAccountsChanged = (accounts: any) => {
+            if (!accounts.length) {
+                toast.error("No account found");
+            }
+            if (accounts[0] === user?.address) {
+                return;
+            }
+            switchAccountChangedModal(true);
+            try {
+                connectWallet().then((e) => {
+                    if (!e.ok || !e.data) {
+                        toast.error(e.message);
+                        return;
+                    }
+                    setState("token", e.data.token);
+                    setToken(e.data.token);
+                    switchAccountChangedModal(false);
+                    toast.success("Account changed successfully");
+                });
+            } catch (error) {
+                toast.error("Transaction rejected");
+            }
+        };
         initAccounts();
         fetchEthPrice();
         window.ethereum.on("chainChanged", handleChainChanged);
+        window.ethereum.on("accountsChanged", handleAccountsChanged);
 
         return () => {
             window.ethereum.removeListener("chainChanged", handleChainChanged);
+            window.ethereum.removeListener(
+                "accountsChanged",
+                handleAccountsChanged
+            );
         };
     }, [chainId]);
 

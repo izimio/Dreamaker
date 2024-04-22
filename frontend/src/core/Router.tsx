@@ -11,9 +11,14 @@ import Dreams from "../pages/Dreams";
 import Profile from "../pages/Profile";
 import CreateDream from "../pages/CreateDream";
 import Dream from "../pages/DreamEach";
+import toast from "react-hot-toast";
 
 const ProtectedRoute = ({ children }: any) => {
     if (!getState("token")) {
+        toast.dismiss("protected-route");
+        toast.error("You need to be logged in to access this page", {
+            id: "protected-route",
+        });
         return <Navigate to={ROUTES.HOME} replace />;
     }
 

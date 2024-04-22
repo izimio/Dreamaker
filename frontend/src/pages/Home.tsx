@@ -3,8 +3,10 @@ import { Box, Container, Heading } from "@chakra-ui/react";
 import HomeHero from "../components/HomeHero";
 import bg from "/bg.png";
 import DreamButton from "../components/DreamButton";
+import { useGlobal } from "../providers/global";
 
 const Home: FC = () => {
+    const { user } = useGlobal();
     return (
         <Box
             style={{
@@ -39,7 +41,7 @@ const Home: FC = () => {
                         md: "25%",
                     }}
                 >
-                    <DreamButton />
+                    <DreamButton disabled={!!!user?.address} />
                 </Container>
             </Box>
         </Box>
