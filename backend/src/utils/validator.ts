@@ -30,7 +30,9 @@ export const validateVerifyEcRecoverChallenge = object()
 export const validateEditDream = object()
     .shape({
         title: string().min(LIMITS.dreamTitle.min).max(LIMITS.dreamTitle.max),
-        description: string().min(LIMITS.dreamDescription.min).max(LIMITS.dreamDescription.max),
+        description: string()
+            .min(LIMITS.dreamDescription.min)
+            .max(LIMITS.dreamDescription.max),
         tags: array()
             .of(string().oneOf(TAGS).required())
             .min(LIMITS.dreamTags.min, "At least one tag is required")
@@ -69,8 +71,14 @@ const fileSchema = object()
 
 export const validateNewDream = object()
     .shape({
-        title: string().required().min(LIMITS.dreamTitle.min).max(LIMITS.dreamTitle.max),
-        description: string().required().min(LIMITS.dreamDescription.min).max(LIMITS.dreamDescription.max),
+        title: string()
+            .required()
+            .min(LIMITS.dreamTitle.min)
+            .max(LIMITS.dreamTitle.max),
+        description: string()
+            .required()
+            .min(LIMITS.dreamDescription.min)
+            .max(LIMITS.dreamDescription.max),
         tags: array()
             .of(string().oneOf(TAGS).required())
             .min(LIMITS.dreamTags.min, "At least one tag is required")

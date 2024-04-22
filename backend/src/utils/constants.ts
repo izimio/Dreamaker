@@ -33,7 +33,7 @@ export const LIMITS = {
         min: 0,
         max: 5,
     },
-}
+};
 
 export const ALLOWED_EXTENSIONS = [
     "image/jpeg",

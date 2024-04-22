@@ -164,7 +164,16 @@ describe(`GET ${ROUTE_GET_DREAMS}`, () => {
             expect(dream.targetAmount).toBeDefined();
             expect(dream.minFundingAmount).toBeDefined();
             expect(dream.assets).toBeDefined();
-
+            expect(dream.currentAmount).toBeDefined();
+            expect(dream.currentAmount).toBe(
+                dream.funders
+                    .reduce(
+                        (acc: bigint, funder: any) =>
+                            acc + BigInt(funder.amount),
+                        0n
+                    )
+                    .toString()
+            );
             if (dream.owner === wSigner.wallet.address) {
                 found++;
             }

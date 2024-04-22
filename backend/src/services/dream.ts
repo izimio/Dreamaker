@@ -108,7 +108,6 @@ export const createDreamOnChain = async (
             deadlineTime
         );
         txHash = tx.hash;
-        await tx.wait();
     } catch (error: any) {
         throw new InternalError(
             "Failed to create dream on chain: " + error.message
@@ -124,11 +123,16 @@ export const getDreams = async (
         status?: string;
     } = {}
 ) => {
-    const dreams = await DreamModel.find({
-        ...(params._id && { _id: params._id }),
-        ...(params.owner && { owner: params.owner }),
-        ...(params.status && { status: params.status }),
-    }).lean();
+    const dreams = await DreamModel.find(
+        {
+            ...(params._id && { _id: params._id }),
+            ...(params.owner && { owner: params.owner }),
+            ...(params.status && { status: params.status }),
+        },
+        {
+            __v: 0,
+        }
+    ).lean();
 
     const parsedBigIntToStringsDreams = dreams.map((dream) => {
         return {
@@ -139,9 +143,14 @@ export const getDreams = async (
                     amount: funder.amount.toString(),
                 };
             }),
+            currentAmount: dream.funders
+                .reduce(
+                    (acc: bigint, funder) => acc + BigInt(funder.amount),
+                    0n
+                )
+                .toString(),
         };
     });
-
     return parsedBigIntToStringsDreams;
 };
 

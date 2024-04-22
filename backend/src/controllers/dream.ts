@@ -22,7 +22,6 @@ export const createDream = async (ctx: Context) => {
     const { title, description, deadlineTime, targetAmount, files, tags } =
         await validateNewDream.validate(parsedFormData);
 
-    // database call
     const id = await dreamServices.postDream(
         ctx.state.address,
         title,
@@ -38,13 +37,13 @@ export const createDream = async (ctx: Context) => {
         targetAmount,
         deadlineTime
     );
-
     ctx.body = {
         ok: true,
         data: {
             txHash,
             dream: {
                 id,
+                owner: ctx.state.address,
                 title,
                 description,
                 tags,

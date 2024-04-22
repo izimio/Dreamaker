@@ -4,11 +4,15 @@ import { DreamModel } from "../models/dreamModel";
 import { ABIs, provider } from "../utils/EProviders";
 
 export const getMeNumberOfDMK = async (address: string) => {
-    const DMKContract = new ethers.Contract(DREAMAKER_ADDRESS, ABIs.Dreamaker, provider);
+    const DMKContract = new ethers.Contract(
+        DREAMAKER_ADDRESS,
+        ABIs.Dreamaker,
+        provider
+    );
 
     const balance = await DMKContract.balanceOf(address);
     return ethers.formatUnits(balance, "ether");
-}
+};
 
 export const getMyFunds = async (me: string) => {
     const dreamFunderByMe = await DreamModel.find({
@@ -38,5 +42,4 @@ export const getMe = async (me: string) => {
         isAdmin,
         numberOfDMK,
     };
-        
 };

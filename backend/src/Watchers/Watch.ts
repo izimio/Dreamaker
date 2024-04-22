@@ -124,7 +124,7 @@ class EventWatcher {
         );
 
         if (!dream || dream.matchedCount === 0) {
-            logErr("[HPC] Dream not found: ", owner);
+            logErr("[HPC] Dream not found or already linked to a SC: ", owner);
         }
     }
 

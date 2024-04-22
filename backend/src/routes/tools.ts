@@ -23,9 +23,8 @@ router.get("/constants", async (ctx: Context) => {
             limits: LIMITS,
             allowedExtensions: ALLOWED_EXTENSIONS,
         },
-    }
+    };
     ctx.status = 200;
 });
-
 
 export default router;

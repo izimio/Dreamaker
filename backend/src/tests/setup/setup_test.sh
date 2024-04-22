@@ -12,15 +12,15 @@ kill_pid() {
     fi
 }
 
-kill_pid
+kill_pid $(lsof -t -i:8545)
 
 ./run_node.sh &
 
 sleep 1
 
-# ./deploy_contracts.sh &
+./deploy_contracts.sh &
 
-# sleep 1
+sleep 1
 
 cd -
 
@@ -28,5 +28,5 @@ jest --setupFiles dotenv/config ./src/tests/setup/setupTest.js --detectOpenHandl
 
 wait 
 
-kill_pid
+kill_pid $(lsof -t -i:8545)
 

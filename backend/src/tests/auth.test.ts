@@ -33,36 +33,31 @@ describe("POST auth/challenge", () => {
     });
 
     it("Creating a challenge, OK", async () => {
-        const response = await request?.post(ROUTE_CHALLENGE).send({
-            address: randomWallet.address,
-        });
+        const response = await request?.get(
+            ROUTE_CHALLENGE + `/${randomWallet.address}`
+        );
         expect(response?.status).toBe(201);
         expect(response?.body.ok).toBe(true);
         expect(response?.body.data.challenge).toBeDefined();
     });
-    it("Creating a challenge, missing address", async () => {
-        const response = await request?.post(ROUTE_CHALLENGE).send({});
-        expect(response?.status).toBe(400);
-        expect(response?.body.ok).toBe(false);
-    });
     it("Creating a challenge, invalid address", async () => {
-        const response = await request?.post(ROUTE_CHALLENGE).send({
-            address: "invalid address",
-        });
+        const response = await request?.get(
+            ROUTE_CHALLENGE + "/invalid address"
+        );
         expect(response?.status).toBe(400);
         expect(response?.body.ok).toBe(false);
     });
     it("Creating a challenge, challenge already existing for this address", async () => {
-        const response0 = await request?.post(ROUTE_CHALLENGE).send({
-            address: randomWallet.address,
-        });
+        const response0 = await request?.get(
+            ROUTE_CHALLENGE + `/${randomWallet.address}`
+        );
         expect(response0?.status).toBe(201);
         expect(response0?.body.ok).toBe(true);
         expect(response0?.body.data.challenge).toBeDefined();
 
-        const response = await request?.post(ROUTE_CHALLENGE).send({
-            address: randomWallet.address,
-        });
+        const response = await request?.get(
+            ROUTE_CHALLENGE + `/${randomWallet.address}`
+        );
         expect(response?.status).toBe(409);
         expect(response?.body.ok).toBe(false);
     });
@@ -73,9 +68,10 @@ describe("POST auth/verify", () => {
     let challenge: string;
 
     async function createRandomChallenge(address?: string) {
-        const response0 = await request?.post(ROUTE_CHALLENGE).send({
-            address: address || randomWallet.address,
-        });
+        const addressToUse = address || randomWallet.address;
+        const response0 = await request?.get(
+            ROUTE_CHALLENGE + `/${addressToUse}`
+        );
         expect(response0?.status).toBe(201);
         expect(response0?.body.ok).toBe(true);
         expect(response0?.body.data.challenge).toBeDefined();

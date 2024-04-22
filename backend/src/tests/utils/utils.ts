@@ -1,6 +1,11 @@
 import { HDNodeWallet, ethers } from "ethers";
 import { TAGS } from "../../utils/constants";
 import { DreamModel, DreamStatus } from "../../models/dreamModel";
+import * as dreamServices from "../../services/dream";
+
+jest.spyOn(dreamServices, "createDreamOnChain").mockImplementation(async () => {
+    return Promise.resolve("0x" + randomString(64));
+});
 
 export const randomString = (length: number): string => {
     const characters =
@@ -45,9 +50,9 @@ export const authWallet = async (
 ): Promise<{ wallet: HDNodeWallet | ethers.Wallet; token: string }> => {
     const wallet = createWallet(privateKey);
 
-    const response = await request?.post("/auth/challenge").send({
-        address: wallet.address,
-    });
+    const response = await request?.get(
+        "/auth/challenge" + `/${wallet.address}`
+    );
     expect(response?.status).toBe(201);
     expect(response?.body.ok).toBe(true);
     expect(response?.body.data.challenge).toBeDefined();
@@ -118,7 +123,6 @@ export const createRandomDream = async (
         .field("tags", tags.join(","))
         .field("deadlineTime", deadlineTime)
         .field("targetAmount", targetAmount.toString());
-
     expect(response?.status).toBe(201);
     expect(response?.body.ok).toBe(true);
     expect(response?.body.data.txHash).toBeDefined();
