@@ -15,6 +15,8 @@ contract Dreamaker is ERC20, ERC20Burnable, Ownable, ERC20Permit {
         _mint(initialOwner, initialSupply * 10 ** decimals());
     }
 
+    event DreamBoosted(address from, address proxy, uint256 amount);
+
     error InvalidInput();
 
     /**
@@ -42,5 +44,26 @@ contract Dreamaker is ERC20, ERC20Burnable, Ownable, ERC20Permit {
         for (uint256 i = 0; i < to.length; i++) {
             _mint(to[i], amount[i]);
         }
+    }
+
+    /**
+     * @dev Burn the amount of tokens from the address to boost the specified dream
+     * @param _dream The dream to boost
+     * @param _amount The amount of tokens to burn
+     **/
+    function boost(address _dream, uint256 _amount) public {
+        if (_amount == 0) {
+            revert InvalidInput();
+        }
+        if (_amount > balanceOf(msg.sender)) {
+            revert ERC20InsufficientBalance(
+                msg.sender,
+                _amount,
+                balanceOf(msg.sender)
+            );
+        }
+
+        _burn(msg.sender, _amount);
+        emit DreamBoosted(msg.sender, _dream, _amount);
     }
 }

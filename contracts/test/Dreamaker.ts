@@ -47,6 +47,7 @@ describe("Dreamaker Token", function () {
             NothingToRefund: "NothingToRefund",
             Forbidden: "Forbidden",
             InvalidInput: "InvalidInput",
+            ERC20InsufficientBalance: "ERC20InsufficientBalance",
         };
         return { dreamaker, owner, otherAccount, errors, initialSupply };
     }
@@ -126,6 +127,27 @@ describe("Dreamaker Token", function () {
             );
             await dreamaker.offer(accounts, earnings);
             await expectBalanceOfAccounts(dreamaker, accounts, earnings);
+        });
+    });
+    describe("Boosting - dreamaker", function () {
+        const randomAddress = () => ethers.Wallet.createRandom().address;
+        it("Boosting - should not allow to boost if dreamaker has not enough balance", async function () {
+            const { dreamaker, errors, otherAccount } = await deployFixture();
+            await expect(
+                dreamaker
+                    .connect(otherAccount)
+                    .boost(randomAddress(), ethers.parseEther("1"))
+            ).to.be.revertedWithCustomError(
+                dreamaker,
+                errors.ERC20InsufficientBalance
+            );
+        });
+        it("Boosting - basic", async function () {
+            const { dreamaker, owner, otherAccount } = await deployFixture();
+            const dreamAddress = ethers.Wallet.createRandom().address;
+            await expect(dreamaker.boost(dreamAddress, ethers.parseEther("1")))
+                .to.emit(dreamaker, "DreamBoosted")
+                .withArgs(owner.address, dreamAddress, ethers.parseEther("1"));
         });
     });
 });
