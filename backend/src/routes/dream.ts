@@ -12,6 +12,8 @@ router.post("/", authMiddleware, filesMiddleware, dreamCotroller.createDream);
 
 router.put("/:id", authMiddleware, dreamCotroller.updateDream);
 
+router.put("/like/:id", authMiddleware, dreamCotroller.likeDream);
+
 router.get("/", dreamCotroller.getDreams);
 router.get("/me", authMiddleware, dreamCotroller.getMyDreams);
 

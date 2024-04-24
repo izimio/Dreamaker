@@ -1,4 +1,5 @@
 import { EcRecoverChallengeModel } from "../models/ecRecoverChallengeModel";
+import { UserModel } from "../models/userModel";
 import {
     AuthError,
     ConflictError,
@@ -73,6 +74,20 @@ export const verifyEcRecoverChallenge = async (
     if (!isValid) {
         throw new AuthError("Invalid signature");
     }
+
+    await UserModel.findOneAndUpdate(
+        { address },
+        {
+            $set: {
+                address,
+                createdAt: new Date(),
+                boostHistory: [],
+                creationHistory: [],
+                fundHistory: [],
+            },
+        },
+        { upsert: true }
+    );
 
     await EcRecoverChallengeModel.deleteOne({
         address,

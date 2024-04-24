@@ -23,8 +23,13 @@ export const cronWorkerEach = async (
         provider
     );
 
-    const amount: bigint = await dreamContract.getAmount();
-
+    let amount: bigint;
+    try {
+        amount = await dreamContract.getAmount();
+    } catch (e) {
+        log("Error in dream %s: %O", dream.proxyAddress);
+        return WorkerDreamStatus.EXPIRED;
+    }
     if (amount >= targetAmount) {
         return WorkerDreamStatus.REACHED;
     }

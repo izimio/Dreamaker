@@ -119,10 +119,10 @@ class EventWatcher {
         await this.manageProxyWatcher(proxy, true);
 
         const dream = await DreamModel.updateOne(
-            { owner: owner, proxyAddress: null },
+            { owner: owner.toLowerCase(), proxyAddress: null },
             { proxyAddress: proxy, status: DreamStatus.ACTIVE }
         );
-
+        console.log("INITED");
         if (!dream || dream.matchedCount === 0) {
             logErr("[HPC] Dream not found or already linked to a SC: ", owner);
         }

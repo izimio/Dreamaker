@@ -104,3 +104,18 @@ export const updateDream = async (ctx: Context) => {
         },
     };
 };
+
+export const likeDream = async (ctx: Context) => {
+    const { id } = await validateObjectId.validate(ctx.params);
+    const me = ctx.state.address;
+
+    const res = await dreamServices.likeDream(id, me);
+
+    ctx.body = {
+        ok: true,
+        data: {
+            id: res.id,
+            message: res.likeStatus ? "Dream liked" : "Dream unliked",
+        },
+    };
+};

@@ -2,8 +2,13 @@ import { ethers } from "ethers";
 import { uploadFileToFirebase } from "../firebase/uploadFile";
 import { DreamModel } from "../models/dreamModel";
 import { ABIs, signer } from "../utils/EProviders";
-import { DREAM_PROXY_FACTORY_ADDRESS } from "../utils/config";
-import { InternalError, ObjectNotFoundError } from "../utils/error";
+import { BOOST_DURATION, DREAM_PROXY_FACTORY_ADDRESS } from "../utils/config";
+import {
+    ConflictError,
+    Forbidden,
+    InternalError,
+    ObjectNotFoundError,
+} from "../utils/error";
 import fs from "fs";
 
 type Asset = {
@@ -107,6 +112,7 @@ export const createDreamOnChain = async (
             ethers.parseUnits(targetAmount, "wei"),
             deadlineTime
         );
+        await tx.wait();
         txHash = tx.hash;
     } catch (error: any) {
         throw new InternalError(
@@ -180,4 +186,30 @@ export const updateDream = async (
     }
 
     return dream;
+};
+
+export const likeDream = async (id: string, me: string) => {
+    const dream = await DreamModel.findOne({ _id: id });
+
+    if (!dream) {
+        throw new ObjectNotFoundError("Dream not found");
+    }
+
+    const likers = dream.likers;
+    let likeStatus = true;
+
+    if (likers.includes(me)) {
+        likers.splice(likers.indexOf(me), 1);
+        likeStatus = false;
+    } else {
+        likers.push(me);
+    }
+
+    dream.likers = likers;
+    await dream.save();
+
+    return {
+        id: dream._id,
+        likeStatus,
+    };
 };

@@ -32,6 +32,12 @@ export interface IDream {
     targetAmount: string;
     minFundingAmount: string;
     proxyAddress: string;
+    boostedUntil: Date;
+    likers: string[];
+    fundingGraph: {
+        date: Date;
+        amount: number;
+    }[];
 }
 
 const dreamSchema = new mongoose.Schema<IDream>({
@@ -45,7 +51,11 @@ const dreamSchema = new mongoose.Schema<IDream>({
         }),
         default: [],
     },
-    owner: { type: String, required: true },
+    owner: {
+        type: String,
+        required: true,
+        transform: (v: string) => v.toLowerCase(),
+    },
     status: {
         type: String,
         required: true,
@@ -60,6 +70,15 @@ const dreamSchema = new mongoose.Schema<IDream>({
     targetAmount: { type: String, required: true, match: /[1-9][0-9]*/ },
     minFundingAmount: { type: String, default: "1", match: /[1-9][0-9]*/ },
     proxyAddress: { type: String, default: null },
+    boostedUntil: { type: Date, default: Date.now() - 5000 },
+    likers: { type: [String], default: [] },
+    fundingGraph: {
+        type: Array({
+            date: { type: Date, required: true, default: Date.now },
+            amount: { type: Number, required: true },
+        }),
+        default: [],
+    },
 });
 
 export const DreamModel = mongoose.model<IDream>("Dream", dreamSchema);

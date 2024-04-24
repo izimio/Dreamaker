@@ -15,6 +15,11 @@ if (!ALLOWED_ORIGINS) {
     throw new Error("Missing ALLOWED_ORIGINS");
 }
 
+export const BOOST_DURATION = (process.env.BOOST_DURATION as string) || "2";
+if (!BOOST_DURATION) {
+    throw new Error("Missing BOOST_DURATION");
+}
+
 export const IS_TEST_MODE =
     process.env.IS_TEST_MODE && process.env.IS_TEST_MODE === "true"
         ? true
