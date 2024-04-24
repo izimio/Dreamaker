@@ -17,7 +17,7 @@ const IconButton = ({
     return (
         <Box>
             <Flex
-                onClick={() => {
+                onMouseUp={() => {
                     onClick();
                 }}
                 alignItems="center"

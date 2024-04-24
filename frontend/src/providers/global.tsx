@@ -16,7 +16,7 @@ export type IDream = {
     tags: string[];
     owner: string;
     status: string;
-    deadlineTime: string;
+    deadlineTime: number;
     targetAmount: string;
     currentAmount: string;
     proxyAddress: string;
@@ -25,6 +25,7 @@ export type IDream = {
         address: string;
         amount: string;
     }[];
+    boosted: boolean;
 };
 
 type IUser = {
@@ -48,11 +49,20 @@ type constants = {
     allowedExtensions: string[];
 };
 
+type dreamsTypesObj = {
+    hotDreams: IDream[];
+    boostedDreams: IDream[];
+    myDreams: IDream[];
+    allDreams: IDream[];
+};
 interface IGlobal {
-    dreams: IDream[];
+    dreams: dreamsTypesObj;
+    hotDreams: IDream[];
+    boostedDreams: IDream[];
+    myDreams: IDream[];
     user: IUser | null;
     token: string | null;
-    setDreams: (dreams: IDream[]) => void;
+    setDreams: (dreams: dreamsTypesObj) => void;
     setUser: (user: IUser) => void;
     setToken: (token: string) => void;
     logout: () => void;
@@ -70,7 +80,12 @@ const axiosInstance = axios.create({
 const GlobalContext = createContext({} as IGlobal);
 
 export const GlobalProvider: FC<Props> = ({ children }) => {
-    const [dreams, setDreams] = useState<IDream[]>([]);
+    const [dreams, setDreams] = useState<dreamsTypesObj>({
+        hotDreams: [],
+        boostedDreams: [],
+        myDreams: [],
+        allDreams: [],
+    });
     const [token, setToken] = useState<string | null>(null);
     const [user, setUser] = useState<IUser | null>(null);
     const [constants, setConstants] = useState<constants>({
@@ -84,13 +99,31 @@ export const GlobalProvider: FC<Props> = ({ children }) => {
         allowedExtensions: [],
     });
 
+    const sortDreamsNRetrieve = (dreams: IDream[]) => {
+        const now = new Date();
+        const hotDreams = dreams.filter((dr) => {
+            const deadline = new Date(dr.deadlineTime * 1000);
+            // if less than 24 hours
+            return deadline.getTime() - now.getTime() < 24 * 60 * 60 * 1000;
+        });
+        const boostedDreams = dreams.filter((dr) => dr.boosted);
+        const myDreams = dreams.filter((dr) => dr.owner === user?.address);
+
+        setDreams({
+            hotDreams,
+            boostedDreams,
+            myDreams,
+            allDreams: dreams,
+        });
+    };
     useEffect(() => {
         const initGlobalStates = async () => {
             const token = getState("token");
             const response = await axiosInstance.get("/dream");
+            const dreamsList = response.data.data.dreams;
 
             setToken(token);
-            setDreams(response.data.data.dreams);
+            sortDreamsNRetrieve(dreamsList);
 
             const constantsResponse =
                 await axiosInstance.get("/tools/constants");

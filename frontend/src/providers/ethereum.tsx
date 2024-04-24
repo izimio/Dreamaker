@@ -6,6 +6,7 @@ import { useModals } from "./modals";
 import toast from "react-hot-toast";
 import { getETH_USDTPrice } from "../api/external";
 import { useGlobal } from "./global";
+import ChallengeModal from "../Modals/ChallengeModal";
 
 interface IEthereum {
     chainId: number | null;
@@ -21,7 +22,11 @@ const EthereumContext = createContext({} as IEthereum);
 export const EthereumProvider: FC<Props> = ({ children }) => {
     const [chainId, setChainId] = useState<number | null>(null);
     const [ethPrice, setEthPrice] = useState<number>(0);
-    const { switchChainModal, switchAccountChangedModal } = useModals();
+    const {
+        switchChainModal,
+        switchAccountChangedModal,
+        switchChallengeModal,
+    } = useModals();
     const { setToken, user } = useGlobal();
 
     useEffect(() => {
@@ -90,7 +95,10 @@ export const EthereumProvider: FC<Props> = ({ children }) => {
             if (accounts[0] === user?.address) {
                 return;
             }
-            switchAccountChangedModal(true);
+            const rightModal = user?.address
+                ? switchAccountChangedModal
+                : switchChallengeModal;
+            rightModal(true);
             try {
                 connectWallet().then((e) => {
                     if (!e.ok || !e.data) {
@@ -99,8 +107,10 @@ export const EthereumProvider: FC<Props> = ({ children }) => {
                     }
                     setState("token", e.data.token);
                     setToken(e.data.token);
-                    switchAccountChangedModal(false);
-                    toast.success("Account changed successfully");
+                    rightModal(false);
+                    toast.success(
+                        user?.address ? "Account changed" : "Wallet connected"
+                    );
                 });
             } catch (error) {
                 toast.error("Transaction rejected");

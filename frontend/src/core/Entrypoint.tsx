@@ -12,6 +12,7 @@ import { MultiSelectTheme } from "chakra-multiselect";
 
 import { lightenColor, darkenColor } from "../utils/color";
 import Loading from "../pages/Loading";
+import MetamaskGuard from "../providers/metamaskGuard";
 const colors: {
     [key: string]: string;
 } = {
@@ -56,28 +57,30 @@ const Entrypoint: FC = () => {
     return (
         <ChakraProvider theme={theme}>
             <Toaster />
-            <ModalsProviders>
-                <GlobalProvider>
-                    <EthereumProvider>
-                        <Router>
-                            <Box
-                                style={{
-                                    minHeight: "100vh",
-                                    minWidth: "100vw",
-                                }}
-                            >
-                                <Upbar />
-                                <Box flex={1}>
-                                    <Loading>
-                                        <RoutesContainer />
-                                    </Loading>
+            <MetamaskGuard>
+                <ModalsProviders>
+                    <GlobalProvider>
+                        <EthereumProvider>
+                            <Router>
+                                <Box
+                                    style={{
+                                        minHeight: "100vh",
+                                        minWidth: "100vw",
+                                    }}
+                                >
+                                    <Upbar />
+                                    <Box flex={1}>
+                                        <Loading>
+                                            <RoutesContainer />
+                                        </Loading>
+                                    </Box>
+                                    <Footer />
                                 </Box>
-                                <Footer />
-                            </Box>
-                        </Router>
-                    </EthereumProvider>
-                </GlobalProvider>
-            </ModalsProviders>
+                            </Router>
+                        </EthereumProvider>
+                    </GlobalProvider>
+                </ModalsProviders>
+            </MetamaskGuard>
         </ChakraProvider>
     );
 };

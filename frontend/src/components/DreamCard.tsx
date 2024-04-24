@@ -14,8 +14,10 @@ import {
 } from "@chakra-ui/react";
 import defaultBg from "/assets_fallback.jpg";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
+import { useNavigate } from "react-router-dom";
 
 import { IDream } from "../providers/global";
+import { FILLER_IDS } from "../utils/env.config";
 
 const getSeedFromId = (id: string) => {
     return Number(BigInt("0x" + id));
@@ -34,7 +36,7 @@ const colorSchemes = [
 ];
 
 const DreamCard: FC<{ dream: IDream }> = ({ dream }) => {
-    console.log(dream);
+    const navigate = useNavigate();
     const seed = getSeedFromId(dream._id);
     const refColorScheme = colorSchemes[seed % colorSchemes.length];
     const image = dream.assets.length > 0 ? dream.assets[0].link : defaultBg;
@@ -42,19 +44,28 @@ const DreamCard: FC<{ dream: IDream }> = ({ dream }) => {
         (BigInt(dream.currentAmount) * BigInt(100)) /
         BigInt(dream.targetAmount);
 
+    const isFiller = FILLER_IDS.find((id) => id === dream._id) !== undefined;
     return (
-        <Center py={12}>
+        <Center
+            py={6}
+            onClick={() => {
+                if (isFiller) {
+                    return;
+                }
+                navigate(`/dream/${dream._id}`);
+            }}
+        >
             <Box
                 role={"group"}
                 p={6}
-                maxW={"330px"}
+                maxW={"380px"}
                 w={"full"}
                 bg={useColorModeValue("white", "gray.800")}
                 boxShadow={"2xl"}
                 rounded={"lg"}
                 pos={"relative"}
                 zIndex={1}
-                cursor={"pointer"}
+                cursor={isFiller ? "" : "pointer"}
             >
                 <Box
                     rounded={"lg"}
@@ -82,31 +93,59 @@ const DreamCard: FC<{ dream: IDream }> = ({ dream }) => {
                     <Image
                         rounded={"lg"}
                         height={230}
-                        width={282}
+                        width={340}
                         objectFit={"cover"}
                         src={image}
                     />
                 </Box>
                 <Stack pt={10} align={"center"}>
-                    <Flex align={"center"} gap={2} flexWrap={"wrap"} justify={"center"} m={1}>
-                        {dream.tags.map((tag: string) => (
-                            <Badge
-                                key={tag}
-                                colorScheme={refColorScheme}
-                                variant="solid"
-                            >
-                                {tag}
-                            </Badge>
-                        ))}
-                    </Flex>
-                    <Heading
-                        fontSize={"2xl"}
-                        fontFamily={"body"}
-                        fontWeight={500}
-                        textAlign={"center"}
+                    <Tooltip
+                        label={dream.tags.join(" / ")}
+                        aria-label="A tooltip"
                     >
-                        {dream.title}
-                    </Heading>
+                        <Flex
+                            align={"center"}
+                            gap={2}
+                            justify={"center"}
+                            m={1}
+                            wrap={"revert"}
+                        >
+                            {dream.tags.map((tag: string, idx: number) => {
+                                if (idx === 3) {
+                                    tag = "...";
+                                }
+                                if (idx >= 4) {
+                                    return null;
+                                }
+                                return (
+                                    <Badge
+                                        key={idx}
+                                        colorScheme={refColorScheme}
+                                        variant={"solid"}
+                                    >
+                                        {tag}
+                                    </Badge>
+                                );
+                            })}
+                        </Flex>
+                    </Tooltip>
+                    <Tooltip label={dream.title} aria-label="A tooltip">
+                        <Heading
+                            fontSize={"2xl"}
+                            fontFamily={"body"}
+                            fontWeight={500}
+                            textAlign={"center"}
+                            overflow={"hidden"}
+                            maxW={"100%"}
+                            style={{
+                                whiteSpace: "nowrap",
+                                textOverflow: "ellipsis",
+                                overflowWrap: "break-word",
+                            }}
+                        >
+                            {dream.title}
+                        </Heading>
+                    </Tooltip>
                     <Flex
                         width={"100%"}
                         justify={"space-between"}
@@ -122,7 +161,6 @@ const DreamCard: FC<{ dream: IDream }> = ({ dream }) => {
                                 colorScheme={refColorScheme}
                                 hasStripe
                                 w={"100%"}
-
                             />
                         </Tooltip>
                         <Tooltip
