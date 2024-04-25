@@ -40,6 +40,8 @@ const ROUTE_GET_MY_DREAMS = "/dream/me";
 
 const ROUTE_UPDATE_DREAM = "/dream/:id";
 
+const ROUTE_LIKE_DREAM = "/dream/like/:id";
+
 describe(`POST ${ROUTE_CREATE_DREAM}`, () => {
     it("Create dream, OK", async () => {
         await createRandomDream(request, undefined, {});
@@ -323,5 +325,95 @@ describe(`PUT ${ROUTE_UPDATE_DREAM}`, () => {
         expect(response?.body.data.dream.title).toBe(rTitle);
         expect(response?.body.data.dream.description).toBe(rDescription);
         expect(response?.body.data.dream.tags).toStrictEqual(nTags);
+    });
+});
+
+describe(`PUT ${ROUTE_LIKE_DREAM}`, () => {
+    it("Like dream, OK", async () => {
+        const signer = await authWallet(request);
+        const { dream } = await createRandomDream(request, signer, {});
+        const response = await request
+            ?.put(ROUTE_LIKE_DREAM.replace(":id", dream.id))
+            .set("Authorization", `Bearer ${signer.token}`);
+        expect(response?.status).toBe(200);
+        expect(response?.body.ok).toBe(true);
+        expect(response?.body.data.id).toBe(dream.id);
+        expect(response?.body.data.message).toBe("Dream liked");
+    });
+    it("Like dream, Unauthorized", async () => {
+        const { dream } = await createRandomDream(request, undefined, {});
+        const response = await request
+            ?.put(ROUTE_LIKE_DREAM.replace(":id", dream.id))
+            .set("Authorization", "Bearer invalid token");
+        expect(response?.status).toBe(401);
+        expect(response?.body.ok).toBe(false);
+    });
+    it("Like dream, Invalid Id", async () => {
+        const signer = await authWallet(request);
+        const response = await request
+            ?.put(ROUTE_LIKE_DREAM.replace(":id", "invalid id"))
+            .set("Authorization", `Bearer ${signer.token}`);
+        expect(response?.status).toBe(400);
+        expect(response?.body.ok).toBe(false);
+    });
+    it("Like dream, not found", async () => {
+        const randomId = "661bbd6c855700b93eb3ea66";
+        const signer = await authWallet(request);
+        const response = await request
+            ?.put(ROUTE_LIKE_DREAM.replace(":id", randomId))
+            .set("Authorization", `Bearer ${signer.token}`);
+        expect(response?.status).toBe(404);
+        expect(response?.body.ok).toBe(false);
+    });
+    it("Like dream, Already liked", async () => {
+        const signer = await authWallet(request);
+        const { dream } = await createRandomDream(request, signer, {});
+        const r1 = await request
+            ?.put(ROUTE_LIKE_DREAM.replace(":id", dream.id))
+            .set("Authorization", `Bearer ${signer.token}`);
+        expect(r1?.status).toBe(200);
+        expect(r1?.body.ok).toBe(true);
+        expect(r1?.body.data.id).toBe(dream.id);
+        expect(r1?.body.data.message).toBe("Dream liked");
+
+        const response = await request
+            ?.put(ROUTE_LIKE_DREAM.replace(":id", dream.id))
+            .set("Authorization", `Bearer ${signer.token}`);
+        expect(response?.status).toBe(200);
+        expect(response?.body.ok).toBe(true);
+        expect(response?.body.data.id).toBe(dream.id);
+        expect(response?.body.data.message).toBe("Dream unliked");
+    });
+    it("Like dream, multiple time, see likers", async () => {
+        const signer = await authWallet(request);
+        const { dream } = await createRandomDream(request, signer, {});
+        const r1 = await request
+            ?.put(ROUTE_LIKE_DREAM.replace(":id", dream.id))
+            .set("Authorization", `Bearer ${signer.token}`);
+        expect(r1?.status).toBe(200);
+        expect(r1?.body.ok).toBe(true);
+        expect(r1?.body.data.id).toBe(dream.id);
+        expect(r1?.body.data.message).toBe("Dream liked");
+
+        const resp = await request?.get(ROUTE_GET_DREAMS + "?_id=" + dream.id);
+        const ldream = resp?.body.data.dreams[0];
+        expect(ldream).toBeDefined();
+        expect(ldream?.likers).toBeDefined();
+        expect(ldream?.likers.length).toBe(1);
+        expect(ldream?.likers[0]).toBe(signer.wallet.address);
+
+        const r2 = await request
+            ?.put(ROUTE_LIKE_DREAM.replace(":id", dream.id))
+            .set("Authorization", `Bearer ${signer.token}`);
+        expect(r2?.status).toBe(200);
+        expect(r2?.body.ok).toBe(true);
+        expect(r2?.body.data.id).toBe(dream.id);
+        expect(r2?.body.data.message).toBe("Dream unliked");
+
+        const resp2 = await request?.get(ROUTE_GET_DREAMS + "?_id=" + dream.id);
+        const ldream2 = resp2?.body.data.dreams[0];
+        expect(ldream2).toBeDefined();
+        expect(ldream2?.likers).toBeDefined();
+        expect(ldream2?.likers.length).toBe(0);
     });
 });
