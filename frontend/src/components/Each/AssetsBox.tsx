@@ -34,7 +34,7 @@ const AssetsBox: FC<AssetsBoxProps> = ({ assets }) => {
                         height = "49%";
                         width = "100%";
                     }
-                    if (numAssets == 3 || numAssets == 4) {
+                    if (numAssets == 3) {
                         height = "49%";
                     }
                     if (numAssets == 5) {

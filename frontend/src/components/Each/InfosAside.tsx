@@ -8,7 +8,7 @@ import {
     Tooltip,
 } from "@chakra-ui/react";
 import { ethers } from "ethers";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import CloseFullscreenIcon from "@mui/icons-material/CloseFullscreen";
 import ModeStandbyIcon from "@mui/icons-material/ModeStandby";
 import PrecisionManufacturingIcon from "@mui/icons-material/PrecisionManufacturing";
@@ -17,6 +17,8 @@ import AccessAlarmIcon from "@mui/icons-material/AccessAlarm";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import FiberNewIcon from "@mui/icons-material/FiberNew";
 import SavingsIcon from "@mui/icons-material/Savings";
+import RocketLaunchIcon from "@mui/icons-material/RocketLaunch";
+
 import { IDream, useGlobal } from "../../providers/global";
 import { SettingsIcon } from "@chakra-ui/icons";
 import EditDreamModal from "../../Modals/EditDreamModal";
@@ -26,9 +28,66 @@ interface InfosAsideProps {
     dream: IDream;
 }
 
+const parseSeconds = (seconds: number) => {
+    const days = Math.floor(seconds / (3600 * 24));
+    const hours = Math.floor((seconds % (3600 * 24)) / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secs = Math.floor(seconds % 60);
+
+    const pad = (num: number) => num.toString().padStart(2, "0");
+
+    const components = [];
+
+    if (days > 0) {
+        components.push(`${pad(days)}d`);
+    }
+
+    if (hours > 0 || days === 0) {
+        components.push(`${pad(hours)}h`);
+    }
+
+    if (minutes > 0 || (hours === 0 && days === 0)) {
+        components.push(`${pad(minutes)}m`);
+    }
+
+    components.push(`${pad(secs)}s`);
+
+    return components.join(" ");
+};
+
 const InfosAside: FC<InfosAsideProps> = ({ dream }) => {
     const { user } = useGlobal();
     const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const [remainingBoostTime, setRemainingBoostTime] = useState<number | null>(
+        null
+    );
+    const [remainingDeadlineTime, setRemainingDeadlineTime] = useState<
+        number | null
+    >(null);
+
+    useEffect(() => {
+        if (new Date(dream.boostedUntil) > new Date()) {
+            const diff = new Date(dream.boostedUntil).getTime() - Date.now();
+            setRemainingBoostTime(diff);
+            const timer = setInterval(() => {
+                const newDiff =
+                    new Date(dream.boostedUntil).getTime() - Date.now();
+                setRemainingBoostTime(newDiff);
+
+                const newDeadlineDiff =
+                    new Date(dream.deadlineTime * 1000).getTime() - Date.now();
+                setRemainingDeadlineTime(newDeadlineDiff);
+            }, 1000);
+            return () => clearInterval(timer);
+        } else {
+            setRemainingBoostTime(null);
+        }
+
+        const diffDeadline =
+            new Date(dream.deadlineTime * 1000).getTime() - Date.now();
+        setRemainingDeadlineTime(diffDeadline);
+    }, [dream.boostedUntil, dream.deadlineTime]);
 
     return (
         <>
@@ -102,6 +161,7 @@ const InfosAside: FC<InfosAsideProps> = ({ dream }) => {
                             p={4}
                             rounded={"md"}
                             textAlign={"justify"}
+                            wordBreak={"break-word"}
                         >
                             {dream.description}
                         </Box>
@@ -142,20 +202,68 @@ const InfosAside: FC<InfosAsideProps> = ({ dream }) => {
                             </ListItem>
                             <ListItem display={"flex"} alignItems={"center"}>
                                 <ListIcon
+                                    as={RocketLaunchIcon}
+                                    color={"darkcyan"}
+                                />
+                                Boosted:{" "}
+                                {new Date(dream.boostedUntil) > new Date() ? (
+                                    <Tooltip
+                                        label={new Date(
+                                            dream.boostedUntil
+                                        ).toLocaleString()}
+                                        aria-label="A tooltip"
+                                        placement="right"
+                                    >
+                                        <span
+                                            style={{
+                                                color: "darkcyan",
+                                                marginLeft: "5px",
+                                            }}
+                                        >
+                                            {remainingBoostTime
+                                                ? parseSeconds(
+                                                      remainingBoostTime / 1000
+                                                  )
+                                                : "Calculating..."}
+                                        </span>
+                                    </Tooltip>
+                                ) : (
+                                    <span
+                                        style={{
+                                            color: "red",
+                                            marginLeft: "5px",
+                                        }}
+                                    >
+                                        Not boosted
+                                    </span>
+                                )}
+                            </ListItem>
+                            <ListItem display={"flex"} alignItems={"center"}>
+                                <ListIcon
                                     as={AccessAlarmIcon}
                                     color={"darkcyan"}
                                 />
                                 Deadline:{" "}
-                                <span
-                                    style={{
-                                        color: "darkcyan",
-                                        marginLeft: "5px",
-                                    }}
-                                >
-                                    {new Date(
+                                <Tooltip
+                                    label={new Date(
                                         dream.deadlineTime * 1000
                                     ).toLocaleString()}
-                                </span>
+                                    aria-label="A tooltip"
+                                    placement="right"
+                                >
+                                    <span
+                                        style={{
+                                            color: "darkcyan",
+                                            marginLeft: "5px",
+                                        }}
+                                    >
+                                        {remainingDeadlineTime
+                                            ? parseSeconds(
+                                                  remainingDeadlineTime / 1000
+                                              )
+                                            : "Calculating..."}
+                                    </span>
+                                </Tooltip>
                             </ListItem>
                             <ListItem display={"flex"} alignItems={"center"}>
                                 <ListIcon as={StyleIcon} color={"darkcyan"} />

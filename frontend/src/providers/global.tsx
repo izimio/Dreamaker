@@ -26,6 +26,11 @@ export type IDream = {
         amount: string;
     }[];
     boostedUntil: string;
+    likers: string[];
+    fundingGraph: {
+        date: string;
+        amount: string;
+    }[];
 };
 
 type IUser = {

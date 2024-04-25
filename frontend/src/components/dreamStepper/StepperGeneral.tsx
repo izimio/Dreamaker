@@ -78,7 +78,7 @@ const StepperGeneral: FC<StepperProps> = ({
                             (name.length < constants.limits.dreamTitle.min ||
                                 name.length > constants.limits.dreamTitle.max)
                         }
-                        placeholder="description"
+                        placeholder="Give a nice name to your dream"
                         maxLength={constants.limits.dreamTitle.max}
                         minLength={constants.limits.dreamTitle.min}
                         focusBorderColor="white"
