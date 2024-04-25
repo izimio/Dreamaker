@@ -143,7 +143,7 @@ const FilterModal: FC<FilterModalProps> = ({
                             </Text>
                             <MultiSelect
                                 options={options}
-                                placeholder="Select at least on tag for your dream"
+                                placeholder="Select filtering tags"
                                 _focus={{
                                     borderColor: "red !important",
                                 }}

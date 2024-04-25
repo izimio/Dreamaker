@@ -39,15 +39,25 @@ const DreamCard: FC<{ dream: IDream }> = ({ dream }) => {
     const navigate = useNavigate();
     const seed = getSeedFromId(dream._id);
     const refColorScheme = colorSchemes[seed % colorSchemes.length];
-    const image = dream.assets.length > 0 ? dream.assets[0].link : defaultBg;
+    const image =
+        dream.assets.length > 0 && dream.assets[0].type.includes("image")
+            ? dream.assets[0].link
+            : defaultBg;
     const percentFunded =
         (BigInt(dream.currentAmount) * BigInt(100)) /
         BigInt(dream.targetAmount);
 
     const isFiller = FILLER_IDS.find((id) => id === dream._id) !== undefined;
+    const isNew =
+        new Date(dream.createdAt).toDateString() === new Date().toDateString();
+
+    if (isNew && dream.tags.indexOf("NEW") === -1) {
+        dream.tags.unshift("NEW");
+    }
     return (
         <Center
             py={6}
+            position={"relative"}
             onClick={() => {
                 if (isFiller) {
                     return;

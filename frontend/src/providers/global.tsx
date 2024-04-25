@@ -25,7 +25,7 @@ export type IDream = {
         address: string;
         amount: string;
     }[];
-    boosted: boolean;
+    boostedUntil: string;
 };
 
 type IUser = {
@@ -47,6 +47,10 @@ type constants = {
         files: limits;
     };
     allowedExtensions: string[];
+    dreamBC: {
+        boostDuration: number;
+        baseMiningRewardPercentage: number;
+    };
 };
 
 type dreamsTypesObj = {
@@ -57,9 +61,6 @@ type dreamsTypesObj = {
 };
 interface IGlobal {
     dreams: dreamsTypesObj;
-    hotDreams: IDream[];
-    boostedDreams: IDream[];
-    myDreams: IDream[];
     user: IUser | null;
     token: string | null;
     setDreams: (dreams: dreamsTypesObj) => void;
@@ -97,6 +98,10 @@ export const GlobalProvider: FC<Props> = ({ children }) => {
             files: { min: 0, max: 0 },
         },
         allowedExtensions: [],
+        dreamBC: {
+            boostDuration: 0,
+            baseMiningRewardPercentage: 0,
+        },
     });
 
     const sortDreamsNRetrieve = (dreams: IDream[]) => {
@@ -104,9 +109,16 @@ export const GlobalProvider: FC<Props> = ({ children }) => {
         const hotDreams = dreams.filter((dr) => {
             const deadline = new Date(dr.deadlineTime * 1000);
             // if less than 24 hours
-            return deadline.getTime() - now.getTime() < 24 * 60 * 60 * 1000;
+            return (
+                deadline.getTime() - now.getTime() < 24 * 60 * 60 * 1000 &&
+                dr.status === "active"
+            );
         });
-        const boostedDreams = dreams.filter((dr) => dr.boosted);
+        const boostedDreams = dreams.filter(
+            (dr) =>
+                new Date(dr.boostedUntil).getTime() > Date.now() &&
+                dr.status === "active"
+        );
         const myDreams = dreams.filter((dr) => dr.owner === user?.address);
 
         setDreams({
@@ -134,6 +146,7 @@ export const GlobalProvider: FC<Props> = ({ children }) => {
                     constantsResponse.data.data.allowedExtensions.map(
                         (ext: string) => ext.split("/")[1]
                     ),
+                dreamBC: constantsResponse.data.data.dreamBC,
             });
             if (!token) {
                 return;

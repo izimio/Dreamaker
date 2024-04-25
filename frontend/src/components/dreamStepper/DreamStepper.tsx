@@ -23,9 +23,11 @@ import StepperFiles from "./StepperFiles";
 import StepperFinal from "./StepperFinal";
 import { createAPIDream } from "../../api/dream";
 import toast from "react-hot-toast";
+import { useGlobal } from "../../providers/global";
 
 const DreamStepper: FC = () => {
     const navigate = useNavigate();
+    const { setDreams, dreams } = useGlobal();
 
     const steps = [
         { title: "Make that dream come true", description: "Contact Info" },
@@ -93,6 +95,12 @@ const DreamStepper: FC = () => {
                 return;
             }
             toast.success("Dream created successfully");
+            // Add dream to cache
+            setDreams({
+                ...dreams,
+                allDreams: [...dreams.allDreams, res.data.dream],
+            });
+
             const id = res.data.dream.id;
             navigate(`/dream/${id}`);
         } catch (e) {

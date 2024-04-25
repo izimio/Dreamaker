@@ -11,8 +11,8 @@ import { defaultBoostedDream, defaultHotDream } from "../utils/filler";
 const settings = {
     infinite: true,
     autoplay: true,
-    speed: 500,
-    autoplaySpeed: 2000,
+    speed: 1500,
+    autoplaySpeed: 4000,
     slidesToShow: 3,
     slidesToScroll: 1,
     pauseOnHover: true,
@@ -121,13 +121,13 @@ export default function Carousel({ cards, type }: CarouselProps) {
                 bgGradient={
                     type === "boost"
                         ? "linear(to-b, rgba(0, 200, 200, 0.5), rgba(0, 139, 139, 0.5))"
-                        : "linear(to-b, rgba(255, 0, 0, 0.5), rgba(255, 165, 0, 0.5))"
+                        : "linear(to-b, rgba(255, 0, 0, 0.5), rgba(255, 80, 0, 0.5))"
                 }
                 rounded={"lg"}
             >
                 <Slider {...settings} ref={(c) => (slider.current = c)}>
                     {cards.map((card, index) => (
-                        <Flex key={index} width={"full"}>
+                        <Flex key={index} width={"full"} zIndex={1}>
                             <DreamCard key={index} dream={card} />
                         </Flex>
                     ))}

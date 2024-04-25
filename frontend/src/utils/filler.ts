@@ -37,5 +37,6 @@ export const defaultHotDream: IDream = {
     ],
     title: "Less than 24 hours left!",
     tags: ["HOT"],
+    currentAmount: "899999999900000000",
     _id: FILLER_IDS[1],
 };

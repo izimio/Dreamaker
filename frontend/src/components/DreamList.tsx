@@ -106,14 +106,13 @@ const DreamList: FC<DreamListProps> = ({ dreams }) => {
                     fontSize="sm"
                     textAlign="center"
                     my={2}
-                    bgGradient={"linear(to-r, darkcyan, black)"}
-                    bgClip="text"
+                    textDecoration="underline"
                 >
-                    {filteredDreams.length} dream(s) found
+                    {filteredDreams.length} dreams found
                 </Text>
                 <Box
-                    maxH="600px"
-                    minH={"600px"}
+                    maxH="1000px"
+                    minH={"1000px"}
                     overflowY="auto"
                     css={{
                         "&::-webkit-scrollbar": {
