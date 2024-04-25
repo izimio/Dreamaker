@@ -15,7 +15,7 @@ contract Dreamaker is ERC20, ERC20Burnable, Ownable, ERC20Permit {
         _mint(initialOwner, initialSupply * 10 ** decimals());
     }
 
-    event DreamBoosted(address from, address proxy, uint256 amount);
+    event DreamBoosted(address booster, address proxy, uint256 amount);
 
     error InvalidInput();
 
