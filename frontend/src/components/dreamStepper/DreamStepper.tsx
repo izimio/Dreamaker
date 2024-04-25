@@ -95,13 +95,14 @@ const DreamStepper: FC = () => {
                 return;
             }
             toast.success("Dream created successfully");
-            // Add dream to cache
-            setDreams({
-                ...dreams,
-                allDreams: [...dreams.allDreams, res.data.dream],
-            });
 
-            const id = res.data.dream.id;
+            dreams.allDreams.push({
+                ...res.data.dream,
+                currentAmount: "0",
+            });
+            setDreams(dreams);
+
+            const id = res.data.dream._id;
             navigate(`/dream/${id}`);
         } catch (e) {
             console.error("Dream creation error: ", e);

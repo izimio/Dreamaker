@@ -31,7 +31,7 @@ const blobMaker = (
                 }}
                 flexDirection={{
                     base: "column",
-                    md: direction,
+                    lg: direction,
                 }}
                 w="100%"
                 gap={5}

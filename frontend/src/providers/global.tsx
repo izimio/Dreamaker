@@ -53,17 +53,17 @@ type constants = {
     };
 };
 
-type dreamsTypesObj = {
+export type IDreamsTypesObj = {
     hotDreams: IDream[];
     boostedDreams: IDream[];
     myDreams: IDream[];
     allDreams: IDream[];
 };
 interface IGlobal {
-    dreams: dreamsTypesObj;
+    dreams: IDreamsTypesObj;
     user: IUser | null;
     token: string | null;
-    setDreams: (dreams: dreamsTypesObj) => void;
+    setDreams: (dreams: IDreamsTypesObj) => void;
     setUser: (user: IUser) => void;
     setToken: (token: string) => void;
     logout: () => void;
@@ -81,7 +81,7 @@ const axiosInstance = axios.create({
 const GlobalContext = createContext({} as IGlobal);
 
 export const GlobalProvider: FC<Props> = ({ children }) => {
-    const [dreams, setDreams] = useState<dreamsTypesObj>({
+    const [dreams, setDreams] = useState<IDreamsTypesObj>({
         hotDreams: [],
         boostedDreams: [],
         myDreams: [],
@@ -154,6 +154,10 @@ export const GlobalProvider: FC<Props> = ({ children }) => {
         };
         initGlobalStates();
     }, []);
+
+    useEffect(() => {
+        sortDreamsNRetrieve(dreams.allDreams);
+    }, [dreams.allDreams]);
 
     useEffect(() => {
         if (!token) {

@@ -51,8 +51,9 @@ const DreamCard: FC<{ dream: IDream }> = ({ dream }) => {
     const isNew =
         new Date(dream.createdAt).toDateString() === new Date().toDateString();
 
+    const tags = dream.tags;
     if (isNew && dream.tags.indexOf("NEW") === -1) {
-        dream.tags.unshift("NEW");
+        tags.unshift("NEW");
     }
     return (
         <Center
@@ -109,10 +110,7 @@ const DreamCard: FC<{ dream: IDream }> = ({ dream }) => {
                     />
                 </Box>
                 <Stack pt={10} align={"center"}>
-                    <Tooltip
-                        label={dream.tags.join(" / ")}
-                        aria-label="A tooltip"
-                    >
+                    <Tooltip label={tags.join(" / ")} aria-label="A tooltip">
                         <Flex
                             align={"center"}
                             gap={2}
@@ -120,7 +118,7 @@ const DreamCard: FC<{ dream: IDream }> = ({ dream }) => {
                             m={1}
                             wrap={"revert"}
                         >
-                            {dream.tags.map((tag: string, idx: number) => {
+                            {tags.map((tag: string, idx: number) => {
                                 if (idx === 3) {
                                     tag = "...";
                                 }

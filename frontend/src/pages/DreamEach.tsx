@@ -21,10 +21,13 @@ const Dream: FC = () => {
 
     return (
         <Box w={"100%"} p={4}>
-            <Container maxW={"container.4xl"}>
+            <Container maxW={"container.3xl"} h={"100%"}>
                 <Flex
-                    h={"100%"}
-                    gap={"5em"}
+                    h={{
+                        base: "100%",
+                        lg: "750px",
+                    }}
+                    gap={"2em"}
                     flexDirection={{
                         base: "column",
                         lg: "row",

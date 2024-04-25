@@ -20,6 +20,7 @@ import SavingsIcon from "@mui/icons-material/Savings";
 import { IDream, useGlobal } from "../../providers/global";
 import { SettingsIcon } from "@chakra-ui/icons";
 import EditDreamModal from "../../Modals/EditDreamModal";
+import StatusBox from "../StatusBox";
 
 interface InfosAsideProps {
     dream: IDream;
@@ -32,6 +33,7 @@ const InfosAside: FC<InfosAsideProps> = ({ dream }) => {
     return (
         <>
             <EditDreamModal
+                id={dream._id}
                 isOpen={isModalOpen}
                 setIsModalOpen={setIsModalOpen}
                 prevValues={{
@@ -42,12 +44,9 @@ const InfosAside: FC<InfosAsideProps> = ({ dream }) => {
             />
             <Stack
                 position={"relative"}
-                // border={"2px solid darkcyan"}
                 borderRadius={4}
-                p={4}
                 w={"100%"}
-                maxH={"100%"}
-                spacing={"30px"}
+                justify={"space-evenly"}
             >
                 {user?.address == dream.owner && (
                     <Box
@@ -81,202 +80,233 @@ const InfosAside: FC<InfosAsideProps> = ({ dream }) => {
                     bgGradient={"linear(to-bl, light, federalBlue)"}
                     bgClip="text"
                     textShadow="3px 3px 0px rgba(0,0,0,0.1)"
+                    pb={1}
+                    mt={2}
                 >
                     {dream.title}
                 </Heading>
-                <Box>
-                    <Heading
-                        fontSize="2xl"
-                        fontWeight={"bold"}
-                        bgGradient={"linear(to-bl, light, federalBlue)"}
-                        bgClip="text"
-                        textShadow="3px 3px 0px rgba(0,0,0,0.1)"
-                        mb={2}
-                    >
-                        Description:
-                    </Heading>
-                    <Box
-                        border={"1px solid darkcyan"}
-                        p={4}
-                        rounded={"md"}
-                        textAlign={"justify"}
-                    >
-                        {dream.description}
+                <Stack spacing={4} mt={4}>
+                    <Box>
+                        <Heading
+                            fontSize="2xl"
+                            fontWeight={"bold"}
+                            bgGradient={"linear(to-bl, light, federalBlue)"}
+                            bgClip="text"
+                            textShadow="3px 3px 0px rgba(0,0,0,0.1)"
+                            mb={2}
+                        >
+                            Description:
+                        </Heading>
+                        <Box
+                            border={"1px solid darkcyan"}
+                            p={4}
+                            rounded={"md"}
+                            textAlign={"justify"}
+                        >
+                            {dream.description}
+                        </Box>
                     </Box>
-                </Box>
-                <Box>
-                    <Heading
-                        fontSize="2xl"
-                        fontWeight={"bold"}
-                        bgGradient={"linear(to-bl, light, federalBlue)"}
-                        bgClip="text"
-                        textShadow="3px 3px 0px rgba(0,0,0,0.1)"
-                        mb={2}
-                    >
-                        Infos:
-                    </Heading>
-                    <List
-                        spacing={3}
-                        border={"1px solid darkcyan"}
-                        borderRadius={10}
-                        p={4}
-                    >
-                        <ListItem display={"flex"} alignItems={"center"}>
-                            <ListIcon as={FiberNewIcon} color={"darkcyan"} />
-                            Created at: {"      "}
-                            <span
-                                style={{
-                                    color: "darkcyan",
-                                    marginLeft: "5px",
-                                }}
-                            >
-                                {new Date(dream.createdAt).toLocaleDateString()}
-                            </span>
-                        </ListItem>
-                        <ListItem display={"flex"} alignItems={"center"}>
-                            <ListIcon as={AccessAlarmIcon} color={"darkcyan"} />
-                            Deadline:{" "}
-                            <span
-                                style={{
-                                    color: "darkcyan",
-                                    marginLeft: "5px",
-                                }}
-                            >
-                                {new Date(
-                                    dream.deadlineTime * 1000
-                                ).toLocaleString()}
-                            </span>
-                        </ListItem>
-                        <ListItem display={"flex"} alignItems={"center"}>
-                            <ListIcon as={StyleIcon} color={"darkcyan"} />
-                            Tags:{" "}
-                            <span
-                                style={{
-                                    color: "darkcyan",
-                                    marginLeft: "5px",
-                                }}
-                            >
-                                {dream.tags.join(", ")}
-                            </span>
-                        </ListItem>
+                    <Box>
+                        <Heading
+                            fontSize="2xl"
+                            fontWeight={"bold"}
+                            bgGradient={"linear(to-bl, light, federalBlue)"}
+                            bgClip="text"
+                            textShadow="3px 3px 0px rgba(0,0,0,0.1)"
+                            mb={2}
+                        >
+                            Infos:
+                        </Heading>
+                        <List
+                            spacing={3}
+                            border={"1px solid darkcyan"}
+                            borderRadius={10}
+                            p={4}
+                        >
+                            <ListItem display={"flex"} alignItems={"center"}>
+                                <ListIcon
+                                    as={FiberNewIcon}
+                                    color={"darkcyan"}
+                                />
+                                Created at: {"      "}
+                                <span
+                                    style={{
+                                        color: "darkcyan",
+                                        marginLeft: "5px",
+                                    }}
+                                >
+                                    {new Date(
+                                        dream.createdAt
+                                    ).toLocaleDateString()}
+                                </span>
+                            </ListItem>
+                            <ListItem display={"flex"} alignItems={"center"}>
+                                <ListIcon
+                                    as={AccessAlarmIcon}
+                                    color={"darkcyan"}
+                                />
+                                Deadline:{" "}
+                                <span
+                                    style={{
+                                        color: "darkcyan",
+                                        marginLeft: "5px",
+                                    }}
+                                >
+                                    {new Date(
+                                        dream.deadlineTime * 1000
+                                    ).toLocaleString()}
+                                </span>
+                            </ListItem>
+                            <ListItem display={"flex"} alignItems={"center"}>
+                                <ListIcon as={StyleIcon} color={"darkcyan"} />
+                                Tags:{" "}
+                                <span
+                                    style={{
+                                        color: "darkcyan",
+                                        marginLeft: "5px",
+                                    }}
+                                >
+                                    {dream.tags.join(", ")}
+                                </span>
+                            </ListItem>
 
-                        <ListItem display={"flex"} alignItems={"center"}>
-                            <ListIcon as={ModeStandbyIcon} color={"darkcyan"} />
-                            <Tooltip
-                                placement="right"
-                                label={
-                                    ethers.formatUnits(
-                                        dream.targetAmount,
-                                        "wei"
-                                    ) + " WEI"
-                                }
-                                aria-label="A tooltip"
-                            >
-                                <span>
-                                    Target amount:{" "}
-                                    <span
-                                        style={{
-                                            color: "darkcyan",
-                                        }}
-                                    >
-                                        {ethers.formatEther(dream.targetAmount)}{" "}
-                                        ETH
+                            <ListItem display={"flex"} alignItems={"center"}>
+                                <ListIcon
+                                    as={ModeStandbyIcon}
+                                    color={"darkcyan"}
+                                />
+                                <Tooltip
+                                    placement="right"
+                                    label={
+                                        ethers.formatUnits(
+                                            dream.targetAmount,
+                                            "wei"
+                                        ) + " WEI"
+                                    }
+                                    aria-label="A tooltip"
+                                >
+                                    <span>
+                                        Target amount:{" "}
+                                        <span
+                                            style={{
+                                                color: "darkcyan",
+                                            }}
+                                        >
+                                            {ethers.formatEther(
+                                                dream.targetAmount
+                                            )}{" "}
+                                            ETH
+                                        </span>
                                     </span>
-                                </span>
-                            </Tooltip>
-                        </ListItem>
-                        <ListItem display={"flex"} alignItems={"center"}>
-                            <ListIcon
-                                as={CloseFullscreenIcon}
-                                color={"darkcyan"}
-                            />
-                            <Tooltip
-                                placement="right"
-                                label={
-                                    ethers.formatUnits(
-                                        dream.minFundingAmount,
-                                        "wei"
-                                    ) + " WEI"
-                                }
-                                aria-label="A tooltip"
-                            >
-                                <span style={{}}>
-                                    Minimal funding amount:{" "}
-                                    <span
-                                        style={{
-                                            color: "darkcyan",
-                                        }}
-                                    >
-                                        {ethers.formatEther(
-                                            dream.minFundingAmount
-                                        )}{" "}
-                                        ETH
+                                </Tooltip>
+                            </ListItem>
+                            <ListItem display={"flex"} alignItems={"center"}>
+                                <ListIcon
+                                    as={CloseFullscreenIcon}
+                                    color={"darkcyan"}
+                                />
+                                <Tooltip
+                                    placement="right"
+                                    label={
+                                        ethers.formatUnits(
+                                            dream.minFundingAmount,
+                                            "wei"
+                                        ) + " WEI"
+                                    }
+                                    aria-label="A tooltip"
+                                >
+                                    <span style={{}}>
+                                        Minimal funding amount:{" "}
+                                        <span
+                                            style={{
+                                                color: "darkcyan",
+                                            }}
+                                        >
+                                            {ethers.formatEther(
+                                                dream.minFundingAmount
+                                            )}{" "}
+                                            ETH
+                                        </span>
                                     </span>
-                                </span>
-                            </Tooltip>
-                        </ListItem>
+                                </Tooltip>
+                            </ListItem>
 
-                        <ListItem display={"flex"} alignItems={"center"}>
-                            <ListIcon
-                                as={PrecisionManufacturingIcon}
-                                color={"darkcyan"}
-                            />
-                            Proxy address:{" "}
-                            <span
-                                style={{
-                                    color: "darkcyan",
-                                    marginLeft: "5px",
-                                }}
-                            >
-                                {dream.proxyAddress
-                                    ? dream.proxyAddress
-                                    : "Deploying..."}
-                            </span>
-                        </ListItem>
-                        <ListItem display={"flex"} alignItems={"center"}>
-                            <ListIcon as={SavingsIcon} color={"darkcyan"} />
-                            <Tooltip
-                                placement="right"
-                                label={
-                                    ethers.formatUnits(
-                                        dream.currentAmount,
-                                        "wei"
-                                    ) + " WEI"
-                                }
-                                aria-label="A tooltip"
-                            >
-                                <span style={{}}>
-                                    Funded amount:{" "}
-                                    <span
-                                        style={{
-                                            color: "darkcyan",
-                                        }}
-                                    >
-                                        {ethers.formatEther(
-                                            dream.currentAmount
-                                        )}{" "}
-                                        ETH
-                                    </span>
+                            <ListItem display={"flex"} alignItems={"center"}>
+                                <ListIcon
+                                    as={PrecisionManufacturingIcon}
+                                    color={"darkcyan"}
+                                />
+                                Proxy address:{" "}
+                                <span
+                                    style={{
+                                        color: "darkcyan",
+                                        marginLeft: "5px",
+                                    }}
+                                >
+                                    {dream.proxyAddress
+                                        ? dream.proxyAddress
+                                        : "Deploying..."}
                                 </span>
-                            </Tooltip>
-                        </ListItem>
-                        <ListItem display={"flex"} alignItems={"center"}>
-                            <ListIcon
-                                as={AccountCircleIcon}
-                                color={"darkcyan"}
-                            />
-                            Owner:{" "}
-                            <span
-                                style={{
-                                    color: "darkcyan",
-                                    marginLeft: "5px",
-                                }}
-                            >
-                                {dream.owner}
-                            </span>
-                        </ListItem>
-                    </List>
-                </Box>
+                            </ListItem>
+                            <ListItem display={"flex"} alignItems={"center"}>
+                                <ListIcon as={SavingsIcon} color={"darkcyan"} />
+                                <Tooltip
+                                    placement="right"
+                                    label={
+                                        ethers.formatUnits(
+                                            dream.currentAmount,
+                                            "wei"
+                                        ) + " WEI"
+                                    }
+                                    aria-label="A tooltip"
+                                >
+                                    <span style={{}}>
+                                        Funded amount:{" "}
+                                        <span
+                                            style={{
+                                                color: "darkcyan",
+                                            }}
+                                        >
+                                            {ethers.formatEther(
+                                                dream.currentAmount
+                                            )}{" "}
+                                            ETH
+                                        </span>
+                                    </span>
+                                </Tooltip>
+                            </ListItem>
+                            <ListItem display={"flex"} alignItems={"center"}>
+                                <ListIcon
+                                    as={AccountCircleIcon}
+                                    color={"darkcyan"}
+                                />
+                                Owner:{" "}
+                                <span
+                                    style={{
+                                        color: "darkcyan",
+                                        marginLeft: "5px",
+                                    }}
+                                >
+                                    {dream.owner}
+                                </span>
+                            </ListItem>
+                        </List>
+                    </Box>
+
+                    <Box>
+                        <Heading
+                            fontSize="2xl"
+                            fontWeight={"bold"}
+                            bgGradient={"linear(to-bl, light, federalBlue)"}
+                            bgClip="text"
+                            textShadow="3px 3px 0px rgba(0,0,0,0.1)"
+                            mb={2}
+                        >
+                            Status:
+                        </Heading>
+                        <StatusBox status={dream.status} />
+                    </Box>
+                </Stack>
             </Stack>
         </>
     );

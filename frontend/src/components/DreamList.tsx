@@ -44,7 +44,6 @@ const DreamList: FC<DreamListProps> = ({ dreams }) => {
             }
         }
         if (dream.minFundingAmount > filters.minFundingAmount) {
-            console.log("rip");
             return false;
         }
         if (filters.favorite) {

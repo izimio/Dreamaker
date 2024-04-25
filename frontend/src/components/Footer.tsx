@@ -57,7 +57,7 @@ const Footer: FC = () => {
                     alignItems={"center"}
                     flexDirection={{
                         base: "column",
-                        md: "row",
+                        lg: "row",
                     }}
                 >
                     <Flex
@@ -66,11 +66,11 @@ const Footer: FC = () => {
                         zIndex={10}
                         mt={{
                             base: 0,
-                            md: -20,
+                            lg: -20,
                         }}
                         flexDirection={{
                             base: "column",
-                            md: "row",
+                            lg: "row",
                         }}
                     >
                         <Box

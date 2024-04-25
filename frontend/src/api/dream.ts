@@ -71,3 +71,43 @@ export const createAPIDream = async (
         };
     }
 };
+
+export const updateDream = async (
+    id: string,
+    title: string,
+    description: string,
+    tags: string[]
+) => {
+    const token = getState("token");
+    if (!token) {
+        return {
+            ok: false,
+            data: "No token found",
+        };
+    }
+
+    try {
+        const res = await dreamApi.put(
+            "/" + id,
+            {
+                title,
+                description,
+                tags,
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+        );
+        return {
+            ok: true,
+            data: res.data.data,
+        };
+    } catch (e: any) {
+        return {
+            ok: false,
+            data: e.response.data.message,
+        };
+    }
+};

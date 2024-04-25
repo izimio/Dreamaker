@@ -31,7 +31,7 @@ export const EthereumProvider: FC<Props> = ({ children }) => {
 
     useEffect(() => {
         if (!chainId) return;
-
+        if (!switchChainModal) return;
         if (!DEFAULT_CHAINS.includes(chainId)) {
             switchChainModal(true);
         } else {
