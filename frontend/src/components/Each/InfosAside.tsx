@@ -29,6 +29,7 @@ interface InfosAsideProps {
 }
 
 const parseSeconds = (seconds: number) => {
+    if (seconds < 0) return "Time's up!";
     const days = Math.floor(seconds / (3600 * 24));
     const hours = Math.floor((seconds % (3600 * 24)) / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
@@ -67,26 +68,28 @@ const InfosAside: FC<InfosAsideProps> = ({ dream }) => {
     >(null);
 
     useEffect(() => {
-        if (new Date(dream.boostedUntil) > new Date()) {
-            const diff = new Date(dream.boostedUntil).getTime() - Date.now();
-            setRemainingBoostTime(diff);
-            const timer = setInterval(() => {
-                const newDiff =
-                    new Date(dream.boostedUntil).getTime() - Date.now();
-                setRemainingBoostTime(newDiff);
+        const updateRemainingTimes = () => {
+            const boostedUntil = new Date(dream.boostedUntil);
+            const deadlineTime = new Date(dream.deadlineTime * 1000);
 
-                const newDeadlineDiff =
-                    new Date(dream.deadlineTime * 1000).getTime() - Date.now();
-                setRemainingDeadlineTime(newDeadlineDiff);
-            }, 1000);
-            return () => clearInterval(timer);
-        } else {
-            setRemainingBoostTime(null);
-        }
+            const deadlineDiff = deadlineTime.getTime() - Date.now();
+            setRemainingDeadlineTime(deadlineDiff);
 
-        const diffDeadline =
-            new Date(dream.deadlineTime * 1000).getTime() - Date.now();
-        setRemainingDeadlineTime(diffDeadline);
+            if (boostedUntil > new Date()) {
+                const boostDiff = boostedUntil.getTime() - Date.now();
+                setRemainingBoostTime(boostDiff);
+            } else {
+                setRemainingBoostTime(null);
+                const deadlineDiff = deadlineTime.getTime() - Date.now();
+                setRemainingDeadlineTime(deadlineDiff);
+            }
+        };
+
+        updateRemainingTimes(); // Initial call to avoid code repetition
+
+        const interval = setInterval(updateRemainingTimes, 1000);
+
+        return () => clearInterval(interval);
     }, [dream.boostedUntil, dream.deadlineTime]);
 
     return (

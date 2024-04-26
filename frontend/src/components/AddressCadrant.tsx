@@ -55,7 +55,11 @@ const AddressCadrant = (props: { address: string; DMKBalance: number }) => {
                     _hover={{ cursor: "pointer" }}
                 >
                     <Text userSelect={"none"}>
-                        {props.address.substring(0, 15) + "..."}
+                        {props.address.substring(0, 10)}...{" "}
+                        {props.address.substring(
+                            props.address.length - 4,
+                            props.address.length
+                        )}
                     </Text>
                     <ChevronUpIcon
                         color={"white"}

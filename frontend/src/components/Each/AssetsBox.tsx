@@ -1,4 +1,4 @@
-import { Box, Flex, Image } from "@chakra-ui/react";
+import { AspectRatio, Box, Flex, Image } from "@chakra-ui/react";
 import { FC } from "react";
 import defaultImage from "/assets_fallback.jpg";
 import { useModals } from "../../providers/modals";
@@ -47,28 +47,44 @@ const AssetsBox: FC<AssetsBoxProps> = ({ assets }) => {
 
                     if (asset.type.includes("image")) {
                         return (
-                            <Image
-                                key={index}
-                                src={asset.link}
-                                alt={"Dream image"}
+                            <AspectRatio
                                 w={width}
                                 h={height}
-                                objectFit={"cover"}
-                                onClick={() => {
-                                    switchPictureModal(asset.link);
-                                }}
-                            />
+                                ratio={1}
+                                cursor={"pointer"}
+                                key={index}
+                            >
+                                <Image
+                                    key={index}
+                                    src={asset.link}
+                                    alt={"Dream image"}
+                                    w={width}
+                                    h={height}
+                                    objectFit={"cover"}
+                                    onClick={() => {
+                                        switchPictureModal(asset.link);
+                                    }}
+                                />
+                            </AspectRatio>
                         );
                     } else if (asset.type.includes("video")) {
                         return (
-                            <video
+                            <AspectRatio
+                                w={width}
+                                h={height}
+                                ratio={1}
+                                cursor={"pointer"}
                                 key={index}
-                                width={width}
-                                height={height}
-                                controls
                             >
-                                <source src={asset.link} type="video/mp4" />
-                            </video>
+                                <video
+                                    key={index}
+                                    width={width}
+                                    height={height}
+                                    controls
+                                >
+                                    <source src={asset.link} type="video/mp4" />
+                                </video>
+                            </AspectRatio>
                         );
                     }
                 })}

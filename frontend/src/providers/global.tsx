@@ -30,6 +30,8 @@ export type IDream = {
     fundingGraph: {
         date: string;
         amount: string;
+        totalAmount: string;
+        funder: string;
     }[];
 };
 
