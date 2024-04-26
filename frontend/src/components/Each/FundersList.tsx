@@ -51,7 +51,6 @@ const FundersList: FC<FundersListProps> = ({ funders }) => {
                 },
                 "&::-webkit-scrollbar-thumb": {
                     background: "darkcyan",
-
                     borderRadius: "24px",
                 },
             }}

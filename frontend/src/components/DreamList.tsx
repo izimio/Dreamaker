@@ -3,6 +3,7 @@ import DreamCard from "./DreamCard";
 import { Box, Center, Flex, Heading, Input, Text } from "@chakra-ui/react";
 import { SettingsIcon } from "@chakra-ui/icons";
 import FilterModal from "../Modals/FilterModal";
+import { useGlobal } from "../providers/global";
 
 interface DreamListProps {
     dreams: any[];
@@ -18,6 +19,7 @@ export type IFilters = {
 };
 
 const DreamList: FC<DreamListProps> = ({ dreams }) => {
+    const { user } = useGlobal();
     const [filters, setFilters] = useState<IFilters>({
         status: "all",
         tags: [],
@@ -47,7 +49,9 @@ const DreamList: FC<DreamListProps> = ({ dreams }) => {
             return false;
         }
         if (filters.favorite) {
-            //
+            if (!dream.likers.includes(user?.address)) {
+                return false;
+            }
         }
         return true;
     });

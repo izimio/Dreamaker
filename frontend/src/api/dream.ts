@@ -111,3 +111,34 @@ export const updateDream = async (
         };
     }
 };
+
+export const likeDream = async (id: string) => {
+    const token = getState("token");
+    if (!token) {
+        return {
+            ok: false,
+            data: "No token found",
+        };
+    }
+
+    try {
+        const res = await dreamApi.put(
+            `/like/${id}`,
+            {},
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+        );
+        return {
+            ok: true,
+            data: res.data.data,
+        };
+    } catch (e: any) {
+        return {
+            ok: false,
+            data: e.response.data.message,
+        };
+    }
+};

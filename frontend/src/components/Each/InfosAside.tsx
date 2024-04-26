@@ -23,6 +23,9 @@ import { IDream, useGlobal } from "../../providers/global";
 import { SettingsIcon } from "@chakra-ui/icons";
 import EditDreamModal from "../../Modals/EditDreamModal";
 import StatusBox from "../StatusBox";
+import LikeButton from "../LikeButton";
+import { likeDream } from "../../api/dream";
+import toast from "react-hot-toast";
 
 interface InfosAsideProps {
     dream: IDream;
@@ -57,7 +60,7 @@ const parseSeconds = (seconds: number) => {
 };
 
 const InfosAside: FC<InfosAsideProps> = ({ dream }) => {
-    const { user } = useGlobal();
+    const { user, dreams, setDreams } = useGlobal();
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const [remainingBoostTime, setRemainingBoostTime] = useState<number | null>(
@@ -68,6 +71,7 @@ const InfosAside: FC<InfosAsideProps> = ({ dream }) => {
     >(null);
 
     useEffect(() => {
+        if (isModalOpen) return;
         const updateRemainingTimes = () => {
             const boostedUntil = new Date(dream.boostedUntil);
             const deadlineTime = new Date(dream.deadlineTime * 1000);
@@ -85,13 +89,46 @@ const InfosAside: FC<InfosAsideProps> = ({ dream }) => {
             }
         };
 
-        updateRemainingTimes(); // Initial call to avoid code repetition
+        updateRemainingTimes();
 
         const interval = setInterval(updateRemainingTimes, 1000);
 
         return () => clearInterval(interval);
-    }, [dream.boostedUntil, dream.deadlineTime]);
+    }, [dream.boostedUntil, dream.deadlineTime, isModalOpen]);
 
+    useEffect(() => {
+        if (!isModalOpen) return;
+        const interval_id = window.setInterval(
+            function () {},
+            Number.MAX_SAFE_INTEGER
+        );
+        for (let i = 1; i < interval_id; i++) {
+            clearInterval(i);
+        }
+    }, [isModalOpen]);
+    const handleLike = async () => {
+        const id = dream._id;
+
+        const res = await likeDream(id);
+
+        if (!res.ok) {
+            toast.error(res.data || "Failed to like dream");
+            return;
+        }
+        if (res.data.message.includes("unliked")) {
+            dream.likers = dream.likers.filter((l) => l !== user?.address);
+            return;
+        } else {
+            dream.likers.push(user?.address || "");
+        }
+        setDreams({
+            ...dreams,
+            allDreams: dreams.allDreams.map((d) =>
+                d._id === id ? { ...d, likers: dream.likers } : d
+            ),
+        });
+        toast.success(res.data.message);
+    };
     return (
         <>
             <EditDreamModal
@@ -146,6 +183,10 @@ const InfosAside: FC<InfosAsideProps> = ({ dream }) => {
                     mt={2}
                 >
                     {dream.title}
+                    <LikeButton
+                        liked={dream.likers.includes(user?.address || "")}
+                        callback={handleLike}
+                    />
                 </Heading>
                 <Stack spacing={4} mt={4}>
                     <Box>
