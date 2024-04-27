@@ -1,4 +1,7 @@
-import { DREAM_PROXY_FACTORY_ADDRESS } from "../utils/config";
+import {
+    DREAMAKER_ADDRESS,
+    DREAM_PROXY_FACTORY_ADDRESS,
+} from "../utils/config";
 
 export interface IEvent {
     name: string;
@@ -31,5 +34,10 @@ export const events: { [index: string]: IEvent } = {
         name: "MinFundingAmountChanged",
         signature: "MinFundingAmountChanged(uint256)",
         contract: "",
+    },
+    DreamBoosted: {
+        name: "DreamBoosted",
+        signature: "DreamBoosted(address,address,uint256)",
+        contract: DREAMAKER_ADDRESS,
     },
 };

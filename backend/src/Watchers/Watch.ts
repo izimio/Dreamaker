@@ -3,7 +3,12 @@ import { provider, ABIs, signer } from "../utils/EProviders";
 import { logger, logError } from "../utils/logger";
 import { DreamModel, DreamStatus } from "../models/dreamModel";
 import { IEvent, events } from "./config";
-import { BASE_MINING_DREAMAKER, DREAMAKER_ADDRESS } from "../utils/config";
+import {
+    BASE_MINING_DREAMAKER_PERCENTAGE,
+    DREAMAKER_ADDRESS,
+    BASE_BOOST_DURATION,
+} from "../utils/config";
+import { UserModel } from "../models/userModel";
 
 const log = logger.extend("ws");
 const logErr = logError.extend("ws");
@@ -26,16 +31,10 @@ class EventWatcher {
 
     calcOfferedDreamer(amounts: bigint[]): bigint[] {
         const numberAmounts = amounts.map((amount) => Number(amount));
-        const total = numberAmounts.reduce((acc, curr) => acc + curr, 0);
 
-        const retribution = numberAmounts.map((amount) => {
-            const percentage = amount / total;
-            return BigInt(
-                Math.ceil(percentage * Number(BASE_MINING_DREAMAKER))
-            );
-        });
-
-        return retribution;
+        return numberAmounts.map((amount) =>
+            BigInt(amount * (Number(BASE_MINING_DREAMAKER_PERCENTAGE) / 100))
+        );
     }
 
     parseLogs(event: string, data: string) {
@@ -122,7 +121,6 @@ class EventWatcher {
             { owner: owner.toLowerCase(), proxyAddress: null },
             { proxyAddress: proxy, status: DreamStatus.ACTIVE }
         );
-        console.log("INITED");
         if (!dream || dream.matchedCount === 0) {
             logErr("[HPC] Dream not found or already linked to a SC: ", owner);
         }
@@ -186,14 +184,91 @@ class EventWatcher {
         if (funderIndex !== -1) {
             dream.funders[funderIndex].amount += amount;
         } else {
-            dream.funders.push({ address: funder, amount });
+            dream.funders.push({ address: funder, amount, refund: false });
         }
+        dream.fundingGraph.push({
+            date: new Date(),
+            amount: amount.toString(),
+            funder,
+        });
+
+        const stringifyAmount: string = amount.toString();
+
+        await UserModel.updateOne(
+            { address: { $regex: new RegExp(funder, "i") } }, // Case-insensitive match
+            { $push: { fundHistory: { dreamId: dream._id, stringifyAmount } } }
+        );
 
         await dream.save();
     }
 
     async handleDreamRefunded(origin: string, args: any[], event: IEvent) {
-        // DO the mongo thing
+        const [funder, amount] = args;
+
+        const dream = await DreamModel.findOne({ proxyAddress: origin });
+        if (!dream) {
+            logErr("[HDR] Dream not found: ", origin);
+            return;
+        }
+
+        const funderIndex = dream.funders.findIndex(
+            (f) => f.address === funder
+        );
+        if (funderIndex === -1) {
+            logErr("[HDR] Funder not found: ", funder);
+            return;
+        }
+
+        dream.funders[funderIndex].refund = true;
+
+        const stringifyAmount: string = amount.toString();
+
+        await UserModel.updateOne(
+            { address: { $regex: new RegExp(funder, "i") } }, // Case-insensitive match
+            {
+                $push: {
+                    refundHistory: { dreamId: dream._id, stringifyAmount },
+                },
+            }
+        );
+
+        await dream.save();
+    }
+
+    async handleDreamBoosted(origin: string, args: any[], _: IEvent) {
+        const [booster, proxy, amount] = args;
+        const now = new Date();
+
+        const nbOfDmk = Number(ethers.formatEther(amount.toString()));
+
+        const endOfBoost = new Date(
+            now.getTime() + Math.ceil(Number(BASE_BOOST_DURATION) * nbOfDmk)
+        );
+        console.log(endOfBoost.toLocaleString());
+        const result = await DreamModel.findOneAndUpdate(
+            { proxyAddress: proxy },
+            { boostedUntil: endOfBoost },
+            { new: true }
+        );
+
+        if (!result) {
+            logErr("[HDB] Dream not found: ", proxy);
+            return;
+        }
+
+        const stringifyAmount: string = amount.toString();
+        await UserModel.updateOne(
+            { address: { $regex: new RegExp(booster, "i") } }, // Case-insensitive match
+            {
+                $push: {
+                    boostHistory: {
+                        dreamId: result._id,
+                        stringifyAmount,
+                        date: now,
+                    },
+                },
+            }
+        );
     }
 
     async handleMinFundingAmountChanged(
@@ -210,10 +285,6 @@ class EventWatcher {
         if (!dream || dream.matchedCount === 0) {
             logErr("[HMFA] Dream not found: ", origin);
         }
-    }
-
-    handleUnknownEvent(name: string) {
-        logErr("Unknown event: ", name);
     }
 
     async handleEvents(name: string, origin: string, args: any[]) {
@@ -240,8 +311,11 @@ class EventWatcher {
             case "MinFundingAmountChanged":
                 await this.handleMinFundingAmountChanged(origin, args, event);
                 break;
+            case "DreamBoosted":
+                await this.handleDreamBoosted(origin, args, event);
+                break;
             default:
-                this.handleUnknownEvent(name);
+                logErr("Unknown event: ", name);
         }
     }
 }

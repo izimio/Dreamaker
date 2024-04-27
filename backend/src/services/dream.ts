@@ -2,7 +2,7 @@ import { ethers } from "ethers";
 import { uploadFileToFirebase } from "../firebase/uploadFile";
 import { DreamModel } from "../models/dreamModel";
 import { ABIs, signer } from "../utils/EProviders";
-import { BOOST_DURATION, DREAM_PROXY_FACTORY_ADDRESS } from "../utils/config";
+import { DREAM_PROXY_FACTORY_ADDRESS } from "../utils/config";
 import {
     ConflictError,
     Forbidden,
@@ -89,7 +89,7 @@ export const postDream = async (
             deadlineTime,
             targetAmount,
         });
-        return dream._id;
+        return dream;
     } catch (error: any) {
         throw new InternalError("Failed to post dream: " + error.message);
     }
@@ -185,7 +185,7 @@ export const updateDream = async (
         throw new ObjectNotFoundError("Dream not found or not owned by user");
     }
 
-    return dream;
+    return dream.toObject();
 };
 
 export const likeDream = async (id: string, me: string) => {

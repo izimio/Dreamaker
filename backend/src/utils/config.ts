@@ -15,9 +15,15 @@ if (!ALLOWED_ORIGINS) {
     throw new Error("Missing ALLOWED_ORIGINS");
 }
 
-export const BOOST_DURATION = (process.env.BOOST_DURATION as string) || "2";
-if (!BOOST_DURATION) {
-    throw new Error("Missing BOOST_DURATION");
+export const BASE_BOOST_DURATION = process.env.BASE_BOOST_DURATION as string;
+if (!BASE_BOOST_DURATION) {
+    throw new Error("Missing BASE_BOOST_DURATION");
+}
+
+export const BASE_MINING_DREAMAKER_PERCENTAGE = process.env
+    .BASE_MINING_DREAMAKER_PERCENTAGE as string;
+if (!BASE_MINING_DREAMAKER_PERCENTAGE) {
+    throw new Error("Missing BASE_MINING_DREAMAKER_PERCENTAGE");
 }
 
 export const IS_TEST_MODE =
@@ -87,11 +93,6 @@ if (!DEPLOYER_PRIVATE_KEY) {
     throw new Error("Missing DEPLOYER_PRIVATE_KEY");
 }
 
-export const BASE_MINING_DREAMAKER = process.env
-    .BASE_MINING_DREAMAKER as string;
-if (!BASE_MINING_DREAMAKER) {
-    throw new Error("Missing BASE_MINING_DREAMAKER");
-}
 // ==================== BLOCKCHAIN ==================== //
 
 export const DREAM_SINGLETON_ADDRESS = process.env

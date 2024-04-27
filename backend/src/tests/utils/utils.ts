@@ -127,7 +127,7 @@ export const createRandomDream = async (
     expect(response?.body.ok).toBe(true);
     expect(response?.body.data.txHash).toBeDefined();
     expect(response?.body.data.dream).toBeDefined();
-    expect(response?.body.data.dream.id).toBeDefined();
+    expect(response?.body.data.dream._id).toBeDefined();
     expect(response?.body.data.dream.title).toBe(title);
     expect(response?.body.data.dream.description).toBe(description);
     expect(response?.body.data.dream.tags).toEqual(tags);
@@ -140,7 +140,13 @@ export const createRandomDream = async (
     );
 
     const dream = response?.body.data.dream;
-    return { dream, wSigner };
+    return {
+        dream: {
+            ...dream,
+            id: dream._id,
+        },
+        wSigner,
+    };
 };
 
 export const fundDream = async (
@@ -162,17 +168,16 @@ export const fundDream = async (
     }
 
     const r = await DreamModel.findOne({ _id: dreamId });
+    expect(r).toBeDefined();
     if (!r) {
         throw new Error("Dream not found");
     }
-
-    // if address is already in funders, update amount else push new funder
     const funders = r.funders;
     const index = funders.findIndex((f) => f.address === address);
     if (index !== -1) {
         funders[index].amount += amount;
     } else {
-        funders.push({ address, amount });
+        funders.push({ address, amount, refund: false });
     }
 
     r.funders = funders;

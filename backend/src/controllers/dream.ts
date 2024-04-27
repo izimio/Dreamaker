@@ -22,7 +22,7 @@ export const createDream = async (ctx: Context) => {
     const { title, description, deadlineTime, targetAmount, files, tags } =
         await validateNewDream.validate(parsedFormData);
 
-    const id = await dreamServices.postDream(
+    const createdDream = await dreamServices.postDream(
         ctx.state.address,
         title,
         tags,
@@ -41,17 +41,7 @@ export const createDream = async (ctx: Context) => {
         ok: true,
         data: {
             txHash,
-            dream: {
-                id,
-                owner: ctx.state.address,
-                title,
-                description,
-                tags,
-                deadlineTime,
-                targetAmount: targetAmount.toString(),
-                minFundingAmount: "1",
-                files,
-            },
+            dream: createdDream,
         },
     };
     ctx.status = 201;
@@ -97,10 +87,23 @@ export const updateDream = async (ctx: Context) => {
 
     const ndream = await dreamServices.updateDream(id, me, edits);
 
+    const parsedDream = {
+        ...ndream,
+        funders: ndream.funders.map((funder) => {
+            return {
+                ...funder,
+                amount: funder.amount.toString(),
+            };
+        }),
+        currentAmount: ndream.funders
+            .reduce((acc: bigint, funder) => acc + BigInt(funder.amount), 0n)
+            .toString(),
+    };
+
     ctx.body = {
         ok: true,
         data: {
-            dream: ndream,
+            dream: parsedDream,
         },
     };
 };

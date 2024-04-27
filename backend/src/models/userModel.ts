@@ -5,7 +5,7 @@ export interface IUser {
     address: string;
     boostHistory: {
         dreamId: string;
-        amount: number;
+        amount: string;
         date: Date;
     }[];
     creationHistory: {
@@ -14,7 +14,12 @@ export interface IUser {
     }[];
     fundHistory: {
         dreamId: string;
-        amount: number;
+        amount: string;
+        date: Date;
+    }[];
+    refundHistory: {
+        dreamId: string;
+        amount: string;
         date: Date;
     }[];
 }
@@ -31,7 +36,7 @@ const userSchema = new mongoose.Schema<IUser>({
     boostHistory: {
         type: Array({
             dreamId: { type: String, required: true },
-            amount: { type: Number, required: true },
+            amount: { type: String, required: true },
             date: { type: Date, required: true },
         }),
         default: [],
@@ -46,7 +51,15 @@ const userSchema = new mongoose.Schema<IUser>({
     fundHistory: {
         type: Array({
             dreamId: { type: String, required: true },
-            amount: { type: Number, required: true },
+            amount: { type: String, required: true },
+            date: { type: Date, required: true },
+        }),
+        default: [],
+    },
+    refundHistory: {
+        type: Array({
+            dreamId: { type: String, required: true },
+            amount: { type: String, required: true },
             date: { type: Date, required: true },
         }),
         default: [],

@@ -1,9 +1,11 @@
 import mongoose from "mongoose";
 import { TAGS } from "../utils/constants";
+import { boolean } from "yup";
 
 type IFunder = {
     address: string;
     amount: bigint;
+    refund: boolean;
 };
 
 type Asset = {
@@ -36,7 +38,8 @@ export interface IDream {
     likers: string[];
     fundingGraph: {
         date: Date;
-        amount: number;
+        amount: string;
+        funder: string;
     }[];
 }
 
@@ -66,7 +69,10 @@ const dreamSchema = new mongoose.Schema<IDream>({
         default: [],
     },
     deadlineTime: { type: Number, required: true },
-    funders: { type: [{ address: String, amount: BigInt }], default: [] },
+    funders: {
+        type: [{ address: String, amount: BigInt, refund: Boolean }],
+        default: [],
+    },
     targetAmount: { type: String, required: true, match: /[1-9][0-9]*/ },
     minFundingAmount: { type: String, default: "1", match: /[1-9][0-9]*/ },
     proxyAddress: { type: String, default: null },
@@ -75,7 +81,8 @@ const dreamSchema = new mongoose.Schema<IDream>({
     fundingGraph: {
         type: Array({
             date: { type: Date, required: true, default: Date.now },
-            amount: { type: Number, required: true },
+            amount: { type: String, required: true },
+            funder: { type: String, required: true },
         }),
         default: [],
     },

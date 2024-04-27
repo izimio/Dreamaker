@@ -1,7 +1,10 @@
 import Router from "koa-router";
 import { Context } from "koa";
 import { TAGS, LIMITS, ALLOWED_EXTENSIONS } from "../utils/constants";
-import { BASE_MINING_DREAMAKER, BOOST_DURATION } from "../utils/config";
+import {
+    BASE_MINING_DREAMAKER_PERCENTAGE,
+    BASE_BOOST_DURATION,
+} from "../utils/config";
 const router: Router = new Router();
 
 router.prefix("/tools");
@@ -24,8 +27,8 @@ router.get("/constants", async (ctx: Context) => {
             limits: LIMITS,
             allowedExtensions: ALLOWED_EXTENSIONS,
             dreamBC: {
-                boostDuration: BOOST_DURATION,
-                baseMiningReward: BASE_MINING_DREAMAKER,
+                boostDuration: BASE_BOOST_DURATION,
+                baseMiningRewardPercentage: BASE_MINING_DREAMAKER_PERCENTAGE,
             },
         },
     };
