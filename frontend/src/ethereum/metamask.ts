@@ -74,12 +74,14 @@ export const getChainId = async () => {
     return parseInt(chainId, 16);
 };
 
-export const metamaskSendTransaction = async (
-    fromAddress: string,
-    toAddress: string,
-    data: string,
-    value?: string
-) => {
+export const metamaskSendTransaction = async (params: {
+    fromAddress: string;
+    toAddress: string;
+    data: string;
+    value: string;
+}) => {
+    const { fromAddress, toAddress, data, value } = params;
+
     if (!window.ethereum) {
         return {
             ok: false,
@@ -117,6 +119,7 @@ export const metamaskSendTransaction = async (
     }
     return {
         ok: true,
+        message: "Transaction sent successfully, waiting for confirmation",
         data: tx,
     };
 };

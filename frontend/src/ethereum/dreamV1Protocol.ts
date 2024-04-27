@@ -22,14 +22,70 @@ export const boost = async (
     numberofDMK: bigint
 ) => {
     try {
-        const res = await metamaskSendTransaction(
+        const res = await metamaskSendTransaction({
             fromAddress,
-            DREAMAKER_ADDRESS,
-            DREAMAKER_INTERFACE.encodeFunctionData("boost", [
+            toAddress: DREAMAKER_ADDRESS,
+            data: DREAMAKER_INTERFACE.encodeFunctionData("boost", [
                 proxyAddress,
                 numberofDMK,
-            ])
-        );
+            ]),
+            value: "0x0",
+        });
+        return res;
+    } catch (error) {
+        return {
+            ok: false,
+            message: "Transaction failed.",
+        };
+    }
+};
+
+export const fund = async (
+    fromAddress: string,
+    proxyAddress: string,
+    amount: bigint
+) => {
+    try {
+        const res = await metamaskSendTransaction({
+            fromAddress,
+            toAddress: proxyAddress,
+            data: DREAM_INTERFACE.encodeFunctionData("fund"),
+            value: ethers.toBeHex(amount),
+        });
+        return res;
+    } catch (error) {
+        return {
+            ok: false,
+            message: "Transaction failed.",
+        };
+    }
+};
+
+export const refund = async (fromAddress: string, proxyAddress: string) => {
+    try {
+        const res = await metamaskSendTransaction({
+            fromAddress,
+            toAddress: proxyAddress,
+            data: DREAM_INTERFACE.encodeFunctionData("refund"),
+            value: "0x0",
+        });
+        return res;
+    } catch (error) {
+        return {
+            ok: false,
+            message: "Transaction failed.",
+        };
+    }
+};
+
+export const withdraw = async (fromAddress: string, proxyAddress: string) => {
+    try {
+        const res = await metamaskSendTransaction({
+            fromAddress,
+            toAddress: proxyAddress,
+            data: DREAM_INTERFACE.encodeFunctionData("withdraw"),
+            value: "0x0",
+        });
         return res;
     } catch (error) {
         return {

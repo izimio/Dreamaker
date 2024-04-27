@@ -11,7 +11,7 @@ import {
 import { FC, useEffect, useState } from "react";
 import PriceSelector from "../components/PriceSelector";
 import { useGlobal } from "../providers/global";
-import { boost } from "../ethereum/dreamV1Protocol";
+import { boost, fund, refund, withdraw } from "../ethereum/dreamV1Protocol";
 import { ethers } from "ethers";
 import toast from "react-hot-toast";
 
@@ -65,6 +65,26 @@ const regexPatterns: { [key: string]: RegExp } = {
     wei: /^\d+$/,
 };
 
+const calcMinutesOfBoost = (
+    amount: string,
+    currency: string,
+    BASE_BOOST_DURATION: number
+) => {
+    const unit = currency === "ETH" ? "ether" : currency.toLowerCase();
+    let parsedAmount;
+    try {
+        parsedAmount = ethers.parseUnits(amount, unit);
+    } catch (e) {
+        return "Invalid amount";
+    }
+    return (
+        (
+            (BASE_BOOST_DURATION / 1000 / 60 / 60) *
+            Number(ethers.formatEther(parsedAmount))
+        ).toFixed(2) + " hours of Dream Boosting"
+    );
+};
+
 const InteractionModal: FC<InteractionModalProps> = ({
     isOpen,
     onClose,
@@ -72,7 +92,7 @@ const InteractionModal: FC<InteractionModalProps> = ({
     colorScheme,
     proxyAddress,
 }) => {
-    const { user } = useGlobal();
+    const { user, constants } = useGlobal();
     const [price, setPrice] = useState<{
         amount: string;
         currency: "ETH" | "GWEI" | "WEI";
@@ -127,20 +147,28 @@ const InteractionModal: FC<InteractionModalProps> = ({
             toast.error("You don't have enough DMK");
             return;
         }
-
+        let res;
         switch (type) {
             case "fund":
-                console.log("fund");
+                res = await fund(user.address, proxyAddress, parsedAmount);
                 break;
             case "withdraw":
-                console.log("withdraw");
+                res = await withdraw(user.address, proxyAddress);
                 break;
             case "refund":
-                console.log("refund");
+                res = await refund(user.address, proxyAddress);
                 break;
             case "boost":
-                boost(user.address, proxyAddress, parsedAmount);
+                res = await boost(user.address, proxyAddress, parsedAmount);
         }
+        if (!res || !res.ok) {
+            toast.error(res!.message || "An error occurred");
+            return;
+        }
+        toast.success(
+            "Transaction sent successfully, waiting for confirmation"
+        );
+        onClose();
     };
 
     return (
@@ -156,7 +184,9 @@ const InteractionModal: FC<InteractionModalProps> = ({
             <ModalContent pb={4}>
                 <ModalHeader
                     textAlign={"center"}
-                    bgGradient={"linear(to-bl, light, federalBlue)"}
+                    bgGradient={`
+                        linear(to-l, ${colorScheme}.500, federalBlue)
+                    `}
                     fontSize={"4xl"}
                     fontWeight={"bold"}
                     bgClip="text"
@@ -207,15 +237,31 @@ const InteractionModal: FC<InteractionModalProps> = ({
                                     showText={false}
                                 />
                                 {type === "boost" && (
-                                    <Text
-                                        fontSize={"sm"}
-                                        marginTop={"8px"}
-                                        color={colorScheme}
-                                        textAlign={"center"}
-                                    >
-                                        Your DMK balance:{" "}
-                                        {user?.DMK ? user.DMK : "loading..."}
-                                    </Text>
+                                    <>
+                                        <Text
+                                            fontSize={"sm"}
+                                            marginTop={"8px"}
+                                            color={colorScheme}
+                                            textAlign={"center"}
+                                        >
+                                            Your DMK balance:{" "}
+                                            {user?.DMK
+                                                ? user.DMK
+                                                : "loading..."}
+                                        </Text>
+                                        <Text
+                                            fontSize={"sm"}
+                                            marginTop={"8px"}
+                                            color={colorScheme}
+                                            textAlign={"center"}
+                                        >
+                                            {calcMinutesOfBoost(
+                                                price.amount,
+                                                price.currency,
+                                                constants.dreamBC.boostDuration
+                                            )}{" "}
+                                        </Text>
+                                    </>
                                 )}
                             </Box>
                         </>
