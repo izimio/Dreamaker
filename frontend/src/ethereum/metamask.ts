@@ -73,3 +73,50 @@ export const getChainId = async () => {
     const chainId = await window.ethereum.request({ method: "eth_chainId" });
     return parseInt(chainId, 16);
 };
+
+export const metamaskSendTransaction = async (
+    fromAddress: string,
+    toAddress: string,
+    data: string,
+    value?: string
+) => {
+    if (!window.ethereum) {
+        return {
+            ok: false,
+            message: "Please install Metamask.",
+        };
+    }
+
+    try {
+        await window.ethereum.request({ method: "eth_requestAccounts" });
+    } catch (error) {
+        return {
+            ok: false,
+            message: "Please allow Metamask to connect.",
+        };
+    }
+
+    let tx;
+    try {
+        tx = await window.ethereum.request({
+            method: "eth_sendTransaction",
+            params: [
+                {
+                    from: fromAddress,
+                    to: toAddress,
+                    data,
+                    value,
+                },
+            ],
+        });
+    } catch (error) {
+        return {
+            ok: false,
+            message: "Transaction failed.",
+        };
+    }
+    return {
+        ok: true,
+        data: tx,
+    };
+};

@@ -32,7 +32,9 @@ interface InfosAsideProps {
 }
 
 const parseSeconds = (seconds: number) => {
-    if (seconds < 0) return "Time's up!";
+    if (seconds < 0 || isNaN(seconds)) {
+        return "Time's up!";
+    }
     const days = Math.floor(seconds / (3600 * 24));
     const hours = Math.floor((seconds % (3600 * 24)) / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
@@ -108,6 +110,7 @@ const InfosAside: FC<InfosAsideProps> = ({ dream }) => {
     }, [isModalOpen]);
     const handleLike = async () => {
         const id = dream._id;
+        let unlike = false;
 
         const res = await likeDream(id);
 
@@ -115,6 +118,9 @@ const InfosAside: FC<InfosAsideProps> = ({ dream }) => {
             toast.error(res.data || "Failed to like dream");
             return;
         }
+        toast.success(res.data.message, {
+            icon: res.data.message.includes("unliked") ? "💔" : "❤️",
+        });
         if (res.data.message.includes("unliked")) {
             dream.likers = dream.likers.filter((l) => l !== user?.address);
             return;
@@ -127,7 +133,6 @@ const InfosAside: FC<InfosAsideProps> = ({ dream }) => {
                 d._id === id ? { ...d, likers: dream.likers } : d
             ),
         });
-        toast.success(res.data.message);
     };
     return (
         <>
@@ -250,7 +255,9 @@ const InfosAside: FC<InfosAsideProps> = ({ dream }) => {
                                     color={"darkcyan"}
                                 />
                                 Boosted:{" "}
-                                {new Date(dream.boostedUntil) > new Date() ? (
+                                {new Date(dream.boostedUntil) > new Date() &&
+                                new Date(dream.deadlineTime * 1000) >
+                                    new Date() ? (
                                     <Tooltip
                                         label={new Date(
                                             dream.boostedUntil

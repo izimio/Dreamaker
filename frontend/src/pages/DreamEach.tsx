@@ -7,6 +7,7 @@ import InfosAside from "../components/Each/InfosAside";
 import AssetsBox from "../components/Each/AssetsBox";
 import Graph from "../components/Each/Graph";
 import FundersList from "../components/Each/FundersList";
+import InteractionButtons from "../components/Each/InteractionButtons";
 
 const Dream: FC = () => {
     const { id } = useParams<{ id: string }>();
@@ -92,8 +93,18 @@ const Dream: FC = () => {
                             base: "100%",
                             lg: "auto",
                         }}
+                        display={"flex"}
+                        flexDirection={"column"}
+                        gap={"1em"}
+                        justifyContent={"space-between"}
+                        border={"1px solid"}
                     >
-                        <FundersList funders={refDream!.funders} />
+                        <Box height={{ base: "100%", lg: "70%" }}>
+                            <FundersList funders={refDream!.funders} />
+                        </Box>
+                        <Box height={{ base: "100%", lg: "30%" }} p={4}>
+                            <InteractionButtons dream={refDream!} />
+                        </Box>
                     </Box>
                 </Flex>
             </Container>

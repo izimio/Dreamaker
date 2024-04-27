@@ -23,27 +23,33 @@ interface PriceSelectorProps {
         currency: "ETH" | "GWEI" | "WEI";
     }) => void;
     isInvalid?: boolean;
+    showText?: boolean;
 }
 
 const PriceSelector: FC<PriceSelectorProps> = ({
     price,
     setPrice,
     isInvalid,
+    showText = true,
 }) => {
     const { ethPrice } = useEthereum();
     return (
         <Box>
-            <Text color={"white"} textShadow={" 1px 1px 1px cyan"}>
-                Set the price
-            </Text>
-            <Text
-                mb="8px"
-                fontSize={"sm"}
-                color={"grey"}
-                textShadow={" 1px 1px 1px cyan"}
-            >
-                Set the price in {price.currency} for your dream
-            </Text>
+            {showText && (
+                <Text color={"white"} textShadow={" 1px 1px 1px cyan"}>
+                    Set the price
+                </Text>
+            )}
+            {showText && (
+                <Text
+                    mb="8px"
+                    fontSize={"sm"}
+                    color={"grey"}
+                    textShadow={" 1px 1px 1px cyan"}
+                >
+                    Set the price in {price.currency} for your dream
+                </Text>
+            )}
             <Flex gap={2} direction={"row"}>
                 <NumberInput
                     defaultValue={0}
@@ -81,7 +87,7 @@ const PriceSelector: FC<PriceSelectorProps> = ({
                 >
                     <NumberInputField />
                 </NumberInput>
-                <Menu>
+                <Menu id="currency-menu">
                     <Tooltip
                         label="Select currency"
                         aria-label="Select currency"
@@ -134,15 +140,17 @@ const PriceSelector: FC<PriceSelectorProps> = ({
                     </MenuList>
                 </Menu>
             </Flex>
-            <Text
-                fontSize={"sm"}
-                marginTop={"8px"}
-                color={"grey"}
-                textShadow={" 1px 1px 1px cyan"}
-                textAlign={"center"}
-            >
-                1 ETH ~ {ethPrice} USDT
-            </Text>
+            {showText && (
+                <Text
+                    fontSize={"sm"}
+                    marginTop={"8px"}
+                    color={"grey"}
+                    textShadow={" 1px 1px 1px cyan"}
+                    textAlign={"center"}
+                >
+                    1 ETH ~ {ethPrice} USDT
+                </Text>
+            )}
         </Box>
     );
 };

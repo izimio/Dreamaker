@@ -7,7 +7,7 @@ import {
     Text,
 } from "@chakra-ui/react";
 import { useModals } from "../providers/modals";
-import metamaskLogo from "/public/metamaskLogo.png";
+import metamaskLogo from "/metamaskLogo.png";
 import { getEthAccount } from "../ethereum/metamask";
 import { useEffect, useState } from "react";
 
