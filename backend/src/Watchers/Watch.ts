@@ -8,7 +8,7 @@ import {
     DREAMAKER_ADDRESS,
     BASE_BOOST_DURATION,
 } from "../utils/config";
-import { UserModel } from "../models/userModel";
+import { UserAction, UserModel } from "../models/userModel";
 
 const log = logger.extend("ws");
 const logErr = logError.extend("ws");
@@ -117,13 +117,28 @@ class EventWatcher {
 
         await this.manageProxyWatcher(proxy, true);
 
-        const dream = await DreamModel.updateOne(
+        const dream = await DreamModel.findOneAndUpdate(
             { owner: owner.toLowerCase(), proxyAddress: null },
-            { proxyAddress: proxy, status: DreamStatus.ACTIVE }
+            { proxyAddress: proxy, status: DreamStatus.ACTIVE },
+            { new: true }
         );
-        if (!dream || dream.matchedCount === 0) {
+        if (!dream) {
             logErr("[HPC] Dream not found or already linked to a SC: ", owner);
+            return;
         }
+
+        await UserModel.updateOne(
+            { address: { $regex: new RegExp(owner, "i") } }, // Case-insensitive match
+            {
+                $push: {
+                    actionHistory: {
+                        dreamId: dream._id,
+                        action: UserAction.CREATE,
+                        date: new Date(),
+                    },
+                },
+            }
+        );
     }
 
     async handleReceivedFees(args: any[], _: IEvent) {
@@ -178,13 +193,21 @@ class EventWatcher {
             return;
         }
 
+        const stringifiedAmount: string = amount.toString();
         const funderIndex = dream.funders.findIndex(
             (f) => f.address === funder
         );
         if (funderIndex !== -1) {
-            dream.funders[funderIndex].amount += amount;
+            const alreadyFunded = BigInt(dream.funders[funderIndex].amount);
+            const res = BigInt(stringifiedAmount) + alreadyFunded;
+            console.log(res.toString());
+            dream.funders[funderIndex].amount = res.toString();
         } else {
-            dream.funders.push({ address: funder, amount, refund: false });
+            dream.funders.push({
+                address: funder,
+                amount: stringifiedAmount,
+                refund: false,
+            });
         }
         dream.fundingGraph.push({
             date: new Date(),
@@ -196,7 +219,16 @@ class EventWatcher {
 
         await UserModel.updateOne(
             { address: { $regex: new RegExp(funder, "i") } }, // Case-insensitive match
-            { $push: { fundHistory: { dreamId: dream._id, stringifyAmount } } }
+            {
+                $push: {
+                    actionHistory: {
+                        dreamId: dream._id,
+                        action: UserAction.FUND,
+                        amount: stringifyAmount,
+                        date: new Date(),
+                    },
+                },
+            }
         );
 
         await dream.save();
@@ -227,7 +259,12 @@ class EventWatcher {
             { address: { $regex: new RegExp(funder, "i") } }, // Case-insensitive match
             {
                 $push: {
-                    refundHistory: { dreamId: dream._id, stringifyAmount },
+                    actionHistory: {
+                        dreamId: dream._id,
+                        action: UserAction.REFUND,
+                        amount: stringifyAmount,
+                        date: new Date(),
+                    },
                 },
             }
         );
@@ -239,18 +276,25 @@ class EventWatcher {
         const [booster, proxy, amount] = args;
         const now = new Date();
 
+        const dream = await DreamModel.findOne({ proxyAddress: proxy });
+        if (!dream) {
+            logErr("[HDB] Dream not found: ", proxy);
+            return;
+        }
+
+        const startingDate =
+            new Date(dream.boostedUntil) > now ? dream.boostedUntil : now;
         const nbOfDmk = Number(ethers.formatEther(amount.toString()));
 
         const endOfBoost = new Date(
-            now.getTime() + Math.ceil(Number(BASE_BOOST_DURATION) * nbOfDmk)
+            new Date(startingDate).getTime() +
+                Math.ceil(Number(BASE_BOOST_DURATION) * nbOfDmk)
         );
-        console.log(endOfBoost.toLocaleString());
         const result = await DreamModel.findOneAndUpdate(
             { proxyAddress: proxy },
-            { boostedUntil: endOfBoost },
+            { boostedUntil: endOfBoost.toISOString() },
             { new: true }
         );
-
         if (!result) {
             logErr("[HDB] Dream not found: ", proxy);
             return;
@@ -261,9 +305,10 @@ class EventWatcher {
             { address: { $regex: new RegExp(booster, "i") } }, // Case-insensitive match
             {
                 $push: {
-                    boostHistory: {
-                        dreamId: result._id,
-                        stringifyAmount,
+                    actionHistory: {
+                        dreamId: dream._id,
+                        action: UserAction.BOOST,
+                        amount: stringifyAmount,
                         date: now,
                     },
                 },

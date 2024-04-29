@@ -40,6 +40,7 @@ export const createEcRecoverChallenge = async (address: string) => {
     const challenge = TEMPLATE_CHALLENGE(randomString(128));
 
     try {
+        await EcRecoverChallengeModel.deleteMany({ address });
         await EcRecoverChallengeModel.create({ address, challenge });
     } catch (error: any) {
         if (error.code === 11000) {

@@ -4,7 +4,7 @@ import { boolean } from "yup";
 
 type IFunder = {
     address: string;
-    amount: bigint;
+    amount: string;
     refund: boolean;
 };
 
@@ -70,7 +70,7 @@ const dreamSchema = new mongoose.Schema<IDream>({
     },
     deadlineTime: { type: Number, required: true },
     funders: {
-        type: [{ address: String, amount: BigInt, refund: Boolean }],
+        type: [{ address: String, amount: String, refund: Boolean }],
         default: [],
     },
     targetAmount: { type: String, required: true, match: /[1-9][0-9]*/ },

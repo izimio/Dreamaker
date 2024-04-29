@@ -25,6 +25,8 @@ export const getMe = async (ctx: Context) => {
             isAdmin: meInfos.isAdmin,
             numberOfDMK: meInfos.numberOfDMK,
             address: ctx.state.address,
+            actionHistory: meInfos.actionHistory,
+            creation: meInfos.creation,
         },
     };
 };

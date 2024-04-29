@@ -2,6 +2,8 @@ import { DEPLOYER_PRIVATE_KEY, DREAMAKER_ADDRESS } from "../utils/config";
 import { ethers } from "ethers";
 import { DreamModel } from "../models/dreamModel";
 import { ABIs, provider } from "../utils/EProviders";
+import { UserModel } from "../models/userModel";
+import { ObjectNotFoundError } from "../utils/error";
 
 export const getMeNumberOfDMK = async (address: string) => {
     const DMKContract = new ethers.Contract(
@@ -38,8 +40,16 @@ export const getMyFunds = async (me: string) => {
 export const getMe = async (me: string) => {
     const isAdmin = me === new ethers.Wallet(DEPLOYER_PRIVATE_KEY).address;
     const numberOfDMK = await getMeNumberOfDMK(me);
+
+    const userInfos = await UserModel.findOne({ address: me }).lean();
+    if (!userInfos) {
+        throw new ObjectNotFoundError("User not found");
+    }
+
     return {
         isAdmin,
         numberOfDMK,
+        actionHistory: userInfos.actionHistory || [],
+        creation: userInfos.createdAt,
     };
 };

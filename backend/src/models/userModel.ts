@@ -1,24 +1,17 @@
 import mongoose from "mongoose";
 
+export enum UserAction {
+    CREATE = "CREATE",
+    FUND = "FUND",
+    REFUND = "REFUND",
+    BOOST = "BOOST",
+}
 export interface IUser {
     createdAt: Date;
     address: string;
-    boostHistory: {
-        dreamId: string;
-        amount: string;
-        date: Date;
-    }[];
-    creationHistory: {
-        dreamId: string;
-        date: Date;
-    }[];
-    fundHistory: {
-        dreamId: string;
-        amount: string;
-        date: Date;
-    }[];
-    refundHistory: {
-        dreamId: string;
+    actionHistory: {
+        dreamId: string | null;
+        action: string;
         amount: string;
         date: Date;
     }[];
@@ -33,37 +26,14 @@ const userSchema = new mongoose.Schema<IUser>({
         unique: true,
         transform: (v: string) => v.toLowerCase(),
     },
-    boostHistory: {
-        type: Array({
-            dreamId: { type: String, required: true },
+    actionHistory: [
+        {
+            dreamId: { type: String, default: null },
+            action: { type: String, enum: Object.values(UserAction) },
             amount: { type: String, required: true },
-            date: { type: Date, required: true },
-        }),
-        default: [],
-    },
-    creationHistory: {
-        type: Array({
-            dreamId: { type: String, required: true },
-            date: { type: Date, required: true },
-        }),
-        default: [],
-    },
-    fundHistory: {
-        type: Array({
-            dreamId: { type: String, required: true },
-            amount: { type: String, required: true },
-            date: { type: Date, required: true },
-        }),
-        default: [],
-    },
-    refundHistory: {
-        type: Array({
-            dreamId: { type: String, required: true },
-            amount: { type: String, required: true },
-            date: { type: Date, required: true },
-        }),
-        default: [],
-    },
+            date: { type: Date, default: Date.now },
+        },
+    ],
 });
 
 export const UserModel = mongoose.model<IUser>("User", userSchema);
