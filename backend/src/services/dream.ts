@@ -3,12 +3,7 @@ import { uploadFileToFirebase } from "../firebase/uploadFile";
 import { DreamModel } from "../models/dreamModel";
 import { ABIs, signer } from "../utils/EProviders";
 import { DREAM_PROXY_FACTORY_ADDRESS } from "../utils/config";
-import {
-    ConflictError,
-    Forbidden,
-    InternalError,
-    ObjectNotFoundError,
-} from "../utils/error";
+import { InternalError, ObjectNotFoundError } from "../utils/error";
 import fs from "fs";
 
 type Asset = {

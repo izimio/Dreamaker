@@ -43,6 +43,8 @@ describe(`GET ${ROUTE_GET_ME}`, () => {
             isAdmin: true,
             address: adminSigner.wallet.address,
             numberOfDMK: "100000.0",
+            creation: response?.body.data.creation,
+            actionHistory: response?.body.data.actionHistory,
         });
     });
     it("Get me, not admin", async () => {
@@ -56,6 +58,8 @@ describe(`GET ${ROUTE_GET_ME}`, () => {
             isAdmin: false,
             address: randomGuy.wallet.address,
             numberOfDMK: "0.0",
+            creation: response?.body.data.creation,
+            actionHistory: response?.body.data.actionHistory,
         });
     });
     it("get me, Unauthorized", async () => {

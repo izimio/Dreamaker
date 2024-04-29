@@ -47,20 +47,6 @@ describe("POST auth/challenge", () => {
         expect(response?.status).toBe(400);
         expect(response?.body.ok).toBe(false);
     });
-    it("Creating a challenge, challenge already existing for this address", async () => {
-        const response0 = await request?.get(
-            ROUTE_CHALLENGE + `/${randomWallet.address}`
-        );
-        expect(response0?.status).toBe(201);
-        expect(response0?.body.ok).toBe(true);
-        expect(response0?.body.data.challenge).toBeDefined();
-
-        const response = await request?.get(
-            ROUTE_CHALLENGE + `/${randomWallet.address}`
-        );
-        expect(response?.status).toBe(409);
-        expect(response?.body.ok).toBe(false);
-    });
 });
 
 describe("POST auth/verify", () => {

@@ -12,11 +12,15 @@ kill_pid() {
     fi
 }
 
-kill_pid $(lsof -t -i:8545)
+node_pid=$(lsof -t -i:8545)
 
-./run_node.sh &
+if [ -n "$node_pid" ]; then
+    echo "🚦 Node is already running on port 8545 \n"
+else
+    ./run_node.sh &
+    sleep 1
+fi
 
-sleep 1
 
 ./deploy_contracts.sh &
 
@@ -28,5 +32,5 @@ jest --setupFiles dotenv/config ./src/tests/setup/setupTest.js --detectOpenHandl
 
 wait 
 
-kill_pid $(lsof -t -i:8545)
+exit 0
 

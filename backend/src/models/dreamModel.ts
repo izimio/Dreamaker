@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 import { TAGS } from "../utils/constants";
-import { boolean } from "yup";
 
 type IFunder = {
     address: string;
