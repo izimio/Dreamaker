@@ -1,8 +1,8 @@
 import { FC, createContext, useContext, useState } from "react";
-import ChainModal from "../Modals/ChainModal";
-import ChallengeModal from "../Modals/ChallengeModal";
-import AccountChangedModal from "../Modals/AccountChangedModal";
-import PictureModal from "../Modals/PictureModal";
+import ChainModal from "../modals/ChainModal";
+import ChallengeModal from "../modals/ChallengeModal";
+import AccountChangedModal from "../modals/AccountChangedModal";
+import PictureModal from "../modals/PictureModal";
 
 interface IModals {
     chainModal: boolean;

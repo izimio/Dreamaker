@@ -118,7 +118,7 @@ const DreamStepper: FC = () => {
             }}
         >
             <Stepper size="sm" index={activeStep} gap="0" colorScheme="cyan">
-                {steps.map((step, index) => (
+                {steps.map((_, index) => (
                     <Step key={index}>
                         <StepIndicator>
                             <StepStatus complete={<StepIcon />} />

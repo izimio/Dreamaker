@@ -1,4 +1,4 @@
-import { FC, useRef, useState } from "react";
+import { FC, useRef } from "react";
 
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";

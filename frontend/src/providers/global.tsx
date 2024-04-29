@@ -24,6 +24,7 @@ export type IDream = {
     funders: {
         address: string;
         amount: string;
+        refund: boolean;
     }[];
     boostedUntil: string;
     likers: string[];
@@ -38,6 +39,13 @@ export type IDream = {
 type IUser = {
     address: string;
     DMK: number;
+    actionHistory: {
+        dreamId: string;
+        action: string;
+        amount: string;
+        date: string;
+    }[];
+    creation: string;
 };
 
 type limits = {
@@ -188,6 +196,8 @@ export const GlobalProvider: FC<Props> = ({ children }) => {
         setUser({
             address: data.address,
             DMK: data.numberOfDMK,
+            actionHistory: data.actionHistory,
+            creation: data.creation,
         });
     };
 

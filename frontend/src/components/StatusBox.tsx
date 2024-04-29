@@ -1,4 +1,5 @@
 import { Box } from "@chakra-ui/react";
+import { darken, lighten } from "polished";
 import { FC } from "react";
 
 interface StatusBoxProps {
@@ -32,9 +33,9 @@ const StatusBox: FC<StatusBoxProps> = ({ status }) => {
             text = "Expired";
             break;
         case "withdrawn":
-            bg = "gold.300";
-            color = "gold.800";
-            text = "Withdrawn";
+            bg = lighten(0.1, "gold");
+            color = darken(0.3, "gold");
+            text = "That dream became true";
             break;
     }
 

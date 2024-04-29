@@ -6,7 +6,6 @@ import { useModals } from "./modals";
 import toast from "react-hot-toast";
 import { getETH_USDTPrice } from "../api/external";
 import { useGlobal } from "./global";
-import ChallengeModal from "../Modals/ChallengeModal";
 
 interface IEthereum {
     chainId: number | null;

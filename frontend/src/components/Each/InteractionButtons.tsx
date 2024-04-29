@@ -1,7 +1,7 @@
 import { Box, Button } from "@chakra-ui/react";
 import { FC, useState } from "react";
 import { IDream, useGlobal } from "../../providers/global";
-import InteractionModal from "../../Modals/InteractionModals";
+import InteractionModal from "../../modals/InteractionModals";
 
 interface InteractionButtonsProps {
     dream: IDream;
@@ -28,10 +28,12 @@ const InteractionButtons: FC<InteractionButtonsProps> = ({ dream }) => {
         type: "",
         colorScheme: "",
     });
-
     const buttonArray = [];
 
-    if (user?.address === dream.owner && dream.status === "reached") {
+    if (
+        user?.address.toLowerCase() === dream.owner.toLowerCase() &&
+        dream.status === "reached"
+    ) {
         buttonArray.push({
             text: "Withdraw 💎",
             color: "green",
@@ -45,7 +47,10 @@ const InteractionButtons: FC<InteractionButtonsProps> = ({ dream }) => {
         });
     }
 
-    if (user?.address !== dream.owner && dream.status === "active") {
+    if (
+        user?.address.toLocaleLowerCase() !== dream.owner.toLowerCase() &&
+        dream.status === "active"
+    ) {
         buttonArray.push({
             text: "Fund 🎁",
             color: "blue",
@@ -58,10 +63,7 @@ const InteractionButtons: FC<InteractionButtonsProps> = ({ dream }) => {
             },
         });
     }
-    if (
-        dream.status === "active"
-        // new Date(dream.boostedUntil).getTime() < Date.now()
-    ) {
+    if (dream.status === "active") {
         buttonArray.push({
             text: "Boost 🚀",
             color: "purple",
@@ -76,9 +78,13 @@ const InteractionButtons: FC<InteractionButtonsProps> = ({ dream }) => {
     }
 
     if (
-        user?.address !== dream.owner &&
+        user?.address.toLowerCase() !== dream.owner.toLowerCase() &&
         dream.status === "expired" &&
-        dream.funders.find((funder) => funder.address === user?.address)
+        dream.funders.find(
+            (funder) =>
+                funder.address.toLowerCase() === user?.address.toLowerCase() &&
+                funder.refund === false
+        )
     ) {
         buttonArray.push({
             text: "Refund 💸",
@@ -100,6 +106,7 @@ const InteractionButtons: FC<InteractionButtonsProps> = ({ dream }) => {
                 type={type.type}
                 colorScheme={type.colorScheme}
                 proxyAddress={dream.proxyAddress}
+                minimumFundingAmount={dream.minFundingAmount}
             />
             <Box
                 height={"100%"}

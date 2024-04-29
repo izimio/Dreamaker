@@ -13,7 +13,7 @@ import {
     Text,
 } from "@chakra-ui/react";
 import { IFilters } from "../components/DreamList";
-import { FC, useEffect } from "react";
+import { FC } from "react";
 import { MultiSelect, useMultiSelect } from "chakra-multiselect";
 import { useGlobal } from "../providers/global";
 interface FilterModalProps {

@@ -41,7 +41,7 @@ const Home: FC = () => {
                         md: "25%",
                     }}
                 >
-                    <DreamButton disabled={!!!user?.address} />
+                    <DreamButton disabled={!user?.address} />
                 </Container>
             </Box>
         </Box>

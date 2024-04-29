@@ -21,6 +21,7 @@ interface InteractionModalProps {
     type: string;
     colorScheme: string;
     proxyAddress: string;
+    minimumFundingAmount: string;
 }
 
 const descriptions: {
@@ -91,8 +92,11 @@ const InteractionModal: FC<InteractionModalProps> = ({
     type,
     colorScheme,
     proxyAddress,
+    minimumFundingAmount,
 }) => {
     const { user, constants } = useGlobal();
+    const [errorMsg, setErrorMsg] = useState<string>("");
+
     const [price, setPrice] = useState<{
         amount: string;
         currency: "ETH" | "GWEI" | "WEI";
@@ -104,32 +108,62 @@ const InteractionModal: FC<InteractionModalProps> = ({
     const [isValid, setIsValid] = useState(false);
 
     const validate = () => {
+        if (!user) {
+            return false;
+        }
+
         if (type === "refund" || type === "withdraw") {
             return true;
         }
 
         if (!price.amount.length) {
+            setErrorMsg("Amount is invalid");
             return false;
         }
         if (Number(price.amount) <= 0) {
+            setErrorMsg("Amount is invalid");
             return false;
         }
         if (!price.currency.length) {
+            setErrorMsg("Amount is invalid");
             return false;
         }
         if (!price.amount.match(regexPatterns[price.currency.toLowerCase()])) {
+            setErrorMsg("Amount is invalid");
             return false;
         }
         if (price.amount[0] === "0" && price.amount[1] !== ".") {
+            setErrorMsg("Amount is invalid");
             return false;
         }
+
+        const parsedAmount = ethers.parseUnits(
+            price.amount,
+            price.currency === "ETH" ? "ether" : price.currency.toLowerCase()
+        );
+
+        if (BigInt(minimumFundingAmount) > BigInt(parsedAmount)) {
+            setErrorMsg("Amount is lower than the minimum funding amount");
+            return false;
+        }
+
+        if (
+            type === "boost" &&
+            BigInt(parsedAmount) >
+                ethers.parseEther(user?.DMK.toString() || "0")
+        ) {
+            setErrorMsg("You don't have enough DMK to perform this operation");
+            return false;
+        }
+
+        setErrorMsg("");
         return true;
     };
 
     useEffect(() => {
         const res = validate();
         setIsValid(res);
-    }, [price]);
+    }, [price, type]);
 
     const handleOperation = async () => {
         if (!user || !isValid) {
@@ -140,13 +174,6 @@ const InteractionModal: FC<InteractionModalProps> = ({
             price.currency === "ETH" ? "ether" : price.currency.toLowerCase();
         const parsedAmount = ethers.parseUnits(price.amount, unit);
 
-        if (
-            type === "boost" &&
-            BigInt(parsedAmount) > ethers.parseEther(user.DMK.toString())
-        ) {
-            toast.error("You don't have enough DMK");
-            return;
-        }
         let res;
         switch (type) {
             case "fund":
@@ -166,7 +193,12 @@ const InteractionModal: FC<InteractionModalProps> = ({
             return;
         }
         toast.success(
-            "Transaction sent successfully, waiting for confirmation"
+            `Transaction sent successfully, modifications will be visible soon...\n
+            tx: ${res.data}`,
+            {
+                duration: 50000,
+                icon: "⛓️",
+            }
         );
         onClose();
     };
@@ -266,6 +298,15 @@ const InteractionModal: FC<InteractionModalProps> = ({
                             </Box>
                         </>
                     )}
+                    <Text
+                        textAlign={"center"}
+                        mb={2}
+                        fontSize={"sm"}
+                        mt={10}
+                        color={"red"}
+                    >
+                        {errorMsg}
+                    </Text>
                     <Button
                         colorScheme={colorScheme}
                         width={"100%"}

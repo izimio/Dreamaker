@@ -1,7 +1,5 @@
 import {
     Box,
-    Button,
-    Flex,
     Input,
     Modal,
     ModalBody,
@@ -9,15 +7,13 @@ import {
     ModalContent,
     ModalHeader,
     ModalOverlay,
-    Radio,
-    RadioGroup,
     Stack,
     Text,
     Textarea,
 } from "@chakra-ui/react";
 import { FC, useEffect, useState } from "react";
 import { MultiSelect, useMultiSelect } from "chakra-multiselect";
-import { IDream, useGlobal } from "../providers/global";
+import { useGlobal } from "../providers/global";
 import { updateDream } from "../api/dream";
 import toast from "react-hot-toast";
 interface EditModalProps {

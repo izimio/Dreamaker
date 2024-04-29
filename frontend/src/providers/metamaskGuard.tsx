@@ -1,4 +1,4 @@
-import { Box, Center, Flex, Heading, Stack, Text } from "@chakra-ui/react";
+import { Box, Flex, Heading, Stack, Text } from "@chakra-ui/react";
 import { FC } from "react";
 
 import metamaskLogo from "/metamaskLogo.png";

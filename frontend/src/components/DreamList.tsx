@@ -2,7 +2,7 @@ import { FC, useState } from "react";
 import DreamCard from "./DreamCard";
 import { Box, Center, Flex, Heading, Input, Text } from "@chakra-ui/react";
 import { SettingsIcon } from "@chakra-ui/icons";
-import FilterModal from "../Modals/FilterModal";
+import FilterModal from "../modals/FilterModal";
 import { useGlobal } from "../providers/global";
 
 interface DreamListProps {

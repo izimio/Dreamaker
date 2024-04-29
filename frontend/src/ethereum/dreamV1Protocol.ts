@@ -3,7 +3,6 @@ import DreamArtifact from "../abis/DreamV1.sol/DreamV1.json";
 import DreamakerArtifact from "../abis/Dreamaker.sol/Dreamaker.json";
 import ProxyFactoryArtifact from "../abis/proxies/DreamProxyFactory.sol/DreamProxyFactory.json";
 import { DREAMAKER_ADDRESS } from "../utils/env.config";
-import { useGlobal } from "../providers/global";
 import { metamaskSendTransaction } from "./metamask";
 
 const ABIs = {
@@ -84,6 +83,29 @@ export const withdraw = async (fromAddress: string, proxyAddress: string) => {
             fromAddress,
             toAddress: proxyAddress,
             data: DREAM_INTERFACE.encodeFunctionData("withdraw"),
+            value: "0x0",
+        });
+        return res;
+    } catch (error) {
+        return {
+            ok: false,
+            message: "Transaction failed.",
+        };
+    }
+};
+
+export const changeMinFundingAmount = async (
+    fromAddress: string,
+    proxyAddress: string,
+    newAmount: bigint
+) => {
+    try {
+        const res = await metamaskSendTransaction({
+            fromAddress,
+            toAddress: proxyAddress,
+            data: DREAM_INTERFACE.encodeFunctionData("setMinFundingAmount", [
+                newAmount,
+            ]),
             value: "0x0",
         });
         return res;

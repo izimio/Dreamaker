@@ -1,6 +1,5 @@
 import { FC } from "react";
 import {
-    Box,
     Center,
     Tooltip,
     Table,
@@ -16,14 +15,16 @@ interface FundersListProps {
     funders: {
         amount: string;
         address: string;
+        refund: boolean;
     }[];
+    status: string;
 }
 
-const FundersList: FC<FundersListProps> = ({ funders }) => {
+const FundersList: FC<FundersListProps> = ({ funders, status }) => {
     const listFunders = funders.sort((a, b) => {
         return Number(b.amount) - Number(a.amount);
     });
-
+    console.log(funders);
     if (listFunders.length === 0) {
         return (
             <Center
@@ -60,11 +61,17 @@ const FundersList: FC<FundersListProps> = ({ funders }) => {
                     <Tr>
                         <Th>Funder</Th>
                         <Th>Amount</Th>
+                        {status === "expired" && <Th>Refunded</Th>}
                     </Tr>
                 </Thead>
                 <Tbody>
                     {listFunders.map((funder, index) => (
-                        <Tr key={index}>
+                        <Tr
+                            key={index}
+                            _hover={{
+                                background: "gray.100",
+                            }}
+                        >
                             <Tooltip
                                 label={funder.address}
                                 aria-label="A tooltip"
@@ -83,6 +90,9 @@ const FundersList: FC<FundersListProps> = ({ funders }) => {
                             >
                                 <Th>{ethers.formatEther(funder.amount)} ETH</Th>
                             </Tooltip>
+                            {status === "expired" && (
+                                <Th>{funder.refund ? "Done" : "Not yet"}</Th>
+                            )}
                         </Tr>
                     ))}
                 </Tbody>

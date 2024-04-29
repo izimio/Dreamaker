@@ -1,4 +1,4 @@
-import { Box, Container, Divider, Stack } from "@chakra-ui/react";
+import { Box, Container, Stack } from "@chakra-ui/react";
 import { FC } from "react";
 import DreamList from "../components/DreamList";
 import { useGlobal } from "../providers/global";

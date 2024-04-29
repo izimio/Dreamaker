@@ -21,11 +21,12 @@ import RocketLaunchIcon from "@mui/icons-material/RocketLaunch";
 
 import { IDream, useGlobal } from "../../providers/global";
 import { SettingsIcon } from "@chakra-ui/icons";
-import EditDreamModal from "../../Modals/EditDreamModal";
+import EditDreamModal from "../../modals/EditDreamModal";
 import StatusBox from "../StatusBox";
 import LikeButton from "../LikeButton";
 import { likeDream } from "../../api/dream";
 import toast from "react-hot-toast";
+import EditMinFundingAmountModal from "../../modals/EditMinFundingAmountModal";
 
 interface InfosAsideProps {
     dream: IDream;
@@ -65,6 +66,11 @@ const InfosAside: FC<InfosAsideProps> = ({ dream }) => {
     const { user, dreams, setDreams } = useGlobal();
     const [isModalOpen, setIsModalOpen] = useState(false);
 
+    const [
+        isEditMinFundingAmountModalOpen,
+        setIsEditMinFundingAmountModalOpen,
+    ] = useState(false);
+
     const [remainingBoostTime, setRemainingBoostTime] = useState<number | null>(
         null
     );
@@ -73,7 +79,7 @@ const InfosAside: FC<InfosAsideProps> = ({ dream }) => {
     >(null);
 
     useEffect(() => {
-        if (isModalOpen) return;
+        if (isModalOpen || isEditMinFundingAmountModalOpen) return;
         const updateRemainingTimes = () => {
             const boostedUntil = new Date(dream.boostedUntil);
             const deadlineTime = new Date(dream.deadlineTime * 1000);
@@ -96,7 +102,12 @@ const InfosAside: FC<InfosAsideProps> = ({ dream }) => {
         const interval = setInterval(updateRemainingTimes, 1000);
 
         return () => clearInterval(interval);
-    }, [dream.boostedUntil, dream.deadlineTime, isModalOpen]);
+    }, [
+        dream.boostedUntil,
+        dream.deadlineTime,
+        isModalOpen,
+        isEditMinFundingAmountModalOpen,
+    ]);
 
     useEffect(() => {
         if (!isModalOpen) return;
@@ -110,7 +121,6 @@ const InfosAside: FC<InfosAsideProps> = ({ dream }) => {
     }, [isModalOpen]);
     const handleLike = async () => {
         const id = dream._id;
-        let unlike = false;
 
         const res = await likeDream(id);
 
@@ -145,6 +155,12 @@ const InfosAside: FC<InfosAsideProps> = ({ dream }) => {
                     description: dream.description,
                     tags: dream.tags,
                 }}
+            />
+            <EditMinFundingAmountModal
+                isOpen={isEditMinFundingAmountModalOpen}
+                onClose={() => setIsEditMinFundingAmountModalOpen(false)}
+                minimumFundingAmount={dream.minFundingAmount}
+                proxyAddress={dream.proxyAddress}
             />
             <Stack
                 position={"relative"}
@@ -360,34 +376,54 @@ const InfosAside: FC<InfosAsideProps> = ({ dream }) => {
                                 </Tooltip>
                             </ListItem>
                             <ListItem display={"flex"} alignItems={"center"}>
-                                <ListIcon
-                                    as={CloseFullscreenIcon}
-                                    color={"darkcyan"}
-                                />
-                                <Tooltip
-                                    placement="right"
-                                    label={
-                                        ethers.formatUnits(
-                                            dream.minFundingAmount,
-                                            "wei"
-                                        ) + " WEI"
-                                    }
-                                    aria-label="A tooltip"
-                                >
-                                    <span style={{}}>
-                                        Minimal funding amount:{" "}
-                                        <span
-                                            style={{
-                                                color: "darkcyan",
-                                            }}
-                                        >
-                                            {ethers.formatEther(
-                                                dream.minFundingAmount
-                                            )}{" "}
-                                            ETH
+                                <>
+                                    <ListIcon
+                                        as={CloseFullscreenIcon}
+                                        color={"darkcyan"}
+                                    />
+                                    <Tooltip
+                                        placement="right"
+                                        label={
+                                            ethers.formatUnits(
+                                                dream.minFundingAmount,
+                                                "wei"
+                                            ) + " WEI"
+                                        }
+                                        aria-label="A tooltip"
+                                    >
+                                        <span style={{}}>
+                                            Minimal funding amount:{" "}
+                                            <span
+                                                style={{
+                                                    color: "darkcyan",
+                                                }}
+                                            >
+                                                {ethers.formatEther(
+                                                    dream.minFundingAmount
+                                                )}{" "}
+                                                ETH
+                                            </span>
                                         </span>
-                                    </span>
-                                </Tooltip>
+                                    </Tooltip>
+                                    {user?.address == dream.owner && (
+                                        <SettingsIcon
+                                            w="15px"
+                                            h="15px"
+                                            color={"federalBlue"}
+                                            cursor={"pointer"}
+                                            ml={4}
+                                            _hover={{
+                                                animation:
+                                                    "spin 2s linear infinite",
+                                            }}
+                                            onClick={() => {
+                                                setIsEditMinFundingAmountModalOpen(
+                                                    true
+                                                );
+                                            }}
+                                        />
+                                    )}
+                                </>
                             </ListItem>
 
                             <ListItem display={"flex"} alignItems={"center"}>

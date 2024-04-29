@@ -1,5 +1,3 @@
-import React from "react";
-
 const cryptoLogo = (width = "120", height = "160") => {
     return (
         <svg

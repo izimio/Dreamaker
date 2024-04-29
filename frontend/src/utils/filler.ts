@@ -13,7 +13,9 @@ const defaultDream = {
     proxyAddress: "0x791AFE27366c8AD8F04481ebBD72b37948Cc52d2",
     minFundingAmount: "1",
     funders: [],
-    boosted: false,
+    boostedUntil: "2021-10-10T10:10:10.000Z",
+    likers: [],
+    fundingGraph: [],
 };
 export const defaultBoostedDream: IDream = {
     assets: [
