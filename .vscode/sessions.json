@@ -57,7 +57,7 @@
           "autoExecuteCommands": true,
           "cwd": "contracts",
           "commands": [
-            "sleep 1",
+            "sleep 2",
             "npm run tdeploy"
           ]
         }
