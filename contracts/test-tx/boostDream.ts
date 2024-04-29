@@ -15,7 +15,5 @@ task("boost", "Boost dream")
         const res = await dreamaker.boost(PROXXY_ADDRESS, amount);
         const log = await res.wait();
 
-        const eventName = dreamaker.interface.parseLog(log.logs[1]);
-        console.log(eventName)
         console.log("Boosted dreamaker");
     });

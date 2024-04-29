@@ -16,7 +16,7 @@
     "tall": "npm run tcreate && npm run tfund && npm run tfees",
     "clean": "rm -rf artifacts/ cache/ coverage/ reports/ && hardhat clean",
     "coverage": "hardhat coverage",
-    "compile": "hardhat compile && rm -rf ../backend/src/abis && cp -r artifacts/contracts ../backend/src/abis",
+    "compile": "hardhat compile && rm -rf ../backend/src/abis ../frontend/src/abis ; cp -r artifacts/contracts ../backend/src/abis  ; cp -r artifacts/contracts ../frontend/src/abis",
     "lint": "solhint contracts/*.sol && eslint . --fix",
     "lint:fix": "solhint contracts/*.sol --fix && eslint .",
     "format": "prettier --plugin=./node_modules/prettier-plugin-solidity/src/index.js --write \"{scripts,test,contracts}/**/*.{ts,sol}\""

@@ -9,7 +9,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const {ETHERSCAN_API_KEY, PRIVATE_KEY, SEPOLIA_RPC} = process.env;
+const { ETHERSCAN_API_KEY, PRIVATE_KEY, SEPOLIA_RPC } = process.env;
 
 if (!ETHERSCAN_API_KEY) {
   throw new Error("ETHERSCAN_API_KEY is missing");
@@ -21,8 +21,7 @@ if (!SEPOLIA_RPC) {
 
 const config: HardhatUserConfig = {
   solidity: "0.8.24",
-  
-  
+
   networks: {
     sepolia: {
       url: SEPOLIA_RPC,
@@ -30,15 +29,19 @@ const config: HardhatUserConfig = {
     },
     hardhat: {
       gasPrice: 0,
-      initialBaseFeePerGas: 0
+      initialBaseFeePerGas: 0,
+      mining: {
+        auto: true,
+        interval: 3 * 60 * 1000,
+      },
     },
     localhost: {
       gasPrice: 0,
       initialBaseFeePerGas: 0,
       mining: {
         auto: true,
-        interval: 3 * 60 * 1000
-      }
+        interval: 3 * 60 * 1000,
+      },
     },
   },
   etherscan: {
