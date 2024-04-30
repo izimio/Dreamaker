@@ -42,14 +42,11 @@ export const getMe = async (me: string) => {
     const numberOfDMK = await getMeNumberOfDMK(me);
 
     const userInfos = await UserModel.findOne({ address: me }).lean();
-    if (!userInfos) {
-        throw new ObjectNotFoundError("User not found");
-    }
 
     return {
         isAdmin,
         numberOfDMK,
-        actionHistory: userInfos.actionHistory || [],
-        creation: userInfos.createdAt,
+        actionHistory: userInfos?.actionHistory || [],
+        creation: userInfos?.createdAt || new Date(),
     };
 };

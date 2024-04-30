@@ -76,19 +76,13 @@ export const verifyEcRecoverChallenge = async (
         throw new AuthError("Invalid signature");
     }
 
-    await UserModel.findOneAndUpdate(
-        { address },
-        {
-            $set: {
-                address,
-                createdAt: new Date(),
-                boostHistory: [],
-                creationHistory: [],
-                fundHistory: [],
-            },
-        },
-        { upsert: true }
-    );
+    const user = await UserModel.findOne({ address: address.toLowerCase() });
+    if (!user) {
+        await UserModel.create({
+            address: address.toLowerCase(),
+            actionHistory: [],
+        });
+    }
 
     await EcRecoverChallengeModel.deleteOne({
         address,

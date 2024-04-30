@@ -30,7 +30,7 @@ const userSchema = new mongoose.Schema<IUser>({
         {
             dreamId: { type: String, default: null },
             action: { type: String, enum: Object.values(UserAction) },
-            amount: { type: String, required: true },
+            amount: { type: String, default: "None" },
             date: { type: Date, default: Date.now },
         },
     ],
