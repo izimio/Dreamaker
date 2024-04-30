@@ -15,6 +15,7 @@ const logErr = logError.extend("ws");
 
 class EventWatcher {
     proxyEvents: IEvent[];
+    isReady: boolean = false;
 
     constructor() {
         this.proxyEvents = Object.values(events).filter(
@@ -89,7 +90,12 @@ class EventWatcher {
         }
     }
 
-    async watch() {
+    async watch(errors: number = 0) {
+        if (this.isReady) {
+            log("Watcher already started");
+            return;
+        }
+
         for (const event of Object.values(events)) {
             if (event.contract) {
                 await this.addWatcher(
@@ -105,6 +111,7 @@ class EventWatcher {
             await this.manageProxyWatcher(proxy.proxyAddress, true);
         }
         log("🚀 Watchers started");
+        this.isReady = true;
     }
 
     async stop() {
@@ -200,7 +207,6 @@ class EventWatcher {
         if (funderIndex !== -1) {
             const alreadyFunded = BigInt(dream.funders[funderIndex].amount);
             const res = BigInt(stringifiedAmount) + alreadyFunded;
-            console.log(res.toString());
             dream.funders[funderIndex].amount = res.toString();
         } else {
             dream.funders.push({

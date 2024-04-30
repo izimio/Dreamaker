@@ -6,3 +6,6 @@ export const DREAMS = "/dreams";
 export const DREAM = "/dream/:id";
 export const PROFILE = "/profile";
 export const CREATE_DREAM = "/create-dream";
+
+// ===== ADMIN ROUTES ===== //
+export const ADMIN = "/admin";

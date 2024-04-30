@@ -20,6 +20,7 @@ import {
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import CottageIcon from "@mui/icons-material/Cottage";
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 
 import { useEthereum } from "../providers/ethereum";
 import { useGlobal } from "../providers/global";
@@ -28,7 +29,7 @@ import { useState } from "react";
 
 const AddressCadrant = (props: { address: string; DMKBalance: number }) => {
     const { chainId } = useEthereum();
-    const { logout } = useGlobal();
+    const { logout, user } = useGlobal();
     const location = useLocation();
 
     const [isOpened, setIsOpened] = useState(false);
@@ -112,6 +113,20 @@ const AddressCadrant = (props: { address: string; DMKBalance: number }) => {
                             <Text>Profile</Text>
                         </MenuItem>
                     </Link>
+                    {user?.isAdmin && (
+                        <Link to={ROUTES.ADMIN}>
+                            <MenuItem
+                                icon={
+                                    <Icon
+                                        as={AdminPanelSettingsIcon}
+                                        color={chooseLabelColor(ROUTES.ADMIN)}
+                                    />
+                                }
+                            >
+                                <Text>Admin Panel</Text>
+                            </MenuItem>
+                        </Link>
+                    )}
                 </MenuGroup>
                 <MenuDivider />
                 <MenuGroup title="Account">
@@ -126,7 +141,7 @@ const AddressCadrant = (props: { address: string; DMKBalance: number }) => {
                         icon={<LockIcon color={"red"} />}
                         onClick={logout}
                     >
-                        Loggout
+                        Logout
                     </MenuItem>
                 </MenuGroup>
             </MenuList>

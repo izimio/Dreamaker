@@ -24,15 +24,12 @@ services:
       - backend/.env
     environment:
       - MONGO_HOST=database
-      - BLOCKCHAIN_RPC=http://hardhat:8545
     ports:
       - "8080:8080"
     networks:
       - database-network
-      - hardhat-network
     depends_on:
       - database
-      - hardhat
 
   database:
     image: mongo:latest
@@ -48,26 +45,10 @@ services:
     command: ["--auth"]
     networks:
       - database-network
-    depends_on:
-      - hardhat
 
-
-  hardhat:
-    image: hardhat_image
-    build:
-      context: ./contracts
-      dockerfile: Dockerfile
-    env_file:
-      - contracts/.env
-    ports:
-      - "8545:8545"
-    networks:
-      - hardhat-network
 
 networks:
   database-network:
-    driver: bridge
-  hardhat-network:
     driver: bridge
   
 volumes:

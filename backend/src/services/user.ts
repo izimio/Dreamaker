@@ -38,7 +38,9 @@ export const getMyFunds = async (me: string) => {
 };
 
 export const getMe = async (me: string) => {
-    const isAdmin = me === new ethers.Wallet(DEPLOYER_PRIVATE_KEY).address;
+    const isAdmin =
+        me.toLowerCase() ===
+        new ethers.Wallet(DEPLOYER_PRIVATE_KEY).address.toLowerCase();
     const numberOfDMK = await getMeNumberOfDMK(me);
 
     const userInfos = await UserModel.findOne({ address: me }).lean();

@@ -30,6 +30,7 @@ import {
     MONGO_PASSWORD,
     IS_TEST_MODE,
 } from "./utils/config";
+import { waitForProvider } from "./utils/EProviders";
 
 const log = logger.extend("app");
 const logErr = logError.extend("app");
@@ -67,9 +68,13 @@ function useRoute(app: Koa, router: Router) {
     app.use(router.allowedMethods());
 }
 
-mongoose.set("strictQuery", false);
+const setupCrawlers = async () => {
+    await waitForProvider();
+    Watcher.watch();
+    SyncronInstance.start();
+};
 
-console.log(`mongodb://${MONGO_HOST}:${MONGO_PORT}/${MONGO_INITDB_DATABASE}`);
+mongoose.set("strictQuery", false);
 mongoose
     .connect(`mongodb://${MONGO_HOST}:${MONGO_PORT}/${MONGO_INITDB_DATABASE}`, {
         autoCreate: true,
@@ -83,8 +88,7 @@ mongoose
             log("🧪 Test mode enabled");
             return;
         }
-        Watcher.watch();
-        SyncronInstance.start();
+        setupCrawlers();
     })
     .catch((err) => {
         logErr("MongoDB Connection error, retrying...\n" + err);

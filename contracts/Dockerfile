@@ -10,4 +10,6 @@ COPY . .
 
 EXPOSE 8545
 
-CMD ["npx", "hardhat", "node"]
+RUN chmod +x ./entrypoint.sh
+
+CMD ["./entrypoint.sh"] 

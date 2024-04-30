@@ -2,7 +2,7 @@ FROM node:18 as builder
 
 WORKDIR /app
 COPY . .
-RUN npm i
+RUN npm ci
 RUN npm run build
 
 FROM node:18 as runner

@@ -39,6 +39,7 @@ export type IDream = {
 type IUser = {
     address: string;
     DMK: number;
+    isAdmin: boolean;
     actionHistory: {
         dreamId: string;
         action: string;
@@ -197,10 +198,12 @@ export const GlobalProvider: FC<Props> = ({ children }) => {
             return;
         }
         const data = response.data.data;
+        console.log(data);
         setUser({
             address: data.address,
             DMK: data.numberOfDMK,
             actionHistory: data.actionHistory,
+            isAdmin: data.isAdmin || false,
             creation: data.creation,
         });
     };

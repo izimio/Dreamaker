@@ -12,6 +12,7 @@ import Profile from "../pages/Profile";
 import CreateDream from "../pages/CreateDream";
 import Dream from "../pages/DreamEach";
 import toast from "react-hot-toast";
+import AdminPanel from "../pages/Admin";
 
 const ProtectedRoute = ({ children }: any) => {
     if (!getState("token")) {
@@ -58,6 +59,14 @@ const RoutesContainer: FC = () => {
                 element={
                     <ProtectedRoute>
                         <CreateDream />
+                    </ProtectedRoute>
+                }
+            />
+            <Route
+                path={ROUTES.ADMIN}
+                element={
+                    <ProtectedRoute>
+                        <AdminPanel />
                     </ProtectedRoute>
                 }
             />
