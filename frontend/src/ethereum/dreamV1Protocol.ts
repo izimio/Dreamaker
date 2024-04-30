@@ -13,7 +13,8 @@ const ABIs = {
 
 const DREAMAKER_INTERFACE = new ethers.Interface(ABIs.Dreamaker);
 const DREAM_INTERFACE = new ethers.Interface(ABIs.Dream);
-const PROXY_FACTORY_INTERFACE = new ethers.Interface(ABIs.ProxyFactory);
+
+// const PROXY_FACTORY_INTERFACE = new ethers.Interface(ABIs.ProxyFactory);
 
 export const boost = async (
     fromAddress: string,

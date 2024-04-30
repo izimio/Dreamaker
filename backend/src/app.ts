@@ -69,6 +69,7 @@ function useRoute(app: Koa, router: Router) {
 
 mongoose.set("strictQuery", false);
 
+console.log(`mongodb://${MONGO_HOST}:${MONGO_PORT}/${MONGO_INITDB_DATABASE}`);
 mongoose
     .connect(`mongodb://${MONGO_HOST}:${MONGO_PORT}/${MONGO_INITDB_DATABASE}`, {
         autoCreate: true,

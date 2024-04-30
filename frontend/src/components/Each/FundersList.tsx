@@ -75,6 +75,7 @@ const FundersList: FC<FundersListProps> = ({ funders, status }) => {
                             <Tooltip
                                 label={funder.address}
                                 aria-label="A tooltip"
+                                openDelay={500}
                             >
                                 <Th>
                                     {funder.address.substring(0, 10)}...
@@ -87,6 +88,7 @@ const FundersList: FC<FundersListProps> = ({ funders, status }) => {
                             <Tooltip
                                 label={funder.amount + " WEI"}
                                 aria-label="A tooltip"
+                                openDelay={500}
                             >
                                 <Th>{ethers.formatEther(funder.amount)} ETH</Th>
                             </Tooltip>

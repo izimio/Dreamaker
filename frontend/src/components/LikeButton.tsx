@@ -14,7 +14,7 @@ const LikeButton: FC<LikeButtonProps> = ({
     liked,
     callback,
 }: LikeButtonProps) => {
-    const ref = useRef(null);
+    const ref = useRef() as React.MutableRefObject<any>;
 
     const handleCallback = () => {
         if (!liked) {

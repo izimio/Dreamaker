@@ -38,7 +38,7 @@ const Home: FC = () => {
                 <Container
                     maxW={{
                         base: "container.sm",
-                        md: "25%",
+                        lg: "25%",
                     }}
                 >
                     <DreamButton disabled={!user?.address} />

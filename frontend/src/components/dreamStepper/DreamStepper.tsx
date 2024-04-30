@@ -28,6 +28,7 @@ import { useGlobal } from "../../providers/global";
 const DreamStepper: FC = () => {
     const navigate = useNavigate();
     const { setDreams, dreams } = useGlobal();
+    const { user } = useGlobal();
 
     const steps = [
         { title: "Make that dream come true", description: "Contact Info" },
@@ -103,6 +104,15 @@ const DreamStepper: FC = () => {
             setDreams(dreams);
 
             const id = res.data.dream._id;
+
+            // update user action history in cache
+            user?.actionHistory.push({
+                dreamId: id,
+                action: "CREATE",
+                amount: "None",
+                date: new Date().toISOString(),
+            });
+
             navigate(`/dream/${id}`);
         } catch (e) {
             console.error("Dream creation error: ", e);

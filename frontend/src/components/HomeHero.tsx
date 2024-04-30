@@ -97,12 +97,19 @@ const blobMaker = (
                             w="100%"
                             style={{
                                 width: "70%",
-                                textAlign: params.reverse ? "justify" : "start",
+                                textAlign: params.reverse
+                                    ? "justify"
+                                    : "justify",
                                 fontSize: "1.5em",
                             }}
                         >
                             <Highlight
-                                query={["Dreamaker", "blockchain", "DMK"]}
+                                query={[
+                                    "Dreamaker",
+                                    "blockchain",
+                                    "DMK",
+                                    "fair to everyone",
+                                ]}
                                 styles={{
                                     fontWeight: "bold",
                                     color: shadedColors.regular,
@@ -125,26 +132,30 @@ const HomeHero: FC = () => {
             d: "M39.3,-45.8C54.7,-42.8,73.8,-36.5,76.6,-25.4C79.4,-14.4,66,1.3,60.1,19.6C54.3,37.9,56,58.7,47.3,65.4C38.5,72.2,19.3,64.8,2.4,61.6C-14.5,58.3,-29.1,59.2,-41.8,53.7C-54.6,48.3,-65.6,36.6,-73.9,21.5C-82.2,6.5,-87.7,-11.9,-83.3,-27.5C-78.8,-43,-64.3,-55.8,-48.7,-58.8C-33.2,-61.8,-16.6,-55,-2.4,-51.8C11.9,-48.5,23.8,-48.8,39.3,-45.8Z",
             component: BeanBoyUpLeft,
             text: [
-                "Welcome to Dreamaker, where dreams become reality through decentralized crowdfunding.",
+                "Welcome to Dreamaker, where Dreams become reality through decentralized crowdfunding.",
                 "Empower your aspirations with the support of our vibrant community, all powered by the blockchain as the ultimate arbiter of trust.",
-                "Whether you're a seasoned visionary or a first-time dreamer, you have the ability to bring your ideas to life without needing any coding expertise.",
-                "Join us and embark on the journey to manifest your dreams today.",
+                "Whether you're a seasoned visionary or a first-time Dreamer, you have the ability to bring your ideas to life without needing any coding expertise.",
+                "Join us and embark on the journey to manifest your Dreams today.",
             ],
         },
         two: {
             d: "M50,-65.4C64.8,-58,76.8,-43.5,80.2,-27.4C83.6,-11.4,78.2,6.2,71,21.3C63.7,36.5,54.4,49.3,42.2,60C30.1,70.7,15,79.3,0.6,78.5C-13.9,77.7,-27.8,67.6,-42.9,57.8C-58,48.1,-74.2,38.7,-82.3,24.3C-90.3,9.8,-90.2,-9.7,-84.3,-27.3C-78.4,-44.8,-66.8,-60.4,-51.8,-67.7C-36.8,-75.1,-18.4,-74.2,-0.4,-73.7C17.6,-73.1,35.2,-72.9,50,-65.4Z",
             component: data,
             text: [
-                "Dreamaker's token is a decentralized cryptocurrency that allows you to buy and sell dreams.",
-                "DMK tokens are the currency of the Dreamaker protocol.",
+                "Dreamaker's protocol is fully open-source and transparent, allowing anyone to contribute to its development.",
+                "Dreamaker's financial model is designed to reward Dreamers and contributors fairly, ensuring that the community is the primary beneficiary of the protocol.",
+                "You can check the math behind the fees applied to the Dream inside the Smart Contract.",
+                "Dreamaker takes flat fees for every achieved Dream and allows every funder to be refunded if the project did not succeed, ensuring that the protocol is sustainable and fair to everyone.",
+                "Fees are calculated based on the final raised amount with a 2% fee based on the targeted amount and 1% of the extra raised amount.",
             ],
         },
         three: {
             d: "M48.1,-67.1C60.8,-56.9,68.6,-40.9,72.5,-24.5C76.4,-8.2,76.5,8.3,70.6,21.9C64.7,35.4,52.8,45.9,40.1,53.8C27.3,61.8,13.6,67.2,0.1,67C-13.4,66.8,-26.7,61,-38.3,52.7C-49.8,44.3,-59.5,33.4,-64.7,20.4C-69.9,7.3,-70.4,-7.9,-65.2,-20.3C-59.9,-32.7,-48.8,-42.3,-37,-52.8C-25.1,-63.2,-12.6,-74.6,2.6,-78.1C17.7,-81.6,35.3,-77.3,48.1,-67.1Z",
             component: token,
             text: [
-                "Using the Dreamaker protocol, you leverage the power of the blockchain to empower your and your community's dreams.",
-                "Dremaker's decentralized protocol makes your earn DMK tokens on every dreams achieved.",
+                "Dreamaker's token is a decentralized cryptocurrency that powers the Dreamaker protocol.",
+                "With DMKs you can leverage the exposition of your Dreams to the community and earn rewards for every Dream achieved.",
+                "DMK tokens are the currency of the Dreamaker protocol.",
             ],
         },
     };

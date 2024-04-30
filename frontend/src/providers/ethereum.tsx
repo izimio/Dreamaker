@@ -87,7 +87,7 @@ export const EthereumProvider: FC<Props> = ({ children }) => {
             setChainId(pchainId);
         };
 
-        const handleAccountsChanged = (accounts: any) => {
+        const handleAccountsChanged = async (accounts: any) => {
             if (!accounts.length) {
                 toast.error("No account found");
             }
@@ -99,18 +99,18 @@ export const EthereumProvider: FC<Props> = ({ children }) => {
                 : switchChallengeModal;
             rightModal(true);
             try {
-                connectWallet().then((e) => {
-                    if (!e.ok || !e.data) {
-                        toast.error(e.message);
-                        return;
-                    }
-                    setState("token", e.data.token);
-                    setToken(e.data.token);
-                    rightModal(false);
-                    toast.success(
-                        user?.address ? "Account changed" : "Wallet connected"
-                    );
-                });
+                const res = await connectWallet();
+
+                if (!res.ok || !res.data) {
+                    toast.error(res.message);
+                    return;
+                }
+                setState("token", res.data.token);
+                setToken(res.data.token);
+                rightModal(false);
+                toast.success(
+                    user?.address ? "Account changed" : "Wallet connected"
+                );
             } catch (error) {
                 toast.error("Transaction rejected");
             }

@@ -50,11 +50,6 @@ const DreamCard: FC<{ dream: IDream }> = ({ dream }) => {
     const isFiller = FILLER_IDS.find((id) => id === dream._id) !== undefined;
     const isNew =
         new Date(dream.createdAt).toDateString() === new Date().toDateString();
-
-    const tags = dream.tags;
-    if (isNew && dream.tags.indexOf("NEW") === -1) {
-        tags.unshift("NEW");
-    }
     return (
         <Center
             py={6}
@@ -69,7 +64,10 @@ const DreamCard: FC<{ dream: IDream }> = ({ dream }) => {
             <Box
                 role={"group"}
                 p={6}
-                maxW={"380px"}
+                maxW={{
+                    base: "100%",
+                    md: "340px",
+                }}
                 w={"full"}
                 bg={useColorModeValue("white", "gray.800")}
                 boxShadow={"2xl"}
@@ -110,7 +108,10 @@ const DreamCard: FC<{ dream: IDream }> = ({ dream }) => {
                     />
                 </Box>
                 <Stack pt={10} align={"center"}>
-                    <Tooltip label={tags.join(" / ")} aria-label="A tooltip">
+                    <Tooltip
+                        label={dream.tags.join(" / ")}
+                        aria-label="A tooltip"
+                    >
                         <Flex
                             align={"center"}
                             gap={2}
@@ -118,7 +119,15 @@ const DreamCard: FC<{ dream: IDream }> = ({ dream }) => {
                             m={1}
                             wrap={"revert"}
                         >
-                            {tags.map((tag: string, idx: number) => {
+                            {isNew ? (
+                                <Badge
+                                    colorScheme={refColorScheme}
+                                    variant={"solid"}
+                                >
+                                    NEW
+                                </Badge>
+                            ) : null}
+                            {dream.tags.map((tag: string, idx: number) => {
                                 if (idx === 3) {
                                     tag = "...";
                                 }

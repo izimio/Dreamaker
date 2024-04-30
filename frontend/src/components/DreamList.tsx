@@ -115,7 +115,6 @@ const DreamList: FC<DreamListProps> = ({ dreams }) => {
                 </Text>
                 <Box
                     maxH="1000px"
-                    minH={"1000px"}
                     overflowY="auto"
                     css={{
                         "&::-webkit-scrollbar": {
@@ -134,7 +133,7 @@ const DreamList: FC<DreamListProps> = ({ dreams }) => {
                     {filteredDreams.length > 0 ? (
                         <Flex
                             flexWrap="wrap"
-                            justifyContent={"flex-start"}
+                            justifyContent={"center"}
                             gap={"2em"}
                             mt={10}
                         >

@@ -22,6 +22,7 @@ interface InteractionModalProps {
     colorScheme: string;
     proxyAddress: string;
     minimumFundingAmount: string;
+    dreamId: string;
 }
 
 const descriptions: {
@@ -93,6 +94,7 @@ const InteractionModal: FC<InteractionModalProps> = ({
     colorScheme,
     proxyAddress,
     minimumFundingAmount,
+    dreamId,
 }) => {
     const { user, constants } = useGlobal();
     const [errorMsg, setErrorMsg] = useState<string>("");
@@ -192,13 +194,14 @@ const InteractionModal: FC<InteractionModalProps> = ({
             toast.error(res!.message || "An error occurred");
             return;
         }
+        user.actionHistory.push({
+            dreamId,
+            action: type.toUpperCase(),
+            amount: parsedAmount.toString(),
+            date: new Date().toISOString(),
+        });
         toast.success(
-            `Transaction sent successfully, modifications will be visible soon...\n
-            tx: ${res.data}`,
-            {
-                duration: 50000,
-                icon: "⛓️",
-            }
+            `Transaction sent successfully, waiting for confirmation...`
         );
         onClose();
     };

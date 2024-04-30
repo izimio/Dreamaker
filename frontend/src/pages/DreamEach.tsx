@@ -16,6 +16,7 @@ import AssetsBox from "../components/Each/AssetsBox";
 import Graph from "../components/Each/Graph";
 import FundersList from "../components/Each/FundersList";
 import InteractionButtons from "../components/Each/InteractionButtons";
+import toast from "react-hot-toast";
 
 const StatusToColord: {
     [key: string]: string;
@@ -36,6 +37,10 @@ const Dream: FC = () => {
     useEffect(() => {
         if (!id || !refDream) {
             navigate(DREAMS);
+            toast.dismiss("dream-not-found");
+            toast.error("Oops! Dream not found.", {
+                id: "dream-not-found",
+            });
             return;
         }
         const percent =
@@ -44,6 +49,9 @@ const Dream: FC = () => {
         setPercentFunded(Number(percent));
     }, [id, refDream, navigate]);
 
+    if (!refDream) {
+        return <Text>Loading...</Text>;
+    }
     return (
         <Box w={"100%"} p={4}>
             <Container maxW={"container.3xl"} h={"100%"}>

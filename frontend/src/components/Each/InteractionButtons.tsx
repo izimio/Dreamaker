@@ -107,6 +107,7 @@ const InteractionButtons: FC<InteractionButtonsProps> = ({ dream }) => {
                 colorScheme={type.colorScheme}
                 proxyAddress={dream.proxyAddress}
                 minimumFundingAmount={dream.minFundingAmount}
+                dreamId={dream._id}
             />
             <Box
                 height={"100%"}

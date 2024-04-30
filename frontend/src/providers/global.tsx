@@ -134,8 +134,9 @@ export const GlobalProvider: FC<Props> = ({ children }) => {
                 new Date(dr.boostedUntil).getTime() > Date.now() &&
                 dr.status === "active"
         );
-        const myDreams = dreams.filter((dr) => dr.owner === user?.address);
-
+        const myDreams = dreams.filter(
+            (dr) => dr.owner.toLowerCase() === user?.address.toLowerCase()
+        );
         setDreams({
             hotDreams,
             boostedDreams,
@@ -187,7 +188,10 @@ export const GlobalProvider: FC<Props> = ({ children }) => {
         try {
             response = await axiosInstance.get("/user/me");
         } catch (error: any) {
-            if (error.response.status === 401) {
+            if (
+                error.response.status === 401 ||
+                error.response.status === 404
+            ) {
                 logout();
             }
             return;
