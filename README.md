@@ -2,7 +2,6 @@
 
 # 🚀 Dreamaker - Fund, Boost, Earn:
 
-
 > 🌟 **Welcome to Dreamaker: Empowering Your Dreams with Blockchain Technology!** 🌟
 
 Dreamaker is not just another crowdfunding platform; it's a revolutionary Web3-friendly service designed to ignite your projects with the power of decentralization. 🚀
@@ -52,6 +51,10 @@ Upon a project's successful completion, 5% of the funding amount is automaticall
 ### 🚀 Empowerment Through DMK:
 
 DMK isn't just a token; it's a symbol of empowerment and collaboration. By holding DMK, you become an integral part of the Dreamaker community, driving positive change and propelling dreams forward.
+
+## 🛠️ Project Diagram
+
+![Project Diagram](https://github.com/izimio/Dreamaker/assets/65503390/663dcad3-3d46-452c-b685-d59f11d63360)
 
 ## Ready to Boost Your Dreams?
 
