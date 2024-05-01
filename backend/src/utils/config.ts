@@ -26,6 +26,11 @@ if (!BASE_MINING_DREAMAKER_PERCENTAGE) {
     throw new Error("Missing BASE_MINING_DREAMAKER_PERCENTAGE");
 }
 
+export const UPLOAD_PATH = process.env.UPLOAD_PATH as string;
+if (!UPLOAD_PATH) {
+    throw new Error("Missing UPLOAD_PATH");
+}
+
 export const IS_TEST_MODE =
     process.env.IS_TEST_MODE && process.env.IS_TEST_MODE === "true"
         ? true

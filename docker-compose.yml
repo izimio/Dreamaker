@@ -25,6 +25,7 @@ services:
     environment:
       - MONGO_HOST=database
       - BLOCKCHAIN_RPC=http://hardhat:8545
+      - UPLOAD_PATH=uploads
     ports:
       - "8080:8080"
     networks:

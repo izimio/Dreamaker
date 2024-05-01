@@ -17,7 +17,6 @@ const AdminPanel: FC = () => {
         }
     }, [user, navigate]);
 
-
     if (!user) {
         return (
             <Box

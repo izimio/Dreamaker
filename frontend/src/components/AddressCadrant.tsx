@@ -20,7 +20,7 @@ import {
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import CottageIcon from "@mui/icons-material/Cottage";
-import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 
 import { useEthereum } from "../providers/ethereum";
 import { useGlobal } from "../providers/global";

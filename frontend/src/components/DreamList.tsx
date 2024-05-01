@@ -111,7 +111,8 @@ const DreamList: FC<DreamListProps> = ({ dreams }) => {
                     my={2}
                     textDecoration="underline"
                 >
-                    {filteredDreams.length} dreams found
+                    {filteredDreams.length} dream{" "}
+                    <span> {filteredDreams.length > 1 ? "s" : ""}</span> found
                 </Text>
                 <Box
                     maxH="1000px"

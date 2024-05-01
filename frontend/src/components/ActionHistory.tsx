@@ -106,7 +106,10 @@ const ActionHistory: FC<ActionHistoryProps> = ({ actions }) => {
                                 <Th>
                                     {action.amount !== "None"
                                         ? ethers.formatEther(action.amount) +
-                                          " ETH"
+                                          " " +
+                                          (action.action === "BOOST"
+                                              ? "DMK"
+                                              : "ETH")
                                         : "None"}
                                 </Th>
                             </Tooltip>

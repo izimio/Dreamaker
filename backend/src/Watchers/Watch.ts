@@ -16,6 +16,7 @@ const logErr = logError.extend("ws");
 class EventWatcher {
     proxyEvents: IEvent[];
     isReady: boolean = false;
+    eventsTxs: string[] = [];
 
     constructor() {
         this.proxyEvents = Object.values(events).filter(
@@ -53,6 +54,12 @@ class EventWatcher {
         }
 
         provider.on(filter, async (event) => {
+            if (this.eventsTxs.includes(event.transactionHash)) {
+                log("🟡", "[BLOCKING] Duplicate event");
+                return;
+            }
+            this.eventsTxs.push(event.transactionHash);
+
             const decoded = this.parseLogs(signature, event.data);
             const origin = event.address;
 
