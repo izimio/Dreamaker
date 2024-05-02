@@ -2,7 +2,10 @@ import { ethers } from "ethers";
 import DreamArtifact from "../abis/DreamV1.sol/DreamV1.json";
 import DreamakerArtifact from "../abis/Dreamaker.sol/Dreamaker.json";
 import ProxyFactoryArtifact from "../abis/proxies/DreamProxyFactory.sol/DreamProxyFactory.json";
-import { DREAMAKER_ADDRESS } from "../utils/env.config";
+import {
+    DREAMAKER_ADDRESS,
+    DREAM_PROXY_FACTORY_ADDRESS,
+} from "../utils/env.config";
 import { metamaskSendTransaction } from "./metamask";
 
 const ABIs = {
@@ -13,8 +16,7 @@ const ABIs = {
 
 const DREAMAKER_INTERFACE = new ethers.Interface(ABIs.Dreamaker);
 const DREAM_INTERFACE = new ethers.Interface(ABIs.Dream);
-
-// const PROXY_FACTORY_INTERFACE = new ethers.Interface(ABIs.ProxyFactory);
+const PROXY_FACTORY_INTERFACE = new ethers.Interface(ABIs.ProxyFactory);
 
 export const boost = async (
     fromAddress: string,
@@ -106,6 +108,30 @@ export const changeMinFundingAmount = async (
             toAddress: proxyAddress,
             data: DREAM_INTERFACE.encodeFunctionData("setMinFundingAmount", [
                 newAmount,
+            ]),
+            value: "0x0",
+        });
+        return res;
+    } catch (error) {
+        return {
+            ok: false,
+            message: "Transaction failed.",
+        };
+    }
+};
+
+export const withdrawFactory = async (
+    fromAddress: string,
+    amount: bigint,
+    beneficiary: string
+) => {
+    try {
+        const res = await metamaskSendTransaction({
+            fromAddress,
+            toAddress: DREAM_PROXY_FACTORY_ADDRESS,
+            data: PROXY_FACTORY_INTERFACE.encodeFunctionData("withdraw", [
+                amount,
+                beneficiary,
             ]),
             value: "0x0",
         });

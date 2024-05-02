@@ -4,6 +4,14 @@ import { API_URL } from "../utils/env.config";
 import axios from "axios";
 import toast from "react-hot-toast";
 
+export const IDreamStatus = {
+    ACTIVE: "active",
+    REACHED: "reached",
+    PENDING: "pending_validation",
+    WITHDRAWN: "withdrawn",
+    EXPIRED: "expired",
+};
+
 export type IDream = {
     _id: string;
     createdAt: string;
