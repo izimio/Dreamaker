@@ -56,6 +56,15 @@ DMK isn't just a token; it's a symbol of empowerment and collaboration. By holdi
 
 ![Project Diagram](https://github.com/izimio/Dreamaker/assets/65503390/37c55b4d-3882-4a86-b497-219b579693a1)
 
+## Smart Contracts
+
+| name            | description                                                      | Address                                    | Etherscan Link |
+|-----------------|------------------------------------------------------------------| ------------------------------------------ | ---------------|
+| DreamV1         | Dream Singleton implementtion including all the business logic   | 0x5ac60daDb89dB7eD9c059B0f5ED6675640428158 |[Link](https://sepolia.etherscan.io/address/0x5ac60daDb89dB7eD9c059B0f5ED6675640428158#code) 
+| ProxyFactory    | Proxy Factory to deploy clone instance of the DreamV1 singleton  | 0x93F39EA1a9688DF5494e35b03F37D218afc0E7ac |[Link](https://sepolia.etherscan.io/address/0x93F39EA1a9688DF5494e35b03F37D218afc0E7ac#code) 
+| Dreamaker       | Dremaker ERC20 Token, serving as a utility token on the protocol | 0xACD7335107d90BCDc01abfbAE73A3633FA288C87 | [Link](https://sepolia.etherscan.io/address/0xACD7335107d90BCDc01abfbAE73A3633FA288C87#code) |
+
+
 ## Ready to Boost Your Dreams?
 
 Join the Dreamaker revolution today and unlock the full potential of your projects with DMK. Together, let's create a future where innovation knows no bounds. ✨
