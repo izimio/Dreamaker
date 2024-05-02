@@ -6,6 +6,7 @@
   "scripts": {
     "node": "hardhat node",
     "test": "hardhat test",
+    "tgive": "hardhat giveMoney",
     "tboost": "npx hardhat boost",
     "tbof": "npx hardhat balanceOf",
     "tcreate": "hardhat run test-tx/createProxy.ts",

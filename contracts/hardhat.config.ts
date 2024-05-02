@@ -4,6 +4,7 @@ import "./test-tx/fund";
 import "./test-tx/balanceOf";
 import "./test-tx/deployAll";
 import "./test-tx/boostDream";
+import "./test-tx/giveMoney";
 
 import dotenv from "dotenv";
 
