@@ -54,7 +54,7 @@ DMK isn't just a token; it's a symbol of empowerment and collaboration. By holdi
 
 ## 🛠️ Project Diagram
 
-![Project Diagram](https://github.com/izimio/Dreamaker/assets/65503390/e79a8400-6023-4ebf-b13b-081f1ca70c21)
+![Project Diagram](https://github.com/izimio/Dreamaker/assets/65503390/f70e61f6-922a-4514-b80e-d0d860f97cdd)
 
 ## Ready to Boost Your Dreams?
 
